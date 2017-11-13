@@ -1,5 +1,8 @@
 //TODO: Replace all API calls with http API calls to water service
-const httpRequest = require('request')
+const httpRequest = require('request').defaults({
+    proxy:null,
+    strictSSL :false
+  })
 const Helpers = require('./helpers')
 const View = require('./view')
 const Session = require('./session')
