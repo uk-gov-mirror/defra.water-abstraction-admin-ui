@@ -8,6 +8,7 @@ const Admin= require('../lib/admin')
 
 
 module.exports = [
+  { method: 'GET', path: '/robots.txt', handler: function(request,reply){return reply('exterminate').code(200)}, config:{auth: false,description:'Ooh. Robots'}},
   { method: 'GET', path: '/status', handler: function(request,reply){return reply('ok').code(200)}, config:{auth: false,description:'Get all entities'}},
   { method: 'GET', path: '/admin',  handler: Admin.index , config:{auth: 'simple',description:'Get Admin UI index'}},
   { method: 'GET', path: '/admin/permit',  handler: Admin.permitIndex , config:{auth: 'simple' ,description:'UI entry point for permit repo admin'}},
@@ -20,6 +21,7 @@ module.exports = [
   { method: 'GET', path: '/admin/licence/{licence_id}/addshortcode',  handler: Admin.addShortcode , config:{auth: 'simple' ,description:'Add a shortcode to a licence'}},
   { method: 'GET', path: '/admin/fields',  handler: Admin.fields , config:{auth: 'simple' ,description:'View available system fields'}},
   { method: 'GET', path: '/admin/idm/users',  handler: Admin.users , config:{auth: 'simple' ,description:'View users'}},
+  { method: 'POST', path: '/admin/idm/users',  handler: Admin.createUser , config:{auth: 'simple' ,description:'Create user'}},
   { method: 'GET', path: '/admin/idm/users/{user_id}',  handler: Admin.user , config:{auth: 'simple' ,description:'View user'}},
   { method: 'GET', path: '/admin/regime',  handler: Admin.regimes , config:{auth: 'simple' ,description:'View regimes'}},
   { method: 'GET', path: '/admin/regime/{regime_id}/licencetypes',  handler: Admin.regimeLicenceTypes, config:{auth: 'simple' ,description:'View licence types for regime '} },

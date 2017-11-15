@@ -1,6 +1,65 @@
 var bcrypt = require('bcrypt');
 
+//contains generic functions unrelated to a specific component
+var rp = require('request-promise-native').defaults({
+    proxy:null,
+    strictSSL :false
+  })
 
+//make a simple http request (without a body), uses promises
+function makeURIRequest(uri) {
+  return new Promise((resolve, reject) => {
+    var options = {
+      method: 'get',
+      uri: uri
+    };
+    rp(options)
+      .then(function(response) {
+        var responseData = {};
+        responseData.error = null
+        responseData.statusCode = 200
+        responseData.body = response
+        resolve(responseData);
+      })
+      .catch(function(response) {
+        var responseData = {};
+        responseData.error = response.error
+        responseData.statusCode = response.statusCode
+        responseData.body = response.body
+        reject(responseData);
+      });
+  })
+}
+
+//make an http request (with a body), uses promises
+function makeURIRequestWithBody(uri, method, data) {
+  return new Promise((resolve, reject) => {
+    var options = {
+      method: method,
+      uri: uri,
+      body: data,
+      json: true
+    };
+
+    rp(options)
+      .then(function(response) {
+        var responseData = {};
+        responseData.error = null
+        responseData.statusCode = 200
+        responseData.body = response
+        resolve(responseData);
+      })
+      .catch(function(response) {
+        var responseData = {};
+        responseData.error = response.error
+        responseData.statusCode = response.statusCode
+        responseData.body = response.body
+        reject(responseData);
+      });
+
+  })
+
+}
 
 
 function createGUID() {
@@ -14,11 +73,16 @@ s4() + '-' + s4() + s4() + s4()
 }
 
 
-function createHash(string,cb){
+function createHash(string){
+  return new Promise((resolve, reject) => {
   const saltRounds = 10;
   bcrypt.hash(string, saltRounds, function(err, hash) {
-    cb(err,hash)
+    if(err){
+      reject(err)
+    }
+    resolve(hash)
   })
+});
 }
 
 function compareHash(string1,string2,cb){
@@ -61,6 +125,8 @@ module.exports = {
   createHash:createHash,
   compareHash:compareHash,
   encryptToken:encryptToken,
-  decryptToken:decryptToken
+  decryptToken:decryptToken,
+  makeURIRequestWithBody:makeURIRequestWithBody,
+  makeURIRequest:makeURIRequest
 
 }

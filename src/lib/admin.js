@@ -6,6 +6,8 @@ const httpRequest = require('request').defaults({
 const Helpers = require('./helpers')
 const View = require('./view')
 const Session = require('./session')
+const Idm = require('./connectors/idm')
+const Crm = require('./connectors/crm')
 
 
 //TODO: replace Tactical with calls to IDM or CRM
@@ -131,8 +133,8 @@ function findlicenceform(request,reply){
 }
 
 function doFindlicence(request,reply){
-  API.licence.search(request.params.search,(d)=>{
-      reply(d)
+  Crm.findDocument(request.params.search).then((response)=>{
+    reply (response)
   })
 }
 
@@ -161,21 +163,37 @@ function addShortcode(request,reply){
 function users(request,reply){
   console.log('requested users')
   var viewContext = View.contextDefaults(request)
-
-  var uri = process.env.IDM_URI + '/user'
-  console.log(uri)
-  httpRequest(uri+'?token='+process.env.JWT_TOKEN, (error, response, body)=> {
+  Idm.getUsers().then((users)=>{
     var viewContext = View.contextDefaults(request)
     viewContext.pageTitle = 'GOV.UK - Admin/Fields'
-    viewContext.users = JSON.parse(body)
+    viewContext.users = users
     viewContext.debug.users = viewContext.users
     console.log('*** adminIndex ***')
     reply.view('water/admin/viewusers', viewContext)
   })
-
-
-
 }
+
+
+function createUser(request,reply){
+  console.log('requested create user')
+  Idm.createUser(request.payload).then(()=>{
+    //also create CRM record
+    var data={};
+    data.entity_nm=request.payload.username;
+    data.entity_type='individual';
+    data.entity_definition={};
+    Crm.createEntity(data).then((id)=>{
+      console.log(id)
+    }).then(()=>{
+      users(request,reply)
+    })
+
+
+
+
+  })
+}
+
 
 function user(request,reply){
   var viewContext = View.contextDefaults(request)
@@ -191,6 +209,8 @@ function user(request,reply){
 
   })
 }
+
+
 
 function crmindex (request, reply) {
   //view the admin page
@@ -271,20 +291,11 @@ function crmDoNewEntity(request,reply){
   data.entity_nm=request.payload.entity_nm;
   data.entity_type=request.payload.entity_type;
   data.entity_definition=request.payload.entity_definition;
-  var method='post'
-      var URI=process.env.CRM_URI+'/entity'
-    console.log(URI)
-    httpRequest({
-              method: method,
-              url: URI + '?token=' + process.env.JWT_TOKEN,
-              form: data
-          },
-          function (err, httpResponse, body) {
-              console.log('got http ' + method + ' response')
-              console.log(body)
-              reply.redirect('/admin/crm/entities/'+JSON.parse(body).data.entity_id);
+  Crm.createEntity(data).then((id)=>{
+    console.log(id)
+    reply.redirect('/admin/crm/entities/'+id);
+  })
 
-          });
 }
 
 function crmAllEntitiesJSON(request,reply){
@@ -351,6 +362,7 @@ module.exports = {
   addShortcode:addShortcode,
   users:users,
   user:user,
+  createUser:createUser,
   crm:crmindex,
   crmEntities:crmEntities,
   crmEntity:crmEntity,

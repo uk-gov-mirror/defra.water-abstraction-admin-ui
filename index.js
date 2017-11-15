@@ -8,6 +8,12 @@ const Hapi = require('hapi')
 
 const serverOptions = {connections: {router: {stripTrailingSlash: true}}}
 const server = new Hapi.Server(serverOptions)
+const Blipp = require('blipp');
+const Disinfect = require('disinfect');
+const SanitizePayload = require('hapi-sanitize-payload')
+
+
+
 const Helpers = require('./src/lib/helpers.js')
 
 server.connection({ port: process.env.PORT || 8000 })
@@ -40,14 +46,45 @@ var yar_options = {
   }
 }
 
-server.register({
-  register: require('yar'),
-  options: yar_options
-}, function (err) { })
 
 
 
-server.register([require('hapi-auth-basic'), require('hapi-auth-jwt2'), require('inert'), require('vision')], (err) => {
+
+server.register([
+  {
+    register: require('yar'),
+    options: yar_options
+  },
+  {
+    // Plugin to display the routes table to console at startup
+    // See https://www.npmjs.com/package/blipp
+    register: Blipp,
+    options: {
+      showAuth: true
+    }
+  }, {
+    // Plugin to prevent CSS attack by applying Google's Caja HTML Sanitizer on route query, payload, and params
+    // See https://www.npmjs.com/package/disinfect
+    register: Disinfect,
+    options: {
+      deleteEmpty: true,
+      deleteWhitespace: true,
+      disinfectQuery: true,
+      disinfectParams: true,
+      disinfectPayload: true
+    }
+  }, {
+    // Plugin to recursively sanitize or prune values in a request.payload object
+    // See https://www.npmjs.com/package/hapi-sanitize-payload
+    register: SanitizePayload,
+    options: {
+      pruneMethod: 'delete'
+    }
+  },
+
+
+
+  require('hapi-auth-basic'), require('hapi-auth-jwt2'), require('inert'), require('vision')], (err) => {
   if (err) {
     throw err
   }

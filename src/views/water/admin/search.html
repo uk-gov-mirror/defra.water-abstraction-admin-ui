@@ -43,8 +43,10 @@
     success: function(res,err){
       var html='<table>';
       for(r in res.data){
+        console.log(r)
+        console.log(res.data[r])
         if(res.data[r]){
-        html+=`<tr><td><a href="/admin/licence/${res.data[r].licence_id}">${res.data[r].licence_id}</a></td><td>${res.data[r].licence_ref}</td><td>${res.data[r].licence_search_key}<br>`;
+        html+=`<tr><td><a href="/admin/licence/${res.data[r].system_internal_id}">${res.data[r].system_internal_id}</a></td><td>${res.data[r].system_external_id}</td><td>${res.data[r].metadata.Name}<br>`;
         }
 
       }

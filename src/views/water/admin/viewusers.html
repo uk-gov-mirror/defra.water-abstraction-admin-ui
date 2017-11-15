@@ -31,18 +31,36 @@
           <th>User ID</th>
           <th>Username</th>
           <th>Is Admin</th>
+          <th>Info</th>
+          <th>Reset GUID</th>
+          <th>Reset Required</th>
+          <th>Bad Login Count</th>
         </tr>
         {{#each users}}
         <tr>
           <td><a href="/admin/idm/users/{{user_id}}">{{user_id}}</a></td>
           <td>{{user_name}}</td>
           <td>{{admin}}</td>
-
-
-
+          <td>{{user_data}}</td>
+          <td>{{reset_guid}}</td>
+          <td>{{reset_required}}</td>
+          <td>{{bad_logins}}</td>
         </tr>
         {{/each}}
+        <tr>
+          <form method="post" action="/admin/idm/users">
+          <td>NEW</td>
+          <td><input name="username"/></td>
+          <td><input name="admin" size=1 value="0"/></td>
+          <td><input name="user_data" value='{"firstname":""}'/></td>
+          <td></td>
+          <td><input name="reset_required" size=1 value="1"/></td>
+          <td><input name="password" size=10 type=text /></td>
+          <td><button type="submit">Create</button></td>
+        </tr>
       </table>
+
+
     </div>
   </div>
 </main>
