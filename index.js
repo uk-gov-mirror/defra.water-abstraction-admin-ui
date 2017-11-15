@@ -96,7 +96,10 @@ server.register([
     var data={};
     data.user_name=user_name
     data.password=password
-    const httpRequest = require('request')
+    const httpRequest = require('request').defaults({
+        proxy:null,
+        strictSSL :false
+      })
 
     var method='post'
     URI=process.env.IDM_URI+'/user/loginAdmin'+ '?token=' + process.env.JWT_TOKEN;
