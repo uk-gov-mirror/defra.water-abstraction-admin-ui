@@ -99,10 +99,11 @@ server.register([
     const httpRequest = require('request')
 
     var method='post'
-    URI=process.env.IDM_URI+'/user/loginAdmin';
+    URI=process.env.IDM_URI+'/user/loginAdmin'+ '?token=' + process.env.JWT_TOKEN;
+    console.log(URI)
       httpRequest({
                 method: method,
-                url: URI + '?token=' + process.env.JWT_TOKEN,
+                url: URI ,
                 form: data
             },
             function (err, httpResponse, body) {

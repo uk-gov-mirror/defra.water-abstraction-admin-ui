@@ -9,16 +9,19 @@ var rp = require('request-promise-native').defaults({
 //make a simple http request (without a body), uses promises
 function makeURIRequest(uri) {
   return new Promise((resolve, reject) => {
+    console.log('request to '+uri)
     var options = {
       method: 'get',
       uri: uri
     };
     rp(options)
       .then(function(response) {
+
         var responseData = {};
         responseData.error = null
         responseData.statusCode = 200
         responseData.body = response
+        console.log('resolve request to '+uri)
         resolve(responseData);
       })
       .catch(function(response) {
@@ -26,6 +29,8 @@ function makeURIRequest(uri) {
         responseData.error = response.error
         responseData.statusCode = response.statusCode
         responseData.body = response.body
+        console.log('reject request to '+uri)
+        console.log(responseData)
         reject(responseData);
       });
   })
@@ -34,6 +39,7 @@ function makeURIRequest(uri) {
 //make an http request (with a body), uses promises
 function makeURIRequestWithBody(uri, method, data) {
   return new Promise((resolve, reject) => {
+  console.log(method+' request to '+uri)
     var options = {
       method: method,
       uri: uri,
@@ -47,6 +53,7 @@ function makeURIRequestWithBody(uri, method, data) {
         responseData.error = null
         responseData.statusCode = 200
         responseData.body = response
+        console.log('resolve request to '+uri)
         resolve(responseData);
       })
       .catch(function(response) {
@@ -54,6 +61,9 @@ function makeURIRequestWithBody(uri, method, data) {
         responseData.error = response.error
         responseData.statusCode = response.statusCode
         responseData.body = response.body
+        console.log('reject request to '+uri)
+        console.log(responseData)
+
         reject(responseData);
       });
 
