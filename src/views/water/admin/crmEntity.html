@@ -60,6 +60,19 @@ Permits
 
 
 {{/each}}
+
+<tr>
+<td><input id="document_id">
+</td>
+<td><button onclick="addPermitToUser()">Add</button>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
 </table>
 <h1 class="heading-medium">
 Associations
@@ -143,6 +156,8 @@ as
 
   };
 
+
+
   var timer = function() {
     if (window.jQuery ) {
       runMyCode(window.jQuery);
@@ -155,6 +170,24 @@ as
 })();
 
 
+  function addPermitToUser(){
+    var data={"entity_id":"{{entities.entity.entity_id}}"};
+    console.log(data)
+    $.ajax({
+      type: "POST",
+      url: "/admin/idm/crm/document/"+$("#document_id").val()+"/owner",
+      data: data,
+      success: function(res,err){
+        console.log(err)
+        console.log(res)
+      },
+      dataType: 'json'
+    });
+
+
+
+
+  }
 
 </script>
 

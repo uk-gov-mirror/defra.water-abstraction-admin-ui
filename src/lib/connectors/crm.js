@@ -77,9 +77,27 @@ function getDocument(params){
 
 }
 
+function updateDocumentOwner(params){
+  return new Promise((resolve, reject) => {
+  var uri=process.env.CRM_URI+'/documentHeader/'+params.document_id+'/owner?token='+process.env.JWT_TOKEN
+  var method='put'
+  var data={entity_id:params.entity_id}
+  console.log(data)
+  Helpers.makeURIRequestWithBody(uri, method,data)
+  .then((response)=>{
+    console.log('crm entity response')
+    console.log(response.body)
+  }).catch((response)=>{
+    console.log(response)
+    console.log('rejecting in crm.createEntity')
+    reject()
+  })
+})
+}
+
 module.exports = {
 createEntity:createEntity,
-findDocument:findDocument
-
+findDocument:findDocument,
+updateDocumentOwner:updateDocumentOwner
 
 }

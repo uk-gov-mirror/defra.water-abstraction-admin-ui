@@ -349,6 +349,35 @@ function crmAssociateEntity(request,reply){
 
 }
 
+function crmDocumentHeaders(request,reply){
+  var viewContext = View.contextDefaults(request)
+  viewContext.pageTitle = 'GOV.UK - Admin'
+  Crm.findDocument(request.params.search).then((response)=>{
+    viewContext.permits=response.data
+    viewContext.debug.permits=response.data[0]
+    reply.view('water/admin/crmDocumentHeaders', viewContext)
+  })
+}
+
+function setDocumentOwner(request,reply){
+  console.log('set document owner')
+  console.log('payload')
+  console.log(request.payload)
+  var params={
+    entity_id:request.payload.entity_id,
+    document_id:request.params.document_id
+  }
+  console.log(params)
+  Crm.updateDocumentOwner(params).then((res)=>{
+      console.log('got resolve')
+      reply(res)
+  }).catch((err)=>{
+      console.log('got reject')
+      reply(err)
+  })
+
+}
+
 module.exports = {
   index: index,
   fields: fields,
@@ -374,6 +403,8 @@ module.exports = {
   crmAllEntitiesJSON:crmAllEntitiesJSON,
   crmAssociateEntity:crmAssociateEntity,
   permitIndex:permitIndex,
+  crmDocumentHeaders:crmDocumentHeaders,
+  setDocumentOwner:setDocumentOwner,
   idmIndex:idmIndex,
   waterIndex:waterIndex
 }

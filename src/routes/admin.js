@@ -24,6 +24,10 @@ module.exports = [
   { method: 'GET', path: '/admin/idm/users',  handler: Admin.users , config:{auth: 'simple' ,description:'View users'}},
   { method: 'POST', path: '/admin/idm/users',  handler: Admin.createUser , config:{auth: 'simple' ,description:'Create user'}},
   { method: 'GET', path: '/admin/idm/users/{user_id}',  handler: Admin.user , config:{auth: 'simple' ,description:'View user'}},
+
+
+
+
   { method: 'GET', path: '/admin/regime',  handler: Admin.regimes , config:{auth: 'simple' ,description:'View regimes'}},
   { method: 'GET', path: '/admin/regime/{regime_id}/licencetypes',  handler: Admin.regimeLicenceTypes, config:{auth: 'simple' ,description:'View licence types for regime '} },
   { method: 'GET', path: '/admin/regime/{regime_id}/licencetypes/{type_id}',  handler: Admin.regimeLicenceType , config:{auth: 'simple' ,description:'View specific licence type for regime '}},
@@ -34,6 +38,10 @@ module.exports = [
   { method: 'GET', path: '/admin/crm/entities/newCompany',  handler: Admin.crmNewCompany , config:{auth: 'simple' ,description:'Create Company form for tactical crm'}},
   { method: 'GET', path: '/admin/crm/entities/newIndividual',  handler: Admin.crmNewIndividual, config:{auth: 'simple' ,description:'Create individual form for tactical crm'} },
   { method: 'POST', path:'/admin/crm/entities/new',  handler: Admin.crmDoNewEntity , config:{auth: 'simple' ,description:'Create new entity in CRM'}},
+  { method: 'GET', path:'/admin/crm/documents',  handler: Admin.crmDocumentHeaders , config:{auth: 'simple' ,description:'Create new entity in CRM'}},
+
+  { method: 'POST', path:'/admin/idm/crm/document/{document_id}/owner',  handler: Admin.setDocumentOwner , config:{auth: 'simple' ,description:'Set document owner in CRM'}},
+
 
   { method: 'POST', path:'/admin/crm/entities/associate',  handler: Admin.crmAssociateEntity , config:{auth: 'simple' ,description:'Create entity association in crm'}},
   { method: 'GET', path: '/admin/crm/entities/{entity_id}',  handler: Admin.crmEntity , config:{auth: 'simple' ,description:'Get specific entity in crm'}},

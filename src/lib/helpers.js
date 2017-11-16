@@ -30,7 +30,7 @@ function makeURIRequest(uri) {
         responseData.statusCode = response.statusCode
         responseData.body = response.body
         console.log('reject request to '+uri)
-        console.log(responseData)
+        //console.log(responseData)
         reject(responseData);
       });
   })
@@ -62,7 +62,7 @@ function makeURIRequestWithBody(uri, method, data) {
         responseData.statusCode = response.statusCode
         responseData.body = response.body
         console.log('reject request to '+uri)
-        console.log(responseData)
+        //console.log(responseData)
 
         reject(responseData);
       });

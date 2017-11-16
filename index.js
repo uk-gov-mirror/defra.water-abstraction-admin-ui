@@ -111,9 +111,6 @@ server.register([
             },
             function (err, httpResponse, body) {
                 console.log('got http ' + method + ' response')
-                console.log(err)
-                console.log(httpResponse)
-                console.log(body)
                 responseData=JSON.parse(body)
                 if (responseData.err) {
                   return callback(null, false)
