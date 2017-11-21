@@ -8,7 +8,6 @@ const Hapi = require('hapi')
 
 const serverOptions = {connections: {router: {stripTrailingSlash: true}}}
 const server = new Hapi.Server(serverOptions)
-const Blipp = require('blipp');
 const Disinfect = require('disinfect');
 const SanitizePayload = require('hapi-sanitize-payload')
 
@@ -50,19 +49,25 @@ var yar_options = {
 
 
 
-server.register([
+server.register([  {
+      register: require('node-hapi-airbrake'),
+      options: {
+        key: process.env.errbit_key,
+        host: process.env.errbit_server
+      }
+  },{
+    // Plugin to display the routes table to console at startup
+    // See https://www.npmjs.com/package/blipp
+    register: require('blipp'),
+    options: {
+      showAuth: true
+    }
+  },
   {
     register: require('yar'),
     options: yar_options
   },
-  {
-    // Plugin to display the routes table to console at startup
-    // See https://www.npmjs.com/package/blipp
-    register: Blipp,
-    options: {
-      showAuth: true
-    }
-  }, {
+   {
     // Plugin to prevent CSS attack by applying Google's Caja HTML Sanitizer on route query, payload, and params
     // See https://www.npmjs.com/package/disinfect
     register: Disinfect,
