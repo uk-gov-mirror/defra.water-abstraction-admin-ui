@@ -40,6 +40,7 @@ module.exports = [
   { method: 'POST', path:'/admin/crm/entities/new',  handler: Admin.crmDoNewEntity , config:{auth: 'simple' ,description:'Create new entity in CRM'}},
   { method: 'GET', path:'/admin/crm/documents',  handler: Admin.crmDocumentHeaders , config:{auth: 'simple' ,description:'Create new entity in CRM'}},
 
+  { method: 'GET', path:'/admin/crm/document/{document_id}',  handler: Admin.getDocument , config:{auth: 'simple' ,description:'Get document info'}},
   { method: 'POST', path:'/admin/idm/crm/document/{document_id}/owner',  handler: Admin.setDocumentOwner , config:{auth: 'simple' ,description:'Set document owner in CRM'}},
 
 

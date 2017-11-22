@@ -375,8 +375,25 @@ function setDocumentOwner(request,reply){
       console.log('got reject')
       reply(err)
   })
-
 }
+
+function getDocument(request,reply){
+  var viewContext = View.contextDefaults(request)
+  console.log('get document')
+  console.log('document:')
+  var params={
+    document_id:request.params.document_id
+  }
+  console.log(params)
+  Crm.getDocument(params).then((res)=>{
+    viewContext.document_id=request.params.document_id
+    viewContext.document=res
+    viewContext.debug.document=res
+    reply.view('water/admin/crmDocument', viewContext)
+  })
+}
+
+
 
 module.exports = {
   index: index,
@@ -406,5 +423,6 @@ module.exports = {
   crmDocumentHeaders:crmDocumentHeaders,
   setDocumentOwner:setDocumentOwner,
   idmIndex:idmIndex,
-  waterIndex:waterIndex
+  waterIndex:waterIndex,
+  getDocument:getDocument
 }
