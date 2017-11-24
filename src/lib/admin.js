@@ -142,7 +142,7 @@ function viewLicence(request,reply){
   var viewContext = View.contextDefaults(request)
   const Permit = require('./connectors/permit')
   Permit.getLicence(request.params.licence_id).then((licence) => {
-    reply(licence)
+    reply(JSON.parse(licence))
   })
   viewContext.licence_id=request.params.licence_id
 
