@@ -58,7 +58,7 @@ Add access for
         console.log(result)
         var options = $("#entity_id");
         $.each(result, function() {
-          if(this.entity_type=='individual' and owners.indexOf(this.entity_nm)==-1){
+          if(this.entity_type=='individual' && owners.indexOf(this.entity_nm)==-1){
           var optVal=this.entity_id
           var optString=this.entity_type+': '+this.entity_nm+' '+this.entity_id
             options.append($("<option />").val(optVal).text(optString));
