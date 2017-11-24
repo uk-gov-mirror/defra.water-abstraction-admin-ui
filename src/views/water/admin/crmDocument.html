@@ -18,6 +18,9 @@
       <h1 class="heading-xlarge">
         Permit Repository Admin / CRM / Documents {{document_id}}
       </h1>
+<script>
+var owners=[];
+</script>
 {{#each document.data}}
   Regime: <a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_entity_id}}</a>
   <br>System ID: {{system_id}}
@@ -25,6 +28,9 @@
   <br>Metadata: {{stringify metadata}}
   <br>Access:
   {{#each access}}
+  <script>
+  var owners.push('{{entity_nm}}');
+  </script>
   <br> - {{document_association_id}}
   <a href="/admin/crm/entities/{{entity_id}}">{{entity_id}}</a>
   {{entity_nm}}
@@ -51,7 +57,7 @@ Add access for
         console.log(result)
         var options = $("#entity_id");
         $.each(result, function() {
-          if(this.entity_type=='individual'){
+          if(this.entity_type=='individual' and owners.indexOf(this.entity_nm)==-1){
           var optVal=this.entity_id
           var optString=this.entity_type+': '+this.entity_nm+' '+this.entity_id
             options.append($("<option />").val(optVal).text(optString));
