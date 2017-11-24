@@ -140,15 +140,12 @@ function doFindlicence(request,reply){
 
 function viewLicence(request,reply){
   var viewContext = View.contextDefaults(request)
-  viewContext.licence_id=request.params.licence_id
-  API.licence.shortcodes(request.params.licence_id,(shortcodes)=>{
-    viewContext.shortCodes=shortcodes
-      API.licence.users(request.params.licence_id,(users)=>{
-            viewContext.users=users
-            viewContext.debug={shortCodes:shortcodes,users:users}
-            reply.view('water/admin/viewlicence', viewContext)
-          })
+  const Permit = require('./connectors/permit')
+  Permit.getLicence(thisLicence.system_internal_id).then((licence) => {
+    reply(licence)
   })
+  viewContext.licence_id=request.params.licence_id
+
 
 
 }
