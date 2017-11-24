@@ -30,7 +30,7 @@ var owners=[];
   {{#each access}}
   <script>
   console.log('Add {{entity_nm}} to owners')
-  var owners.push('{{entity_nm}}');
+  owners.push('{{entity_nm}}');
   </script>
   <br> - {{document_association_id}}
   <a href="/admin/crm/entities/{{entity_id}}">{{entity_id}}</a>
