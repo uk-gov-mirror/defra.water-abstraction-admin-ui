@@ -141,7 +141,7 @@ function doFindlicence(request,reply){
 function viewLicence(request,reply){
   var viewContext = View.contextDefaults(request)
   const Permit = require('./connectors/permit')
-  Permit.getLicence(thisLicence.system_internal_id).then((licence) => {
+  Permit.getLicence(request.params.licence_id).then((licence) => {
     reply(licence)
   })
   viewContext.licence_id=request.params.licence_id
