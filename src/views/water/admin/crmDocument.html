@@ -32,9 +32,9 @@ var owners=[];
   console.log('Add {{entity_nm}} to owners')
   owners.push('{{entity_nm}}');
   </script>
-  <br> - {{document_association_id}}
-  <a href="/admin/crm/entities/{{entity_id}}">{{entity_id}}</a>
-  {{entity_nm}}
+  <br>
+  <a association_id="{{document_association_id}}" href="/admin/crm/entities/{{entity_id}}">{{entity_nm}}</a>
+
   {{/each}}
 {{/each}}
 
@@ -60,7 +60,7 @@ Add access for
         $.each(result, function() {
           if(this.entity_type=='individual' && owners.indexOf(this.entity_nm)==-1){
           var optVal=this.entity_id
-          var optString=this.entity_type+': '+this.entity_nm+' '+this.entity_id
+          var optString=this.entity_nm
             options.append($("<option />").val(optVal).text(optString));
           }
         });
