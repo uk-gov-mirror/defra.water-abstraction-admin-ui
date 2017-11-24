@@ -29,6 +29,7 @@ var owners=[];
   <br>Access:
   {{#each access}}
   <script>
+  console.log('Add {{entity_nm}} to owners')
   var owners.push('{{entity_nm}}');
   </script>
   <br> - {{document_association_id}}
