@@ -87,6 +87,7 @@ function updateDocumentOwner(params){
   .then((response)=>{
     console.log('crm entity response')
     console.log(response.body)
+    resolve(response.body)
   }).catch((response)=>{
     console.log(response)
     console.log('rejecting in crm.createEntity')
