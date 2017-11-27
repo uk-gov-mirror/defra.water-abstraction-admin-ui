@@ -9,6 +9,8 @@ const Session = require('./session')
 const Idm = require('./connectors/idm')
 const Crm = require('./connectors/crm')
 
+const DB = require('./connectors/db')
+
 
 //TODO: replace Tactical with calls to IDM or CRM
 const Tactical = require('./tactical')
@@ -398,6 +400,246 @@ Idm.updatePassword(request.params.user_name, request.payload.password).then((res
 })
 }
 
+/** temporary features because we don't yet have a full admin system....**/
+
+function deleteAllLicences(request,reply){
+  console.log('DELETE ALL LICENCES')
+    var query = `
+      delete from crm.document_association;
+      delete from crm.document_header;
+      delete from permit.licence_data;
+      delete from permit.licence;`
+    var queryParams
+    DB.query(query, queryParams)
+      .then((res) => { reply(res) })
+}
+
+
+  var licenceRows=[];
+function loadLicences(request,reply){
+
+
+  console.log('received data')
+  var csv = require("fast-csv");
+
+var CSV_STRING = request.payload.data
+csv
+ .fromString(CSV_STRING, {headers: true,delimiter:'\t'})
+ .on("data", function(data){
+   console.log('***got Line')
+   licenceRows.push(data)
+ })
+ .on("end", function(){
+   console.log(licenceRows)
+   data=normalise(licenceRows);
+  for(var i = 0; i < data.length; i++) {
+    exportLicence(data[i],process.env.licenceRegimeId,process.env.licenceTypeId)
+  }
+
+
+   console.log(licences)
+   return reply('ok')
+ });
+  }
+
+  function createLicence(licenceRow) {
+    return {
+      id: licenceRow["Licence No."],
+      name: licenceRow["Name"],
+      addressLine1: licenceRow["Line 1"],
+      addressLine2: licenceRow["Line 2"],
+      addressLine3: licenceRow["Line 3"],
+      addressLine4: licenceRow["Line 4"],
+      town: licenceRow["Town"],
+      county: licenceRow["County"],
+      country: licenceRow["Country"],
+      postCode: licenceRow["Postcode"],
+      maxAnnualQuantity: licenceRow["Max Annual Quantity"],
+      maxDailyQuantity: licenceRow["Max Daily Quantity"],
+      sourceOfSupply: licenceRow["Point Name"],
+      effectiveFrom: licenceRow["Orig. Effective Date"],
+      effectiveTo: licenceRow["Expiry Date"] ? licenceRow["Expiry Date"] : "No expiry",
+      purposes: []
+    }
+  }
+
+  function createPurpose(licenceRow) {
+    return {
+      id: licenceRow["Purpose ID"],
+      primaryCode: licenceRow["Primary Code"],
+      secondaryCode: licenceRow["Secondary Code"],
+      useCode: licenceRow["Use Code"],
+      annualQuantity: licenceRow["Annual Qty"],
+      dailyQuantity: licenceRow["Daily Qty"],
+      hourlyQuantity: licenceRow["Hourly Qty"],
+      instantQuantity: licenceRow["Inst Qty"],
+      description: licenceRow["Use Description"],
+      periodStart: licenceRow["Period Start"],
+      periodEnd: licenceRow["Period End"],
+      meansOfMeasurement: licenceRow["MoM Description"],
+      points: [],
+      conditions: []
+    }
+  }
+
+  function createPoint(licenceRow) {
+    return {
+      id: licenceRow["Point ID"],
+      name: licenceRow["Point Name"],
+      ngr1: licenceRow["NGR 1"],
+      ngr2: licenceRow["NGR 2"],
+      ngr3: licenceRow["NGR 3"],
+      ngr4: licenceRow["NGR 4"],
+      meansOfAbstraction: licenceRow["MoA Description"]
+    }
+  }
+
+  function createCondition(licenceRow) {
+    return {
+      code: licenceRow["Code"],
+      subCode: licenceRow["Sub Code"],
+      parameter1: licenceRow["1st Parameter"],
+      parameter2: licenceRow["2nd Parameter"],
+      text: licenceRow["Text"]
+    }
+  }
+
+  function getById(array, id) {
+    for (var i = 0; i < array.length; i++) {
+      if (array[i].id === id) {
+        return array[i]
+      }
+    }
+
+    return undefined
+  }
+
+  function normalise(licenceRows) {
+    var licences = []
+    var purposes = []
+    var points = []
+
+    for(var i = 0; i < licenceRows.length; i++) {
+      var licenceRow = licenceRows[i]
+
+      // Get or create licence
+      var licenceId = licenceRow["Licence No."]
+      var licence = getById(licences, licenceId)
+      if (licence === undefined) {
+        licence = createLicence(licenceRow)
+        licences.push(licence);
+      }
+
+      // Get or create purpose
+      var purposeId = licenceRow["Purpose ID"]
+      var purpose = getById(licence.purposes, purposeId)
+      if (purpose === undefined) {
+        purpose = purposes[purposeId]
+        if (purpose === undefined) {
+          purpose = createPurpose(licenceRow)
+          purposes[purposeId] = purpose
+        }
+
+        licence.purposes.push(purpose)
+      }
+
+      // Get or create point
+      var pointId = licenceRow["Point ID"]
+      var point = getById(purpose.points, pointId)
+      if (point === undefined) {
+        point = points[pointId]
+        if (point === undefined) {
+          point = createPoint(licenceRow)
+          points[pointId] = point
+        }
+
+        purpose.points.push(point)
+      }
+
+      var condition = createCondition(licenceRow);
+      purpose.conditions.push(condition)
+    }
+
+    return licences
+  }
+
+
+
+
+
+
+  function exportLicence(licence, orgId, licenceTypeId) {
+    var requestBody = {
+        licence_ref: licence.id,
+        licence_start_dt: "2017-01-01T00:00:00.000Z",
+        licence_end_dt: "2018-01-01T00:00:00.000Z",
+        licence_status_id: "1",
+        licence_type_id: licenceTypeId,
+        licence_org_id: orgId,
+        attributes: {
+          "licenceData": licence
+      }
+    }
+
+    console.log(requestBody)
+
+    Helpers.makeURIRequestWithBody (
+      process.env.PERMIT_URI + 'regime/' + orgId + '/licencetype/' + licenceTypeId + '/licence?token='+process.env.JWT_TOKEN,
+      'post',
+      requestBody
+    ).then((body)=>{
+      console.log("added to repo")
+
+      var data={}
+          data.regime_entity_id='0434dc31-a34e-7158-5775-4694af7a60cf'
+          //
+          var owners=[]
+          owners.push('8f51dfd9-29a3-593f-c297-437e4181b08d')
+          owners.push('andrew')
+          owners.push('russell')
+          data.owner_entity_id = '';
+
+            data.system_id= 'permit-repo'
+            data.system_internal_id= body.body.data.licence_id
+            data.system_external_id= licence.id
+            data.metadata='{"Name":"'+licence.name+'"}'
+            console.log('-----')
+            console.log(data)
+            console.log(process.env.CRM_URI+'/documentHeader?token='+process.env.JWT_TOKEN)
+
+            Helpers.makeURIRequestWithBody (
+              process.env.CRM_URI+'/documentHeader?token='+process.env.JWT_TOKEN,
+              'post',
+              data
+            ).then((body)=>{
+
+                        console.log('Added to CRM');
+                        return true
+
+
+                    }).catch((err)=>{
+                        console.log('Error adding to CRM');
+                      console.log(err)
+                      return err
+                    });
+
+
+    }).catch((error)=>{
+      console.log('error adding to repo');
+      console.log(error);
+      return error
+    })
+    return
+  }
+
+
+function loadLicencesUI(request,reply){
+  //view the admin page
+  var viewContext = View.contextDefaults(request)
+  viewContext.pageTitle = 'GOV.UK - Admin'
+  console.log('*** adminIndex ***')
+  reply.view('water/admin/import', viewContext)
+}
 
 module.exports = {
   index: index,
@@ -429,6 +671,9 @@ module.exports = {
   idmIndex:idmIndex,
   waterIndex:waterIndex,
   getDocument:getDocument,
-  updatePassword:updatePassword
+  updatePassword:updatePassword,
+  deleteAllLicences:deleteAllLicences,
+  loadLicences:loadLicences,
+  loadLicencesUI:loadLicencesUI
 
 }

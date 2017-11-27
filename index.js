@@ -67,25 +67,7 @@ server.register([  {
     register: require('yar'),
     options: yar_options
   },
-   {
-    // Plugin to prevent CSS attack by applying Google's Caja HTML Sanitizer on route query, payload, and params
-    // See https://www.npmjs.com/package/disinfect
-    register: Disinfect,
-    options: {
-      deleteEmpty: true,
-      deleteWhitespace: true,
-      disinfectQuery: true,
-      disinfectParams: true,
-      disinfectPayload: true
-    }
-  }, {
-    // Plugin to recursively sanitize or prune values in a request.payload object
-    // See https://www.npmjs.com/package/hapi-sanitize-payload
-    register: SanitizePayload,
-    options: {
-      pruneMethod: 'delete'
-    }
-  },
+
 
 
 

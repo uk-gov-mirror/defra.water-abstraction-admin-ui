@@ -48,6 +48,11 @@ module.exports = [
 
   { method: 'POST', path:'/admin/crm/entities/associate',  handler: Admin.crmAssociateEntity , config:{auth: 'simple' ,description:'Create entity association in crm'}},
   { method: 'GET', path: '/admin/crm/entities/{entity_id}',  handler: Admin.crmEntity , config:{auth: 'simple' ,description:'Get specific entity in crm'}},
-  { method: 'GET', path: '/admin/crm/allentities',  handler: Admin.crmAllEntitiesJSON, config:{auth: 'simple' ,description:'Get all entities in JSON from CRM'} }
+  { method: 'GET', path: '/admin/crm/allentities',  handler: Admin.crmAllEntitiesJSON, config:{auth: 'simple' ,description:'Get all entities in JSON from CRM'} },
+
+  { method: 'GET', path: '/admin/danger/999/delete_all_licences',  handler: Admin.deleteAllLicences, config:{auth: 'simple' ,description:'delete all licences'} },
+    { method: 'POST', path: '/admin/import',  handler: Admin.loadLicences, config:{auth: false ,description:'load licences'} },
+    { method: 'GET', path: '/admin/import',  handler: Admin.loadLicencesUI, config:{auth: false ,description:'load licences ui'} }
+
 
 ]
