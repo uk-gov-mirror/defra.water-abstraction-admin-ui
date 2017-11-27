@@ -20,6 +20,19 @@
       <h1 class="heading-large">
       View User
       </h1>
+      <table>
+<tr><td>User ID</td><td>{{user.user_id}}</td></tr>
+<tr><td>Email</td><td>{{user.user_name}}</tr>
+<tr><td>Is Admin</td><td>{{user.admin}}</tr>
+<tr><td>Metadata</td><td>{{user.user_data}}</tr>
+<tr><td>Reset GUID</td><td>{{user.reset_guid}}</tr>
+<tr><td>Reset required</td><td>{{user.reset_required}}</tr>
+<tr><td>Last Login</td><td>{{user.last_login}}</tr>
+<tr><td>Bad Logins</td><td>{{user.bad_logins}}</tr>
+<tr><td>Reset Password to:</td><td><input id="newpassword"><button onclick="updatePassword()">RESET</button></td></tr>
+<!--- /admin/idm/updatePassword/{user_name} --->
+</table>
+
 
     </div>
   </div>
@@ -51,4 +64,24 @@
     });
 
   }
+
+function updatePassword(){
+  var URI="/admin/idm/updatePassword/{{user.user_name}}"
+  var data={password:$("#newpassword").val()};
+  console.log(URI)
+  console.log(data)
+
+  $.ajax({
+    type: "POST",
+    url: URI,
+    data: data,
+    success: function(res,err){
+      console.log(err)
+      console.log(res)
+      location.reload()
+    },
+    dataType: 'json'
+  });
+
+}
 </script>

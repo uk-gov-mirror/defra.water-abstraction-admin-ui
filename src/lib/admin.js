@@ -193,17 +193,16 @@ function createUser(request,reply){
 
 
 function user(request,reply){
+  console.log('requested user')
   var viewContext = View.contextDefaults(request)
-
-
-
-
-  viewContext.user_id=request.params.user_id
-  Tactical.getUserLicences({user_id:request.params.user_id},(licences)=>{
-    console.log(licences)
-    viewContext.licences=licences
-            reply.view('water/admin/viewuser', viewContext)
-
+  Idm.getUser({user_id:request.params.user_id}).then((user)=>{
+    var viewContext = View.contextDefaults(request)
+    viewContext.pageTitle = 'GOV.UK - Admin/Fields'
+    viewContext.user = user
+    viewContext.user_id=request.params.user_id
+    viewContext.debug.users = viewContext.user
+    console.log('*** adminIndex ***')
+    reply.view('water/admin/viewuser', viewContext)
   })
 }
 
@@ -390,6 +389,14 @@ function getDocument(request,reply){
   })
 }
 
+function updatePassword(request,reply){
+Idm.updatePassword(request.params.user_name, request.payload.password).then((res) => {
+  console.log('password updated')
+  return reply('OK')
+}).catch(() => {
+  return reply('NOT OK')
+})
+}
 
 
 module.exports = {
@@ -421,5 +428,7 @@ module.exports = {
   setDocumentOwner:setDocumentOwner,
   idmIndex:idmIndex,
   waterIndex:waterIndex,
-  getDocument:getDocument
+  getDocument:getDocument,
+  updatePassword:updatePassword
+
 }
