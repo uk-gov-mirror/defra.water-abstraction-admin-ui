@@ -64,7 +64,7 @@ function fields (request, reply) {
 
 function regime (request, reply) {
   //view the regimes page
-  var uri = process.env.PERMIT_URI + 'API/1.0/regime'
+  var uri = process.env.PERMIT_URI + 'regime'
   console.log(uri+'?token='+process.env.JWT_TOKEN)
   httpRequest(uri+'?token='+process.env.JWT_TOKEN, (error, response, body) => {
     var viewContext = View.contextDefaults(request)
@@ -80,7 +80,7 @@ function regimeLicenceTypes (request, reply) {
   //view the regime licence types page
   var viewContext = {}
 
-  var uri = process.env.PERMIT_URI + 'API/1.0/regime/'+request.params.regime_id+'/licencetype'
+  var uri = process.env.PERMIT_URI + 'regime/'+request.params.regime_id+'/licencetype'
   console.log(uri)
   httpRequest(uri+'?token='+process.env.JWT_TOKEN,  (error, response, body) => {
     var viewContext = View.contextDefaults(request)
@@ -97,7 +97,7 @@ function regimeLicenceTypes (request, reply) {
 function regimeLicenceType (request, reply) {
   //view regime licence types page
   var viewContext = View.contextDefaults(request)
-  var uri = process.env.PERMIT_URI + 'API/1.0/regime/'+request.params.regime_id+'/licencetype/'+request.params.type_id
+  var uri = process.env.PERMIT_URI + 'regime/'+request.params.regime_id+'/licencetype/'+request.params.type_id
   console.log(uri)
   httpRequest(uri+'?token='+process.env.JWT_TOKEN,  (error, response, body) => {
     console.log('got body')
