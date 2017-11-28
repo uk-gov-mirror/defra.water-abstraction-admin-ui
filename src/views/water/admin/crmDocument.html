@@ -24,7 +24,7 @@ var owners=[];
 {{#each document.data}}
   Regime: <a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_entity_id}}</a>
   <br>System ID: {{system_id}}
-  <br>Internal ID in system: {{system_internal_id}}
+  <br>Internal ID in system: <a href="/admin/licence/{{system_internal_id}}">{{system_internal_id}}</a>
   <br>Metadata: {{stringify metadata}}
   <br>Access:
   {{#each access}}
