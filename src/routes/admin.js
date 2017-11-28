@@ -19,6 +19,7 @@ module.exports = [
   { method: 'GET', path: '/admin/findlicence',  handler: Admin.findlicence , config:{auth: 'simple',description:'Get Admin UI licence search'}},
   { method: 'GET', path: '/admin/findlicence/{search}',  handler: Admin.doFindlicence , config:{ auth: 'simple' ,description:'Perform admin UI licence search'}},
   { method: 'GET', path: '/admin/licence/{licence_id}',  handler: Admin.viewlicence , config:{auth: 'simple' ,description:'View licence by ID'}},
+  { method: 'GET', path: '/admin/licence/{licence_id}/raw',  handler: Admin.viewLicenceRaw , config:{auth: 'simple' ,description:'View RAW licence by ID'}},
   { method: 'GET', path: '/admin/licence/{licence_id}/addshortcode',  handler: Admin.addShortcode , config:{auth: 'simple' ,description:'Add a shortcode to a licence'}},
   { method: 'GET', path: '/admin/fields',  handler: Admin.fields , config:{auth: 'simple' ,description:'View available system fields'}},
   { method: 'GET', path: '/admin/idm/users',  handler: Admin.users , config:{auth: 'simple' ,description:'View users'}},

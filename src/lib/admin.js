@@ -142,11 +142,31 @@ function doFindlicence(request,reply){
 
 function viewLicence(request,reply){
   var viewContext = View.contextDefaults(request)
+  viewContext.pageTitle = 'GOV.UK - View Licence Data'
+
   const Permit = require('./connectors/permit')
   Permit.getLicence(request.params.licence_id).then((licence) => {
-    reply(licence)
+    viewContext.licence=licence
+    viewContext.licence_id=request.params.licence_id
+  reply.view('water/admin/viewlicenceData', viewContext)
   })
-  viewContext.licence_id=request.params.licence_id
+
+
+
+
+}
+
+function viewLicenceRaw(request,reply){
+  var viewContext = View.contextDefaults(request)
+  viewContext.pageTitle = 'GOV.UK - View Licence Data'
+
+  const Permit = require('./connectors/permit')
+  Permit.getLicence(request.params.licence_id).then((licence) => {
+    viewContext.licence=JSON.stringify(licence, null, 4)
+    viewContext.licence_id=request.params.licence_id
+  reply.view('water/admin/viewlicenceDataRAW', viewContext)
+  })
+
 
 
 
@@ -674,6 +694,7 @@ module.exports = {
   updatePassword:updatePassword,
   deleteAllLicences:deleteAllLicences,
   loadLicences:loadLicences,
-  loadLicencesUI:loadLicencesUI
+  loadLicencesUI:loadLicencesUI,
+  viewLicenceRaw:viewLicenceRaw
 
 }
