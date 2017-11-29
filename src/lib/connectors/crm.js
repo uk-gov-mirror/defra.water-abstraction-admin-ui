@@ -143,10 +143,56 @@ function getDocument(params){
     })
 }
 
+
+function addRole(params){
+    return new Promise((resolve, reject) => {
+      var data=params
+      var uri=process.env.CRM_URI+'/entity/'+data.entity_id+'/roles?token='+process.env.JWT_TOKEN
+      var method='post'
+      console.log('***** ADD ROLE ****')
+      console.log(data)
+      Helpers.makeURIRequestWithBody(uri, method,data)
+      .then((response)=>{
+        console.log('crm entity response')
+        console.log(response.body)
+        resolve(response.body)
+      }).catch((response)=>{
+        console.log(response)
+        console.log('rejecting in crm.addRole')
+        reject()
+      })
+
+
+    })
+}
+
+function deleteRole(params){
+    return new Promise((resolve, reject) => {
+      var data=params
+      var uri=process.env.CRM_URI+'/entity/'+data.entity_id+'/roles/'+data.role_id+'?token='+process.env.JWT_TOKEN
+      var method='delete'
+      console.log('***** deleteRole ROLE ****')
+      console.log(data)
+      Helpers.makeURIRequestWithBody(uri, method,data)
+      .then((response)=>{
+        console.log('crm deleteRole response')
+        console.log(response.body)
+        resolve(response.body)
+      }).catch((response)=>{
+        console.log(response)
+        console.log('rejecting in crm.deleteRole')
+        reject()
+      })
+
+
+    })
+}
 module.exports = {
 createEntity:createEntity,
 findDocument:findDocument,
 updateDocumentOwner:updateDocumentOwner,
-getDocument:getDocument
+getDocument:getDocument,
+addRole:addRole,
+deleteRole:deleteRole
 
 }

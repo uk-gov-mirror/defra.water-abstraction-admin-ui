@@ -75,6 +75,44 @@ Permits
 </tr>
 </table>
 <h1 class="heading-medium">
+Roles
+</h1>
+
+<table>
+  <tr>
+  <td>entity_role_id</td>
+  <td>role</td>
+  <td>regime_entity_id</td>
+  <td>company_entity_id</td>
+  <td>is_primary</td>
+  </tr>
+{{#each entities.roles}}
+<tr>
+<td>{{entity_role_id}}</td>
+<td>{{role}}</td>
+<td><a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_entity_id}}</a></td>
+<td><a href="/admin/crm/entities/{{company_entity_id}}">{{company_entity_id}}</a></td>
+<td>{{is_primary}}</td>
+<td><button onclick="deleteRole('{{entity_role_id}}')">Delete Role</button></td>
+</tr>
+{{/each}}
+<tr>
+<td>{{entity_role_id}}
+<td><select id='role'>
+<option value="user">User</option>
+<option value="agent">Agent</option>
+<option value="admin">Admin</option>
+</select></td>
+<td><select id='regime_id'><option value="">-</option></select></td>
+<td><select id='company_id'><option value="">-</option></select></td>
+<td><input type="checkbox" id="is_primary" value="1">
+</td>
+<td><button onclick="addRole()">Add Role</button></td>
+</tr>
+</table>
+
+
+<h1 class="heading-medium">
 Associations
 </h1>
 {{#each entities.entityAssociations}}
@@ -94,17 +132,6 @@ Associations
 {{/each}}
 
 
-{{#each entities.documentAssociations}}
-<a href='/admin/crm/entities/{{entity_id}}'>{{entity_id}}</a>
-
-{{document_id}}
-{{system_id}}
-{{system_internal_id}}
-{{system_external_id}}
-{{system_external_id}}
-{{metadata}}
-<hr>
-{{/each}}
 
 <br>
 <form method="post" action="associate">
@@ -142,10 +169,20 @@ as
     $.ajax({url: "/admin/crm/allentities", success: function(result){
         console.log(result)
         var options = $("#entities");
+        var regimes=$("#regime_id");
+        var companies=$("#company_id");
         $.each(result, function() {
+
           var optVal=this.entity_type+'|'+this.entity_id
           var optString=this.entity_type+': '+this.entity_nm+' '+this.entity_id
             options.append($("<option />").val(optVal).text(optString));
+
+          if(this.entity_type=='regime'){
+            regimes.append($("<option />").val(this.entity_id).text(this.entity_nm));
+          }
+          if(this.entity_type=='company'){
+            companies.append($("<option />").val(this.entity_id).text(this.entity_nm));
+          }
         });
         $('#entities').fuzzyDropdown({
           mainContainer: '#entitySearch',
@@ -189,6 +226,50 @@ as
 
   }
 
+function addRole(){
+  var data={
+      "role":$("#role").val(),
+      "regime":$("#regime_id").val(),
+      "company":$("#company_id").val(),
+      "is_primary":"0"
+  }
+  if($("#is_primary").is(':checked')){
+    data.is_primary=1
+  }
+  console.log(data)
+  var url="/admin/crm/entities/{{entities.entity.entity_id}}/roles";
+  console.log(url)
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: data,
+    success: function(res,err){
+      console.log(err)
+      console.log(res)
+      console.log('yay')
+      location.reload()
+    },
+    dataType: 'json'
+  });
+
+}
+
+
+function deleteRole(role_id){
+  var url="/admin/crm/entities/{{entities.entity.entity_id}}/roles/"+role_id;
+  console.log(url)
+  $.ajax({
+    type: "delete",
+    url: url,
+    success: function(res,err){
+      console.log(err)
+      console.log(res)
+      console.log('yay')
+      location.reload()
+    }
+  });
+
+}
 </script>
 
 <style>

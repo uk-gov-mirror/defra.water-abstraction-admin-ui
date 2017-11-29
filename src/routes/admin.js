@@ -53,7 +53,8 @@ module.exports = [
 
   { method: 'GET', path: '/admin/danger/999/delete_all_licences',  handler: Admin.deleteAllLicences, config:{auth: 'simple' ,description:'delete all licences'} },
     { method: 'POST', path: '/admin/import',  handler: Admin.loadLicences, config:{auth: false ,description:'load licences'} },
-    { method: 'GET', path: '/admin/import',  handler: Admin.loadLicencesUI, config:{auth: false ,description:'load licences ui'} }
+    { method: 'GET', path: '/admin/import',  handler: Admin.loadLicencesUI, config:{auth: false ,description:'load licences ui'} },
 
-
+    { method: 'POST', path: '/admin/crm/entities/{entity_id}/roles',  handler: Admin.addRole, config:{auth: false ,description:'add role to user'} },
+    { method: 'DELETE', path: '/admin/crm/entities/{entity_id}/roles/{role_id}',  handler: Admin.deleteRole, config:{auth: false ,description:'delete role from user'} },
 ]
