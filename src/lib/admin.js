@@ -446,25 +446,33 @@ var CSV_STRING = request.payload.data
 csv
  .fromString(CSV_STRING, {headers: true,delimiter:'\t'})
  .on("data", function(data){
-   console.log('***got Line')
    licenceRows.push(data)
  })
  .on("end", function(){
    console.log(licenceRows)
-   data=normalise(licenceRows);
-  for(var i = 0; i < data.length; i++) {
-    exportLicence(data[i],process.env.licenceRegimeId,process.env.licenceTypeId)
+   var normalisedLicenceData=normalise(licenceRows);
+  for(var i = 0; i < normalisedLicenceData.length; i++) {
+    console.log('export licence')
+    exportLicence(normalisedLicenceData[i],process.env.licenceRegimeId,process.env.licenceTypeId)
   }
 
 
-   console.log(licences)
-   return reply('ok')
+  console.log("FINISHED!")
+   return reply(normalisedLicenceData)
  });
   }
 
   function createLicence(licenceRow) {
+    console.log('create licence for '+licenceRow["Licence No."])
+    console.log('create licence for '+licenceRow["Water Act Licence Type"])
     return {
       id: licenceRow["Licence No."],
+      wa_licence_type: licenceRow["Water Act Licence Type"],
+      wa_desc: licenceRow["WA Lic. Type Description"],
+      version_start: licenceRow["Version Start Date"],
+      salutation: licenceRow["Salutation"],
+      initials: licenceRow["Initials"],
+      forename: licenceRow["Forename"],
       name: licenceRow["Name"],
       addressLine1: licenceRow["Line 1"],
       addressLine2: licenceRow["Line 2"],
@@ -548,6 +556,7 @@ csv
       if (licence === undefined) {
         licence = createLicence(licenceRow)
         licences.push(licence);
+
       }
 
       // Get or create purpose
@@ -601,14 +610,12 @@ csv
       }
     }
 
-    console.log(requestBody)
 
     Helpers.makeURIRequestWithBody (
       process.env.PERMIT_URI + 'regime/' + orgId + '/licencetype/' + licenceTypeId + '/licence?token='+process.env.JWT_TOKEN,
       'post',
       requestBody
     ).then((body)=>{
-      console.log("added to repo")
 
       var data={}
           data.regime_entity_id='0434dc31-a34e-7158-5775-4694af7a60cf'
@@ -622,10 +629,10 @@ csv
             data.system_id= 'permit-repo'
             data.system_internal_id= body.body.data.licence_id
             data.system_external_id= licence.id
-            data.metadata='{"Name":"'+licence.name+'"}'
-            console.log('-----')
-            console.log(data)
-            console.log(process.env.CRM_URI+'/documentHeader?token='+process.env.JWT_TOKEN)
+            data.metadata={Name:licence.name}
+            data.metadata.Salutation=licence.Salutation
+
+            data.metadata=JSON.stringify(data.metadata)
 
             Helpers.makeURIRequestWithBody (
               process.env.CRM_URI+'/documentHeader?token='+process.env.JWT_TOKEN,
@@ -645,7 +652,6 @@ csv
 
 
     }).catch((error)=>{
-      console.log('error adding to repo');
       console.log(error);
       return error
     })
@@ -659,6 +665,35 @@ function loadLicencesUI(request,reply){
   viewContext.pageTitle = 'GOV.UK - Admin'
   console.log('*** adminIndex ***')
   reply.view('water/admin/import', viewContext)
+}
+
+function addRole(request,reply){
+    console.log(request.payload)
+    var data={};
+    data.entity_id=request.params.entity_id
+    data.role=request.payload.role;
+    data.regime=request.payload.regime;
+    data.company=request.payload.company;
+    if(request.payload.is_primary){
+      data.is_primary=1
+    } else {
+      data.is_primary=0
+    }
+    Crm.addRole(data).then(()=>{
+      console.log()
+      reply({});
+    })
+}
+
+function deleteRole(request,reply){
+    console.log(request.payload)
+    var data={};
+    data.entity_id=request.params.entity_id
+    data.role_id=request.params.role_id;
+    Crm.deleteRole(data).then(()=>{
+      console.log()
+      reply({});
+    })
 }
 
 module.exports = {
@@ -695,6 +730,7 @@ module.exports = {
   deleteAllLicences:deleteAllLicences,
   loadLicences:loadLicences,
   loadLicencesUI:loadLicencesUI,
-  viewLicenceRaw:viewLicenceRaw
-
+  viewLicenceRaw:viewLicenceRaw,
+addRole:addRole,
+deleteRole:deleteRole
 }
