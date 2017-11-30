@@ -21,59 +21,6 @@
       </h1>
 
 
-<hr>
-<h1 class="heading-medium">
-Permits
-</h1>
-<table>
-  <tr>
-  <th>header id
-  </th>
-  <th>system
-  </th>
-  <th>permit id
-  </th>
-  <th>external_id
-  </th>
-  <td>
-  </td>
-  </tr>
-{{#each entities.documentAssociations}}
-<tr>
-<td>{{document_id}}
-</td>
-<td>{{system_id}}
-</td>
-<td><a href="/admin/licence/{{system_internal_id}}">{{system_internal_id}}</a>
-</td>
-<td>{{system_external_id}}
-</td>
-<td>{{metadata.Name}}
-</td>
-</tr>
-
-
-
-
-
-
-
-
-{{/each}}
-
-<tr>
-<td><input id="document_id">
-</td>
-<td><button onclick="addPermitToUser()">Add</button>
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-</table>
 <h1 class="heading-medium">
 Roles
 </h1>
@@ -86,12 +33,12 @@ Roles
   <td>company_entity_id</td>
   <td>is_primary</td>
   </tr>
-{{#each entities.roles}}
+{{#each entities.entityRoles}}
 <tr>
 <td>{{entity_role_id}}</td>
 <td>{{role}}</td>
-<td><a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_entity_id}}</a></td>
-<td><a href="/admin/crm/entities/{{company_entity_id}}">{{company_entity_id}}</a></td>
+<td><a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_nm}}</a></td>
+<td><a href="/admin/crm/entities/{{company_entity_id}}">{{company_nm}}</a></td>
 <td>{{is_primary}}</td>
 <td><button onclick="deleteRole('{{entity_role_id}}')">Delete Role</button></td>
 </tr>
@@ -113,53 +60,35 @@ Roles
 
 
 <h1 class="heading-medium">
-Associations
+Document (From Roles)
 </h1>
-{{#each entities.entityAssociations}}
-
-{{entity_up_type}}: <a href='/admin/crm/entities/{{entity_up_id}}'>
-  {{entity_up_nm}}
-</a>
-&nbsp;
-&gt;&gt;
-&nbsp;
-{{entity_down_type}}: <a href='/admin/crm/entities/{{entity_down_id}}'>
-{{entity_down_nm}}
-</a>
 
 
-<hr>
+<table>
+  <tr>
+  <td>Role</td>
+  <td>Role ID</td>
+  <td>document_id</td>
+  <td>regime_entity_id</td>
+  <td>system_id</td>
+  <td>system_internal_id</td>
+  <td>system_external_id</td>
+  <td>metadata</td>
+  </tr>
+{{#each entities.roleDocuments}}
+<tr>
+<td>{{role}}</td>
+<td>{{role_id}}</td>
+<td><a href="/admin/crm/document/{{document_id}}">{{document_id}}</a></td>
+<td>{{regime_entity_id}}</td>
+<td>{{system_id}}</td>
+<td><a href="/admin/licence/{{system_internal_id}}">{{system_internal_id}}</a>
+<td>{{system_external_id}}</td>
+<td>{{stringify metadata}}</td>
+</tr>
 {{/each}}
+</table>
 
-
-
-<br>
-<form method="post" action="associate">
-Associate Entity {{entities.entity.entity_nm}}
-<input type="hidden" name="entity1" id="entity1" value="{{entities.entity.entity_type}}|{{entities.entity.entity_id}}"/>
-as
-<select name='associationType'>
-<option value='up'>Upstream</option>
-<option value='down'>Downstream</option>
-</select>
- of
-
-<select id="entities" name="entity2">
-</select>
-<div id="entitySearch">
-  <div id="fuzzNameContainer">
-    <span class="fuzzName"></span>
-    <span class="fuzzArrow"></span>
-  </div>
-  <div id="fuzzDropdownContainer">
-    <input type="text" value="" class="entitySearchBox" placeholder="search.." />
-    <span class="entitySearchIcon"></span>
-    <ul id="entityResults">
-    </ul>
-  </div>
-</div>
-<button type="submit">Associate</button>
-</form>
 
 <script >
 
