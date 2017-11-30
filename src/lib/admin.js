@@ -274,7 +274,7 @@ function crmEntity(request, reply) {
     console.log('response from ' + URI)
     console.log(body)
     var data = JSON.parse(body)
-    data.data.entity = data.data.entity[0]
+    data.data.entity = data.data.entity
     viewContext.entities = data.data
     viewContext.debug.entities = data
 
