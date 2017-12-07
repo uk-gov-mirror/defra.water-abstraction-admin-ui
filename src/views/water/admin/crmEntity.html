@@ -33,12 +33,14 @@ Roles
   <td>company_entity_id</td>
   <td>is_primary</td>
   </tr>
+
+
 {{#each entities.entityRoles}}
 <tr>
 <td>{{entity_role_id}}</td>
 <td>{{role}}</td>
-<td><a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_nm}}</a></td>
-<td><a href="/admin/crm/entities/{{company_entity_id}}">{{company_nm}}</a></td>
+<td><a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_entity_id}}</a></td>
+<td><a href="/admin/crm/entities/{{company_entity_id}}">{{company_entity_id}}</a></td>
 <td>{{is_primary}}</td>
 <td><button onclick="deleteRole('{{entity_role_id}}')">Delete Role</button></td>
 </tr>
