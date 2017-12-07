@@ -23,18 +23,21 @@
 <th>System ID</th>
 <th>Permit Repo ID</th>
 <th>Licence Ref</th>
-<th>Metadata</th>
+<th>Name</th>
+<th>Custom Name</th>
 <th>Owner ID</th>
 <th></th>
 </tr>
 {{#each permits}}
+
 <tr>
   <td><a href='/admin/crm/document/{{document_id}}'>{{document_id}}</a></td>
 <td>{{regime_entity_id}}</td>
 <td>{{system_id}}</td>
 <td><a href="/admin/licence/{{system_internal_id}}">{{system_internal_id}}</a></td>
 <td>{{system_external_id}}</td>
-<td>{{stringify metadata}}</td>
+<td>{{document_original_name}}</td>
+<td>{{document_custom_name}}</td>
 <td>{{company_entity_id}}</td>
 </tr>
 {{/each}}
