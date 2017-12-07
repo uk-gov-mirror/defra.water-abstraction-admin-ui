@@ -611,20 +611,17 @@ function exportLicence(licence, orgId, licenceTypeId) {
   }
 
 
+  var url=  process.env.PERMIT_URI + 'regime/' + orgId + '/licencetype/' + licenceTypeId + '/licence?token=' + process.env.JWT_TOKEN
+  console.log(url)
   Helpers.makeURIRequestWithBody(
-    process.env.PERMIT_URI + 'regime/' + orgId + '/licencetype/' + licenceTypeId + '/licence?token=' + process.env.JWT_TOKEN,
+    url,
     'post',
     requestBody
   ).then((body) => {
-
+    console.log('Added to Permit repo');
     var data = {}
     data.regime_entity_id = '0434dc31-a34e-7158-5775-4694af7a60cf'
-    //
-    var owners = []
-    owners.push('8f51dfd9-29a3-593f-c297-437e4181b08d')
-    owners.push('andrew')
-    owners.push('russell')
-    data.owner_entity_id = '';
+    data.company_entity_id = '';
 
     data.system_id = 'permit-repo'
     data.system_internal_id = body.body.data.licence_id
@@ -635,14 +632,16 @@ function exportLicence(licence, orgId, licenceTypeId) {
     data.metadata.Salutation = licence.Salutation
 
     data.metadata = JSON.stringify(data.metadata)
-
+    var url=process.env.CRM_URI + '/documentHeader?token=' + process.env.JWT_TOKEN
+    console.log(url)
     Helpers.makeURIRequestWithBody(
-      process.env.CRM_URI + '/documentHeader?token=' + process.env.JWT_TOKEN,
+      url,
       'post',
       data
     ).then((body) => {
 
       console.log('Added to CRM');
+      console.log(body.body)
       return true
 
 
