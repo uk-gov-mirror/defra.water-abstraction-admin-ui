@@ -377,7 +377,7 @@ function crmDocumentHeaders(request, reply) {
   viewContext.pageTitle = 'GOV.UK - Admin'
   Crm.findDocument(request.params.search).then((response) => {
     viewContext.permits = response.data
-    viewContext.debug.permits = response.data[0]
+    viewContext.debug.permits = response.data
     reply.view('water/admin/crmDocumentHeaders', viewContext)
   })
 }
