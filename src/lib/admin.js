@@ -618,7 +618,7 @@ function exportLicence(licence, orgId, licenceTypeId) {
     'post',
     requestBody
   ).then((body) => {
-    console.log('Added to Permit repo');
+    console.log(`Added ${licence.name} to Permit repo`);
     var data = {}
     data.regime_entity_id = '0434dc31-a34e-7158-5775-4694af7a60cf'
     data.company_entity_id = '';
@@ -640,8 +640,7 @@ function exportLicence(licence, orgId, licenceTypeId) {
       data
     ).then((body) => {
 
-      console.log('Added to CRM');
-      console.log(body.body)
+      console.log('Added '+data.system_external_id+'to CRM');
       return true
 
 
