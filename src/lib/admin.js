@@ -626,11 +626,21 @@ function exportLicence(licence, orgId, licenceTypeId) {
     data.system_id = 'permit-repo'
     data.system_internal_id = body.body.data.licence_id
     data.system_external_id = licence.id
+
+    // Get metadata
     data.metadata = {
-      Name: licence.name,
-      Postcode : licence.postCode
-    }
-    data.metadata.Salutation = licence.Salutation
+       Name : licence.name,
+       Salutation : licence.salutation,
+       AddressLine1 : licence.addressLine1,
+       AddressLine2 : licence.addressLine2,
+       AddressLine3 : licence.addressLine3,
+       AddressLine4 : licence.addressLine4,
+       Town : licence.town,
+       County : licence.county,
+       Postcode : licence.postCode,
+       Country : licence.country,
+    };
+
 
     data.metadata = JSON.stringify(data.metadata)
     var url=process.env.CRM_URI + '/documentHeader?token=' + process.env.JWT_TOKEN
