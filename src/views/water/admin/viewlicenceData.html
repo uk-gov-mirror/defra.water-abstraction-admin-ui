@@ -6,29 +6,22 @@
       <ol>
         <li><a href="/">Your services</a></li>
         <li><a href="/admin">admin</a></li>
-        <li><a href="/admin/crm">crm</a></li>
-        <li>entities</li>
+        <li><a href="/admin/findlicence">find licence</a></li>
+        <li><a href="/{{licence_id}}">{{licence_id}}</a></li>
       </ol>
     </div>
   </nav>
   <div class="grid-row">
     <div class="column-full">
       <h1 class="heading-xlarge">
-        Permit Repository Admin / CRM / Entities
+        Permit Repository Admin
       </h1>
-<table>
-<tr><th>Name</th><th>Type</th><th>Metadata</th>
-{{#each entities}}
-<tr><td>
-<a href='/admin/crm/entities/{{entity_id}}'>{{entity_nm}}</a>
-</td><td>
-{{entity_type}}
-</td><td>
+      <h1 class="heading-large">
+      View licence Data
+      </h1>
+<a href="/admin/licence/{{licence_id}}/raw">View Raw/Edit</a>
 
-{{stringify entity_definition}}
-</td></tr>
-{{/each}}
-</table>
+{{#>node obj=licence}}{{/node}}
 
     </div>
   </div>

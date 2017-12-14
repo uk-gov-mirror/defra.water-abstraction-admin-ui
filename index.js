@@ -8,7 +8,6 @@ const Hapi = require('hapi')
 
 const serverOptions = {connections: {router: {stripTrailingSlash: true}}}
 const server = new Hapi.Server(serverOptions)
-const Blipp = require('blipp');
 const Disinfect = require('disinfect');
 const SanitizePayload = require('hapi-sanitize-payload')
 
@@ -50,37 +49,25 @@ var yar_options = {
 
 
 
-server.register([
+server.register([  {
+      register: require('node-hapi-airbrake'),
+      options: {
+        key: process.env.errbit_key,
+        host: process.env.errbit_server
+      }
+  },{
+    // Plugin to display the routes table to console at startup
+    // See https://www.npmjs.com/package/blipp
+    register: require('blipp'),
+    options: {
+      showAuth: true
+    }
+  },
   {
     register: require('yar'),
     options: yar_options
   },
-  {
-    // Plugin to display the routes table to console at startup
-    // See https://www.npmjs.com/package/blipp
-    register: Blipp,
-    options: {
-      showAuth: true
-    }
-  }, {
-    // Plugin to prevent CSS attack by applying Google's Caja HTML Sanitizer on route query, payload, and params
-    // See https://www.npmjs.com/package/disinfect
-    register: Disinfect,
-    options: {
-      deleteEmpty: true,
-      deleteWhitespace: true,
-      disinfectQuery: true,
-      disinfectParams: true,
-      disinfectPayload: true
-    }
-  }, {
-    // Plugin to recursively sanitize or prune values in a request.payload object
-    // See https://www.npmjs.com/package/hapi-sanitize-payload
-    register: SanitizePayload,
-    options: {
-      pruneMethod: 'delete'
-    }
-  },
+
 
 
 
@@ -146,7 +133,8 @@ server.register([
   server.auth.strategy('jwt', 'jwt',
     { key: process.env.JWT_SECRET,          // Never Share your secret key
       validateFunc: validateJWT,            // validate function defined above
-      verifyOptions: {} // pick a strong algorithm
+      verifyOptions: {}, // pick a strong algorithm
+      verifyFunc: validateJWT
     })
 
   server.auth.default('jwt')

@@ -19,11 +19,14 @@ module.exports = [
   { method: 'GET', path: '/admin/findlicence',  handler: Admin.findlicence , config:{auth: 'simple',description:'Get Admin UI licence search'}},
   { method: 'GET', path: '/admin/findlicence/{search}',  handler: Admin.doFindlicence , config:{ auth: 'simple' ,description:'Perform admin UI licence search'}},
   { method: 'GET', path: '/admin/licence/{licence_id}',  handler: Admin.viewlicence , config:{auth: 'simple' ,description:'View licence by ID'}},
+  { method: 'GET', path: '/admin/licence/{licence_id}/raw',  handler: Admin.viewLicenceRaw , config:{auth: 'simple' ,description:'View RAW licence by ID'}},
   { method: 'GET', path: '/admin/licence/{licence_id}/addshortcode',  handler: Admin.addShortcode , config:{auth: 'simple' ,description:'Add a shortcode to a licence'}},
   { method: 'GET', path: '/admin/fields',  handler: Admin.fields , config:{auth: 'simple' ,description:'View available system fields'}},
   { method: 'GET', path: '/admin/idm/users',  handler: Admin.users , config:{auth: 'simple' ,description:'View users'}},
   { method: 'POST', path: '/admin/idm/users',  handler: Admin.createUser , config:{auth: 'simple' ,description:'Create user'}},
   { method: 'GET', path: '/admin/idm/users/{user_id}',  handler: Admin.user , config:{auth: 'simple' ,description:'View user'}},
+
+  { method: 'POST', path: '/admin/idm/updatePassword/{user_name}',  handler: Admin.updatePassword , config:{auth: 'simple' ,description:'Update password'}},
 
 
 
@@ -40,11 +43,18 @@ module.exports = [
   { method: 'POST', path:'/admin/crm/entities/new',  handler: Admin.crmDoNewEntity , config:{auth: 'simple' ,description:'Create new entity in CRM'}},
   { method: 'GET', path:'/admin/crm/documents',  handler: Admin.crmDocumentHeaders , config:{auth: 'simple' ,description:'Create new entity in CRM'}},
 
+  { method: 'GET', path:'/admin/crm/document/{document_id}',  handler: Admin.getDocument , config:{auth: 'simple' ,description:'Get document info'}},
   { method: 'POST', path:'/admin/idm/crm/document/{document_id}/owner',  handler: Admin.setDocumentOwner , config:{auth: 'simple' ,description:'Set document owner in CRM'}},
 
 
   { method: 'POST', path:'/admin/crm/entities/associate',  handler: Admin.crmAssociateEntity , config:{auth: 'simple' ,description:'Create entity association in crm'}},
   { method: 'GET', path: '/admin/crm/entities/{entity_id}',  handler: Admin.crmEntity , config:{auth: 'simple' ,description:'Get specific entity in crm'}},
-  { method: 'GET', path: '/admin/crm/allentities',  handler: Admin.crmAllEntitiesJSON, config:{auth: 'simple' ,description:'Get all entities in JSON from CRM'} }
+  { method: 'GET', path: '/admin/crm/allentities',  handler: Admin.crmAllEntitiesJSON, config:{auth: 'simple' ,description:'Get all entities in JSON from CRM'} },
 
+  { method: 'GET', path: '/admin/danger/999/delete_all_licences',  handler: Admin.deleteAllLicences, config:{auth: 'simple' ,description:'delete all licences'} },
+    { method: 'POST', path: '/admin/import',  handler: Admin.loadLicences, config:{auth: false ,description:'load licences'} },
+    { method: 'GET', path: '/admin/import',  handler: Admin.loadLicencesUI, config:{auth: false ,description:'load licences ui'} },
+
+    { method: 'POST', path: '/admin/crm/entities/{entity_id}/roles',  handler: Admin.addRole, config:{auth: false ,description:'add role to user'} },
+    { method: 'DELETE', path: '/admin/crm/entities/{entity_id}/roles/{role_id}',  handler: Admin.deleteRole, config:{auth: false ,description:'delete role from user'} },
 ]

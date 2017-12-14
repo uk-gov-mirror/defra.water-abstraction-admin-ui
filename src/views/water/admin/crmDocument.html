@@ -1,0 +1,211 @@
+{{> styles}}
+<main id="content">
+  {{>element-phase-tag}}
+  <nav>
+    <div class="breadcrumbs">
+      <ol>
+        <li><a href="/">Your services</a></li>
+        <li><a href="/admin">admin</a></li>
+        <li><a href="/admin/crm">crm</a></li>
+        <li><a href="/admin/crm/documents">documents</a>
+        <li>{{document_id}}</li>
+        </li>
+      </ol>
+    </div>
+  </nav>
+  <div class="grid-row">
+    <div class="column-full">
+      <h1 class="heading-xlarge">
+        Permit Repository Admin / CRM / Documents {{document_id}}
+      </h1>
+<script>
+var owners=[];
+</script>
+{{#each document.data}}
+  Regime: <a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_entity_id}}</a>
+  <br>System ID: {{system_id}}
+  <br>Internal ID in system: <a href="/admin/licence/{{system_internal_id}}">{{system_internal_id}}</a>
+  <br>Metadata: {{stringify metadata}}
+  <br>Access:
+  {{#each access}}
+  <script>
+  console.log('Add {{entity_nm}} to owners')
+  owners.push('{{entity_nm}}');
+  </script>
+  <br>
+  <a association_id="{{document_association_id}}" href="/admin/crm/entities/{{entity_id}}">{{entity_nm}}</a>
+
+  {{/each}}
+{{/each}}
+
+
+<hr>
+Add access for
+<input type="hidden" name="document_id" id="document_id" value="{{document_id}}"/>
+
+<select id="entity_id" name="entity2">
+</select>
+
+<button type="button" onclick="addPermitToUser()">Add</button>
+
+
+<script >
+
+(function() {
+  var runMyCode = function($) {
+    // jquery-dependent code here
+    $.ajax({url: "/admin/crm/allentities", success: function(result){
+        console.log(result)
+        var options = $("#entity_id");
+        $.each(result, function() {
+          if(this.entity_type=='individual' && owners.indexOf(this.entity_nm)==-1){
+          var optVal=this.entity_id
+          var optString=this.entity_nm
+            options.append($("<option />").val(optVal).text(optString));
+          }
+        });
+    }});
+
+
+  };
+
+
+
+  var timer = function() {
+    if (window.jQuery ) {
+      runMyCode(window.jQuery);
+    } else {
+      console.log('wait...')
+      window.setTimeout(timer, 100);
+    }
+  };
+  timer();
+})();
+
+
+  function addPermitToUser(){
+    var data={"entity_id":$("#entity_id").val()};
+    console.log(data)
+    $.ajax({
+      type: "POST",
+      url: "/admin/idm/crm/document/{{document_id}}/owner",
+      data: data,
+      success: function(res,err){
+        console.log(err)
+        console.log(res)
+        location.reload()
+      },
+      dataType: 'json'
+    });
+
+
+
+
+
+  }
+
+</script>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+#fuzzSearch {
+  width: 50%;
+}
+#fuzzNameContainer {
+  height: 40px;
+  padding: 4px 10px;
+  border: 1px solid #999;
+  box-shadow: inset 0 0 2px 0px #333;
+  width: 100%;
+  cursor: pointer;
+  line-height: 1.9em;
+}
+.fuzzName {
+  display: inline-block;
+  width: 96%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fuzzArrow {
+  width: 0;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+  border-width: 7px;
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  top: -3px;
+  -webkit-transition: all 0.1s ease-in;
+  transition: all 0.1s ease-in;
+}
+.fuzzArrow:hover {
+  border-top-color: #888;
+}
+.fuzzArrow.fuzzArrowUp {
+  border-color: transparent transparent #333 transparent;
+  top: -11px;
+}
+#fuzzDropdownContainer {
+  display: none;
+  width: 100%;
+  margin: 0 0 5px 0;
+  border: 1px solid #999;
+  padding: 12px 4px 4px;
+  position: relative;
+}
+.fuzzMagicBox {
+  width: 99%;
+  height: 26px;
+  margin: 0 auto;
+}
+.fuzzSearchIcon {
+  width: 20px;
+  height: 30px;
+  position: relative;
+  display: inline-block;
+  background: transparent;
+  top: -20px;
+  left: 95%;
+}
+.fuzzSearchIcon:before, .fuzzSearchIcon:after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 5px;
+}
+.fuzzSearchIcon:before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid #aaa;
+}
+.fuzzSearchIcon:after {
+  height: 7px;
+  border-right: 1px solid #aaa;
+  top: 9px;
+  -webkit-transform: rotate(-32deg);
+  -ms-transform: rotate(-32deg);
+}
+#fuzzResults {
+  cursor: pointer;
+}
+#fuzzResults li:hover {
+  color: #aaa;
+}
+#fuzzResults li.selected {
+  color: #aaa;
+}
+#fuzzResults li {
+  list-style: none;
+  margin: 20px 0;
+}
+</style>
+
+    </div>
+  </div>
+</main>
+{{> footerjs}}
+{{> debug}}

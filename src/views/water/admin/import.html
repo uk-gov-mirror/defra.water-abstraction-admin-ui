@@ -6,29 +6,22 @@
       <ol>
         <li><a href="/">Your services</a></li>
         <li><a href="/admin">admin</a></li>
-        <li><a href="/admin/crm">crm</a></li>
-        <li>entities</li>
       </ol>
     </div>
   </nav>
   <div class="grid-row">
     <div class="column-full">
       <h1 class="heading-xlarge">
-        Permit Repository Admin / CRM / Entities
+        Permit Repository Admin - Import
       </h1>
-<table>
-<tr><th>Name</th><th>Type</th><th>Metadata</th>
-{{#each entities}}
-<tr><td>
-<a href='/admin/crm/entities/{{entity_id}}'>{{entity_nm}}</a>
-</td><td>
-{{entity_type}}
-</td><td>
 
-{{stringify entity_definition}}
-</td></tr>
-{{/each}}
-</table>
+
+
+      <form method="post" action="/admin/import">
+        <textarea name="data" rows=20 cols=50></textarea>
+        <input type="submit">
+      </form>
+
 
     </div>
   </div>
