@@ -627,7 +627,8 @@ function exportLicence(licence, orgId, licenceTypeId) {
     data.system_internal_id = body.body.data.licence_id
     data.system_external_id = licence.id
     data.metadata = {
-      Name: licence.name
+      Name: licence.name,
+      Postcode : licence.postCode
     }
     data.metadata.Salutation = licence.Salutation
 
