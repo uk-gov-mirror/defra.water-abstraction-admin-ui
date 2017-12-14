@@ -7,7 +7,7 @@
         <li><a href="/">Your services</a></li>
         <li><a href="/admin">admin</a></li>
         <li><a href="/admin/crm">crm</a></li>
-        <li><a href="/admin/crm/entities">entities</a></li>
+        <li>entities</li>
       </ol>
     </div>
   </nav>
@@ -16,15 +16,19 @@
       <h1 class="heading-xlarge">
         Permit Repository Admin / CRM / Entities
       </h1>
-
+<table>
+<tr><th>Name</th><th>Type</th><th>Metadata</th>
 {{#each entities}}
-<a href='/admin/crm/entities/{{entity_id}}'>{{entity_id}}</a>
-
-{{entity_nm}}
+<tr><td>
+<a href='/admin/crm/entities/{{entity_id}}'>{{entity_nm}}</a>
+</td><td>
 {{entity_type}}
-{{entity_definition}}
-<hr>
+</td><td>
+
+{{stringify entity_definition}}
+</td></tr>
 {{/each}}
+</table>
 
     </div>
   </div>
