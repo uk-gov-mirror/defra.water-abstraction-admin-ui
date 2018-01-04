@@ -331,46 +331,7 @@ function crmAllEntitiesJSON(request, reply) {
   })
 }
 
-function crmAssociateEntity(request, reply) {
-  console.log('crmAssociateEntity')
-  console.log(request.payload)
-  var entity_1 = request.payload.entity1
-  var entity_2 = request.payload.entity2
-  var data = {};
-  var method = 'post'
-  if (request.payload.associationType == 'up') {
-    data.entity_up_type = entity_1.split('|')[0]
-    data.entity_up_id = entity_1.split('|')[1]
-    data.entity_down_type = entity_2.split('|')[0]
-    data.entity_down_id = entity_2.split('|')[1]
-    data.access_type = ''
-    data.inheritable = ''
-  } else {
-    data.entity_up_type = entity_2.split('|')[0]
-    data.entity_up_id = entity_2.split('|')[1]
-    data.entity_down_type = entity_1.split('|')[0]
-    data.entity_down_id = entity_1.split('|')[1]
-    data.access_type = ''
-    data.inheritable = ''
-  }
-  console.log(data)
-  var URI = process.env.CRM_URI + '/entityAssociation'
-  var method = 'post'
-  httpRequest({
-      method: method,
-      url: URI + '?token=' + process.env.JWT_TOKEN,
-      form: data
-    },
-    function(err, httpResponse, body) {
-      console.log('got http ' + method + ' response')
-      console.log(body)
-      reply.redirect('/admin/crm/entities/' + data.entity_up_id);
 
-    });
-
-
-
-}
 
 function crmDocumentHeaders(request, reply) {
   var viewContext = View.contextDefaults(request)
@@ -719,7 +680,6 @@ module.exports = {
   crmDoNewEntity: crmDoNewEntity,
 
   crmAllEntitiesJSON: crmAllEntitiesJSON,
-  crmAssociateEntity: crmAssociateEntity,
   permitIndex: permitIndex,
   crmDocumentHeaders: crmDocumentHeaders,
   setDocumentOwner: setDocumentOwner,
