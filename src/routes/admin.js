@@ -10,6 +10,7 @@ const Admin= require('../lib/admin')
 module.exports = [
   { method: 'GET', path: '/robots.txt', handler: function(request,reply){return reply('exterminate').code(200)}, config:{auth: false,description:'Ooh. Robots'}},
   { method: 'GET', path: '/status', handler: function(request,reply){return reply('ok').code(200)}, config:{auth: false,description:'Get service status'}},
+  { method: 'GET', path: '/admin/stats', handler: Admin.stats, config:{auth: 'simple',description:'Get service statistics'}},
   { method: 'GET', path: '/admin',  handler: Admin.index , config:{auth: 'simple',description:'Get Admin UI index'}},
   { method: 'GET', path: '/',  handler: function(request,reply){    reply.redirect('/admin');} , config:{auth: false,description:'Get Admin UI index'}},
   { method: 'GET', path: '/admin/permit',  handler: Admin.permitIndex , config:{auth: 'simple' ,description:'UI entry point for permit repo admin'}},
