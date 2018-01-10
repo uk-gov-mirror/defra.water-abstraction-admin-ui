@@ -29,6 +29,7 @@ Roles
   <tr>
   <td>entity_role_id</td>
   <td>role</td>
+  <td>email</td>
   <td>regime</td>
   <td>company</td>
   <td>is_primary</td>
@@ -39,14 +40,16 @@ Roles
 <tr>
 <td>{{entity_role_id}}</td>
 <td>{{role}}</td>
+<td><a href="/admin/crm/entities/{{entity_id}}">{{individual_name}}</a></td>
 <td><a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_name}}</a></td>
 <td><a href="/admin/crm/entities/{{company_entity_id}}">{{company_name}}</a></td>
 <td>{{is_primary}}</td>
 <td><button onclick="deleteRole('{{entity_role_id}}')">Delete Role</button></td>
 </tr>
 {{/each}}
+{{#equal entities.entity.entity_type "individual"}}
 <tr>
-<td>{{entity_role_id}}
+<td>Add Role:
 <td><select id='role'>
 <option value="user">User</option>
 <option value="agent">Agent</option>
@@ -58,38 +61,10 @@ Roles
 </td>
 <td><button onclick="addRole()">Add Role</button></td>
 </tr>
+{{/equal}}
 </table>
 
 
-<h1 class="heading-medium">
-Document (From Roles)
-</h1>
-
-
-<table>
-  <tr>
-  <td>Role</td>
-  <td>Role ID</td>
-  <td>document_id</td>
-  <td>regime_entity_id</td>
-  <td>system_id</td>
-  <td>system_internal_id</td>
-  <td>system_external_id</td>
-  <td>metadata</td>
-  </tr>
-{{#each entities.roleDocuments}}
-<tr>
-<td>{{role}}</td>
-<td>{{role_id}}</td>
-<td><a href="/admin/crm/document/{{document_id}}">{{document_id}}</a></td>
-<td>{{regime_entity_id}}</td>
-<td>{{system_id}}</td>
-<td><a href="/admin/licence/{{system_internal_id}}">{{system_internal_id}}</a>
-<td>{{system_external_id}}</td>
-<td>{{stringify metadata}}</td>
-</tr>
-{{/each}}
-</table>
 
 
 <script >
