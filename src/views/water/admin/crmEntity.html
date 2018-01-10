@@ -47,8 +47,9 @@ Roles
 <td><button onclick="deleteRole('{{entity_role_id}}')">Delete Role</button></td>
 </tr>
 {{/each}}
+{{#equal entities.entity.entity_type "individual"}}
 <tr>
-<td>{{entity_role_id}}
+<td>Add Role:
 <td><select id='role'>
 <option value="user">User</option>
 <option value="agent">Agent</option>
@@ -60,6 +61,7 @@ Roles
 </td>
 <td><button onclick="addRole()">Add Role</button></td>
 </tr>
+{{/equal}}
 </table>
 
 
