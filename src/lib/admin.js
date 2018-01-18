@@ -248,7 +248,7 @@ function crmEntities(request, reply) {
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - Admin'
 
-  URI = process.env.CRM_URI + '/entity?entity_type=' + request.query.entity_type + '&token=' + process.env.JWT_TOKEN
+  URI = process.env.CRM_URI + '/entity?filter=' + JSON.stringify({entity_type: request.query.entity_type}) + '&token=' + process.env.JWT_TOKEN
   httpRequest(URI, function(error, response, body) {
     var data = JSON.parse(body)
     viewContext.entities = data.data
@@ -370,6 +370,7 @@ function getDocument(request, reply) {
   }
   console.log(params)
   Crm.getDocument(params).then((res) => {
+
     viewContext.document_id = request.params.document_id
     viewContext.document = res
     viewContext.debug.document = res
