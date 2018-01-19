@@ -11,6 +11,12 @@ const Crm = require('./connectors/crm')
 const Water = require('./connectors/water')
 const DB = require('./connectors/db')
 
+// @TODO tidy up
+const rp = require('request-promise-native').defaults({
+    proxy:null,
+    strictSSL :false
+  });
+
 
 //TODO: replace Tactical with calls to IDM or CRM
 const Tactical = require('./tactical')
@@ -559,6 +565,9 @@ function normalise(licenceRows) {
 
 
 function exportLicence(licence, orgId, licenceTypeId) {
+
+
+
   var requestBody = {
     licence_ref: licence.id,
     licence_start_dt: "2017-01-01T00:00:00.000Z",
@@ -580,16 +589,15 @@ function exportLicence(licence, orgId, licenceTypeId) {
     requestBody
   ).then((body) => {
     console.log(`Added ${licence.name} to Permit repo`);
-    var data = {}
+    const data = {}
     data.regime_entity_id = '0434dc31-a34e-7158-5775-4694af7a60cf'
-    data.company_entity_id = '';
 
     data.system_id = 'permit-repo'
     data.system_internal_id = body.body.data.licence_id
     data.system_external_id = licence.id
 
     // Get metadata
-    data.metadata = {
+    data.metadata = JSON.stringify({
        Name : licence.name,
        Salutation : licence.salutation,
        AddressLine1 : licence.addressLine1,
@@ -600,25 +608,23 @@ function exportLicence(licence, orgId, licenceTypeId) {
        County : licence.county,
        Postcode : licence.postCode,
        Country : licence.country,
-    };
+    });
 
+    return rp({
+      method : 'POST',
+      uri : process.env.CRM_URI + '/documentHeader',
+      headers : {
+        Authorization : process.env.JWT_TOKEN
+      },
+      body : data,
+      json : true
+    }).then((res) => {
 
-    data.metadata = JSON.stringify(data.metadata)
-    var url=process.env.CRM_URI + '/documentHeader?token=' + process.env.JWT_TOKEN
-    console.log(url)
-    Helpers.makeURIRequestWithBody(
-      url,
-      'post',
-      data
-    ).then((body) => {
-
-      console.log('Added '+data.system_external_id+'to CRM');
+      console.log('Added '+res.data.system_external_id+'to CRM');
       return true
-
-
     }).catch((err) => {
       console.log('Error adding to CRM');
-      console.log(err)
+      console.log(err);
       return err
     });
 
