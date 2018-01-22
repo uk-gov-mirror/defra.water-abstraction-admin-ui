@@ -8,8 +8,14 @@ const View = require('./view')
 const Session = require('./session')
 const Idm = require('./connectors/idm')
 const Crm = require('./connectors/crm')
-
+const Water = require('./connectors/water')
 const DB = require('./connectors/db')
+
+// @TODO tidy up
+const rp = require('request-promise-native').defaults({
+    proxy:null,
+    strictSSL :false
+  });
 
 
 //TODO: replace Tactical with calls to IDM or CRM
@@ -62,7 +68,7 @@ function fields(request, reply) {
 
 }
 
-function regime(request, reply) {
+function regimes(request, reply) {
   //view the regimes page
   var uri = process.env.PERMIT_URI + 'regime'
   console.log(uri + '?token=' + process.env.JWT_TOKEN)
@@ -129,7 +135,7 @@ function addFieldToregimeLicenceType(request, reply) {
   })
 }
 
-function findlicenceform(request, reply) {
+function findlicence(request, reply) {
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - Admin'
   reply.view('water/admin/search', viewContext)
@@ -141,7 +147,7 @@ function doFindlicence(request, reply) {
   })
 }
 
-function viewLicence(request, reply) {
+function viewlicence(request, reply) {
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - View Licence Data'
 
@@ -233,7 +239,7 @@ function user(request, reply) {
 
 
 
-function crmindex(request, reply) {
+function crm(request, reply) {
   //view the admin page
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - Admin'
@@ -559,6 +565,9 @@ function normalise(licenceRows) {
 
 
 function exportLicence(licence, orgId, licenceTypeId) {
+
+
+
   var requestBody = {
     licence_ref: licence.id,
     licence_start_dt: "2017-01-01T00:00:00.000Z",
@@ -580,16 +589,15 @@ function exportLicence(licence, orgId, licenceTypeId) {
     requestBody
   ).then((body) => {
     console.log(`Added ${licence.name} to Permit repo`);
-    var data = {}
+    const data = {}
     data.regime_entity_id = '0434dc31-a34e-7158-5775-4694af7a60cf'
-    data.company_entity_id = '';
 
     data.system_id = 'permit-repo'
     data.system_internal_id = body.body.data.licence_id
     data.system_external_id = licence.id
 
     // Get metadata
-    data.metadata = {
+    data.metadata = JSON.stringify({
        Name : licence.name,
        Salutation : licence.salutation,
        AddressLine1 : licence.addressLine1,
@@ -600,25 +608,23 @@ function exportLicence(licence, orgId, licenceTypeId) {
        County : licence.county,
        Postcode : licence.postCode,
        Country : licence.country,
-    };
+    });
 
+    return rp({
+      method : 'POST',
+      uri : process.env.CRM_URI + '/documentHeader',
+      headers : {
+        Authorization : process.env.JWT_TOKEN
+      },
+      body : data,
+      json : true
+    }).then((res) => {
 
-    data.metadata = JSON.stringify(data.metadata)
-    var url=process.env.CRM_URI + '/documentHeader?token=' + process.env.JWT_TOKEN
-    console.log(url)
-    Helpers.makeURIRequestWithBody(
-      url,
-      'post',
-      data
-    ).then((body) => {
-
-      console.log('Added '+data.system_external_id+'to CRM');
+      console.log('Added '+res.data.system_external_id+'to CRM');
       return true
-
-
     }).catch((err) => {
       console.log('Error adding to CRM');
-      console.log(err)
+      console.log(err);
       return err
     });
 
@@ -687,41 +693,62 @@ function stats(request,reply){
       return reply(stats)
     })
 }
-module.exports = {
-  index: index,
-  fields: fields,
-  regimes: regime,
-  regimeLicenceTypes: regimeLicenceTypes,
-  regimeLicenceType: regimeLicenceType,
-  addFieldToregimeLicenceType: addFieldToregimeLicenceType,
-  findlicence: findlicenceform,
-  doFindlicence: doFindlicence,
-  viewlicence: viewLicence,
-  addShortcode: addShortcode,
-  users: users,
-  user: user,
-  createUser: createUser,
-  crm: crmindex,
-  crmEntities: crmEntities,
-  crmEntity: crmEntity,
-  crmNewRegime: crmNewRegime,
-  crmNewCompany: crmNewCompany,
-  crmNewIndividual: crmNewIndividual,
-  crmDoNewEntity: crmDoNewEntity,
 
-  crmAllEntitiesJSON: crmAllEntitiesJSON,
-  permitIndex: permitIndex,
-  crmDocumentHeaders: crmDocumentHeaders,
-  setDocumentOwner: setDocumentOwner,
-  idmIndex: idmIndex,
-  waterIndex: waterIndex,
-  getDocument: getDocument,
-  updatePassword: updatePassword,
-  deleteAllLicences: deleteAllLicences,
-  loadLicences: loadLicences,
-  loadLicencesUI: loadLicencesUI,
-  viewLicenceRaw: viewLicenceRaw,
-  addRole: addRole,
-  deleteRole: deleteRole,
-  stats:stats
+function naldImport(request,reply){
+Water.naldImport().then((res)=>{
+  return reply (res)
+}).catch((res)=>{
+  return reply ({error:res})
+})
+}
+
+
+function naldLicence(request,reply){
+  console.log('requesting naldLicence')
+Water.naldLicence(request.query.licence_number).then((res)=>{
+  return reply (res)
+}).catch((res)=>{
+  console.log(res)
+  return reply ({error:res})
+})
+}
+
+module.exports = {
+  index,
+  fields,
+  regimes,
+  regimeLicenceTypes,
+  regimeLicenceType,
+  addFieldToregimeLicenceType,
+  findlicence,
+  doFindlicence,
+  viewlicence,
+  addShortcode,
+  users,
+  user,
+  createUser,
+  crm,
+  crmEntities,
+  crmEntity,
+  crmNewRegime,
+  crmNewCompany,
+  crmNewIndividual,
+  crmDoNewEntity,
+  crmAllEntitiesJSON,
+  permitIndex,
+  crmDocumentHeaders,
+  setDocumentOwner,
+  idmIndex,
+  waterIndex,
+  getDocument,
+  updatePassword,
+  deleteAllLicences,
+  loadLicences,
+  loadLicencesUI,
+  viewLicenceRaw,
+  addRole,
+  deleteRole,
+  stats,
+  naldImport,
+  naldLicence
 }

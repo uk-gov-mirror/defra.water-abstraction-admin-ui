@@ -57,4 +57,9 @@ module.exports = [
 
     { method: 'POST', path: '/admin/crm/entities/{entity_id}/roles',  handler: Admin.addRole, config:{auth: false ,description:'add role to user'} },
     { method: 'DELETE', path: '/admin/crm/entities/{entity_id}/roles/{role_id}',  handler: Admin.deleteRole, config:{auth: false ,description:'delete role from user'} },
+
+    { method: 'GET', path: '/admin/nald/import',  handler: Admin.naldImport , config:{auth: 'simple',description:'Import NALD data to temp DB'}},
+    { method: 'GET', path: '/admin/nald/licence',  handler: Admin.naldLicence , config:{auth: 'simple',description:'View legacy nald licence'}},
+
+
 ]
