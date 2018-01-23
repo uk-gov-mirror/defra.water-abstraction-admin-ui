@@ -383,12 +383,11 @@ function getDocument(request, reply) {
   })
 }
 
-function updatePassword(request, reply) {
-  Idm.updatePassword(request.params.user_name, request.payload.password).then((res) => {
-    console.log('password updated')
-    return reply('OK')
-  }).catch(() => {
-    return reply('NOT OK')
+function updateUser(request, reply) {
+  Idm.updateUser(request.params.user_id, request.payload).then((res) => {
+    return reply.redirect(`/admin/idm/users/${request.params.user_id}`);
+  }).catch((e) => {
+    return reply(e)
   })
 }
 
@@ -741,7 +740,7 @@ module.exports = {
   idmIndex,
   waterIndex,
   getDocument,
-  updatePassword,
+  updateUser,
   deleteAllLicences,
   loadLicences,
   loadLicencesUI,
