@@ -21,16 +21,18 @@
       View User
       </h1>
       <table>
+<form id="user" method="post" action="/admin/idm/users/{{user.user_id}}">
 <tr><td>User ID</td><td>{{user.user_id}}</td></tr>
-<tr><td>Email</td><td>{{user.user_name}}</tr>
-<tr><td>Is Admin</td><td>{{user.admin}}</tr>
-<tr><td>Metadata</td><td>{{user.user_data}}</tr>
-<tr><td>Reset GUID</td><td>{{user.reset_guid}}</tr>
-<tr><td>Reset required</td><td>{{user.reset_required}}</tr>
+<tr><td>Email</td><td><input size="70"  name="user_name" value="{{user.user_name}}"></tr>
+<tr><td>Is Admin</td><td><input name="admin" value="{{user.admin}}"></tr>
+<tr><td>Metadata</td><td><textarea rows="5" cols=75 name="user_data">{{user.user_data}}</textarea></tr>
+<tr><td>Reset GUID</td><td><input size="70" name="reset_guid" value="{{user.reset_guid}}"></tr>
+<tr><td>Reset required</td><td><input name="reset_required" value="{{user.reset_required}}"></tr>
 <tr><td>Last Login</td><td>{{user.last_login}}</tr>
-<tr><td>Bad Logins</td><td>{{user.bad_logins}}</tr>
-<tr><td>Reset Password to:</td><td><input id="newpassword"><button onclick="updatePassword()">RESET</button></td></tr>
+<tr><td>Bad Logins</td><td><input name="bad_logins" value="{{user.bad_logins}}"></tr>
+<tr><td></td><td><button type="submit">UPDATE</button></td></tr>
 <!--- /admin/idm/updatePassword/{user_name} --->
+</form>
 </table>
 
 
@@ -41,35 +43,20 @@
 
 
 <script language="javascript">
-  $("#licencesearch").bind("keyup change", doFind);
 
-  function doFind() {
-    var val = $('#licencesearch').val()
-    console.log(val)
-    url = '/admin/findlicence/' + val
-    $.ajax({
-      url: url,
-      success: function(res, err) {
-        var html = '<table>';
-        for (r in res.data) {
-          if (res.data[r]) {
-            html += `<tr><td><a href="/admin/licence/${res.data[r].licence_id}">${res.data[r].licence_id}</a></td><td>${res.data[r].licence_ref}</td><td>${res.data[r].licence_search_key}<br>`;
-          }
 
-        }
-        html += '</table>'
-        $("#results").html(html)
-        console.log(err)
-      }
-    });
+function updateUser(){
 
-  }
 
-function updatePassword(){
   var URI="/admin/idm/updatePassword/{{user.user_name}}"
-  var data={password:$("#newpassword").val()};
+
+  var data = $("#user").serializeArray()
+  console.log(data);
+
   console.log(URI)
-  console.log(data)
+
+
+  return false
 
   $.ajax({
     type: "POST",

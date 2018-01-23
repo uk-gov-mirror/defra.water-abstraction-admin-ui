@@ -27,7 +27,9 @@ module.exports = [
   { method: 'POST', path: '/admin/idm/users',  handler: Admin.createUser , config:{auth: 'simple' ,description:'Create user'}},
   { method: 'GET', path: '/admin/idm/users/{user_id}',  handler: Admin.user , config:{auth: 'simple' ,description:'View user'}},
 
-  { method: 'POST', path: '/admin/idm/updatePassword/{user_name}',  handler: Admin.updatePassword , config:{auth: 'simple' ,description:'Update password'}},
+  { method: 'POST', path: '/admin/idm/users/{user_id}',  handler: Admin.updateUser , config:{auth: 'simple' ,description:'Update password'}},
+
+
 
 
 
