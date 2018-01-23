@@ -70,29 +70,26 @@ function createUser(data){
 
 }
 
-function updatePassword (username, password) {
+function updateUser (user_id, payload) {
   return new Promise((resolve, reject) => {
 //  console.log("Change password: " + username + " " + password)
-    var data = { username: username, password: password }
-    var uri = process.env.IDM_URI + '/user' + '?token=' + process.env.JWT_TOKEN
-    Helpers.makeURIRequestWithBody(uri,'PUT', data)
+    var data = payload
+    var uri = `${process.env.IDM_URI}/user/${user_id}?token=${process.env.JWT_TOKEN}`
+    Helpers.makeURIRequestWithBody(uri,'PATCH', data)
     .then((response)=>{
         resolve(response)
     }).catch((response)=>{
 //      console.log('rejecting in idm.updatePassword')
       reject(response)
     })
-
   });
-
-
 }
 
 module.exports = {
-getUsers:getUsers,
-getUser:getUser,
-createUser:createUser,
-updatePassword:updatePassword
+getUsers,
+getUser,
+createUser,
+updateUser
 
 
 }
