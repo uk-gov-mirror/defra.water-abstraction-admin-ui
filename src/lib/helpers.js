@@ -37,14 +37,15 @@ function makeURIRequest(uri) {
 }
 
 //make an http request (with a body), uses promises
-function makeURIRequestWithBody(uri, method, data) {
+function makeURIRequestWithBody(uri, method, data,headers) {
   return new Promise((resolve, reject) => {
   console.log(method+' request to '+uri)
     var options = {
       method: method,
       uri: uri,
       body: data,
-      json: true
+      json: true,
+      headers:headers
     };
 
     rp(options)

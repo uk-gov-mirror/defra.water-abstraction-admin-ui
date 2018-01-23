@@ -147,17 +147,17 @@ function getDocument(params){
 function addRole(params){
     return new Promise((resolve, reject) => {
       var data=params
-      var uri=process.env.CRM_URI+'/entity/'+data.entity_id+'/roles?token='+process.env.JWT_TOKEN
+      var uri=process.env.CRM_URI+'/entity/'+data.entity_id+'/roles'
       var method='post'
       console.log('***** ADD ROLE ****')
-      console.log(data)
-      Helpers.makeURIRequestWithBody(uri, method,data)
+      var headers = {
+        Authorization : process.env.JWT_TOKEN
+      }
+      Helpers.makeURIRequestWithBody(uri, method,data,headers)
       .then((response)=>{
-        console.log('crm entity response')
-        console.log(response.body)
         resolve(response.body)
       }).catch((response)=>{
-        console.log(response)
+        console.log(response.error.error)
         console.log('rejecting in crm.addRole')
         reject()
       })
@@ -168,19 +168,17 @@ function addRole(params){
 
 function deleteRole(params){
     return new Promise((resolve, reject) => {
-      var data=params
-      var uri=process.env.CRM_URI+'/entity/'+data.entity_id+'/roles/'+data.role_id+'?token='+process.env.JWT_TOKEN
+      var data={}
+      var uri=process.env.CRM_URI+'/entity/'+params.entity_id+'/roles/'+params.role_id
       var method='delete'
       console.log('***** deleteRole ROLE ****')
-      console.log(data)
-      Helpers.makeURIRequestWithBody(uri, method,data)
+      var headers = {
+        Authorization : process.env.JWT_TOKEN
+      }
+      Helpers.makeURIRequestWithBody(uri, method,data,headers)
       .then((response)=>{
-        console.log('crm deleteRole response')
-        console.log(response.body)
         resolve(response.body)
       }).catch((response)=>{
-        console.log(response)
-        console.log('rejecting in crm.deleteRole')
         reject()
       })
 

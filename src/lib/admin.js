@@ -18,38 +18,31 @@ const rp = require('request-promise-native').defaults({
   });
 
 
-//TODO: replace Tactical with calls to IDM or CRM
-const Tactical = require('./tactical')
-
 function index(request, reply) {
-  //view the admin page
+  //view the admin index page
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - Admin'
-  console.log('*** adminIndex ***')
   reply.view('water/admin/index', viewContext)
 }
 
 function permitIndex(request, reply) {
-  //view the admin page
+  //view the permit index page
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - Admin'
-  console.log('*** adminIndex ***')
   reply.view('water/admin/permitIndex', viewContext)
 }
 
 function idmIndex(request, reply) {
-  //view the admin page
+  //view the idm index page
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - Admin'
-  console.log('*** adminIndex ***')
   reply.view('water/admin/idmIndex', viewContext)
 }
 
 function waterIndex(request, reply) {
-  //view the admin page
+  //view the water index page
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - Admin'
-  console.log('*** adminIndex ***')
   reply.view('water/admin/waterIndex', viewContext)
 }
 
@@ -62,7 +55,6 @@ function fields(request, reply) {
     viewContext.pageTitle = 'GOV.UK - Admin/Fields'
     viewContext.data = JSON.parse(body)
     viewContext.debug.data = viewContext.data
-    console.log('*** adminIndex ***')
     reply.view('water/admin/fields', viewContext)
   })
 
@@ -71,7 +63,6 @@ function fields(request, reply) {
 function regimes(request, reply) {
   //view the regimes page
   var uri = process.env.PERMIT_URI + 'regime'
-  console.log(uri + '?token=' + process.env.JWT_TOKEN)
   httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
     var viewContext = View.contextDefaults(request)
     viewContext.pageTitle = 'GOV.UK - Admin/Fields'
@@ -645,12 +636,15 @@ function loadLicencesUI(request, reply) {
 }
 
 function addRole(request, reply) {
+
+
+
   console.log(request.payload)
   var data = {};
   data.entity_id = request.params.entity_id
   data.role = request.payload.role;
-  data.regime = request.payload.regime;
-  data.company = request.payload.company;
+  data.regime_entity_id = request.payload.regime;
+  data.company_entity_id = request.payload.company;
   if (request.payload.is_primary) {
     data.is_primary = 1
   } else {
@@ -672,8 +666,9 @@ function deleteRole(request, reply) {
   })
 }
 
-function stats(request,reply){
-  Idm.getUsers().then((users)=>{
+async function stats(request,reply){
+  var users=Idm.getUsers()
+//      TODO: update stats
       var stats={loggedin:{users:[],domains:[]},notloggedin:{users:[],domains:[]}}
       for(userRef in users){
         var user=users[userRef]
@@ -690,7 +685,6 @@ function stats(request,reply){
         stats[status].domains[domain].push(user.user_name)
       }
       return reply(stats)
-    })
 }
 
 function naldImport(request,reply){
@@ -704,7 +698,7 @@ Water.naldImport().then((res)=>{
 
 function naldLicence(request,reply){
   console.log('requesting naldLicence')
-Water.naldLicence(request.query.licence_number).then((res)=>{
+  Water.naldLicence(request.query.licence_number).then((res)=>{
   return reply (res)
 }).catch((res)=>{
   console.log(res)
