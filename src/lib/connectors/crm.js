@@ -147,6 +147,10 @@ function getDocument(params){
 function addRole(params){
     return new Promise((resolve, reject) => {
       var data=params
+      if(data.company_entity_id.length==0){
+        delete data.company_entity_id
+      }
+      console.log(data)
       var uri=process.env.CRM_URI+'/entity/'+data.entity_id+'/roles'
       var method='post'
       console.log('***** ADD ROLE ****')
