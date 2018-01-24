@@ -11,6 +11,9 @@ const Crm = require('./connectors/crm')
 const Water = require('./connectors/water')
 const DB = require('./connectors/db')
 
+const Permit = require('./connectors/permit');
+
+
 // @TODO tidy up
 const rp = require('request-promise-native').defaults({
     proxy:null,
@@ -46,22 +49,12 @@ function waterIndex(request, reply) {
   reply.view('water/admin/waterIndex', viewContext)
 }
 
-function fields(request, reply) {
-  //view the system fields page
-  var viewContext = {}
-  var uri = process.env.PERMIT_URI + 'API/1.0/field'
-  httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
-    var viewContext = View.contextDefaults(request)
-    viewContext.pageTitle = 'GOV.UK - Admin/Fields'
-    viewContext.data = JSON.parse(body)
-    viewContext.debug.data = viewContext.data
-    reply.view('water/admin/fields', viewContext)
-  })
 
-}
 
 function regimes(request, reply) {
   //view the regimes page
+
+
   var uri = process.env.PERMIT_URI + 'regime'
   httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
     var viewContext = View.contextDefaults(request)
@@ -138,23 +131,19 @@ function doFindlicence(request, reply) {
   })
 }
 
-function viewlicence(request, reply) {
+async function viewlicence(request, reply) {
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - View Licence Data'
-
-  const Permit = require('./connectors/permit')
-  Permit.getLicence(request.params.licence_id).then((licence) => {
-    viewContext.licence = licence
-    viewContext.licence_id = request.params.licence_id
+  var {data,error} = await Permit.licences.findOne(request.params.licence_id)
+    if(error){
+      throw error
+    }
+    viewContext.licence = data
+    viewContext.licence_id = data.licence_id
     reply.view('water/admin/viewlicenceData', viewContext)
-  })
-
-
-
-
 }
 
-function viewLicenceRaw(request, reply) {
+async function viewLicenceRaw(request, reply) {
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - View Licence Data'
 
@@ -554,7 +543,7 @@ function normalise(licenceRows) {
 
 
 
-function exportLicence(licence, orgId, licenceTypeId) {
+async function exportLicence(licence, orgId, licenceTypeId) {
 
 
 
@@ -564,26 +553,29 @@ function exportLicence(licence, orgId, licenceTypeId) {
     licence_end_dt: "2018-01-01T00:00:00.000Z",
     licence_status_id: "1",
     licence_type_id: licenceTypeId,
-    licence_org_id: orgId,
-    attributes: {
-      "licenceData": licence
-    }
+    licence_regime_id: orgId,
+    licence_data_value:  JSON.stringify(licence)
   }
 
 
-  var url=  process.env.PERMIT_URI + 'regime/' + orgId + '/licencetype/' + licenceTypeId + '/licence?token=' + process.env.JWT_TOKEN
-  console.log(url)
-  Helpers.makeURIRequestWithBody(
-    url,
-    'post',
-    requestBody
-  ).then((body) => {
+
+
+
+    delete requestBody.regime_id;
+    var {data, error} = await Permit.licences.create(requestBody)
+    if(error){
+      throw error
+    }
+
+    var permitData=data;
+    console.log(permitData)
+
     console.log(`Added ${licence.name} to Permit repo`);
-    const data = {}
+    var data = {}
     data.regime_entity_id = '0434dc31-a34e-7158-5775-4694af7a60cf'
 
     data.system_id = 'permit-repo'
-    data.system_internal_id = body.body.data.licence_id
+    data.system_internal_id = permitData.licence_id
     data.system_external_id = licence.id
 
     // Get metadata
@@ -597,8 +589,7 @@ function exportLicence(licence, orgId, licenceTypeId) {
        Town : licence.town,
        County : licence.county,
        Postcode : licence.postCode,
-       Country : licence.country,
-    });
+       Country : licence.country})
 
     return rp({
       method : 'POST',
@@ -619,10 +610,7 @@ function exportLicence(licence, orgId, licenceTypeId) {
     });
 
 
-  }).catch((error) => {
-    console.log(error);
-    return error
-  })
+
   return
 }
 
@@ -704,6 +692,10 @@ function naldLicence(request,reply){
   console.log(res)
   return reply ({error:res})
 })
+}
+
+function fields(request,reply){
+  reply()
 }
 
 module.exports = {
