@@ -38,8 +38,36 @@ function naldLicence(licence_number) {
 }
 
 
+async function getSchedules() {
+  var uri = process.env.WATER_URI + '/scheduler'
+  try{
+    res = await Helpers.makeURIRequest(uri)
+    return JSON.parse(res.body).data
+  }catch(e){
+    return null
+  }
+
+}
+
+async function addSchedule(data) {
+  console.log('requesting nald licence')
+  var uri = process.env.WATER_URI + '/scheduler'
+  console.log(uri)
+  try{
+    res = await Helpers.makeURIRequestWithBody(uri,"post",data)
+    console.log('res.data')
+    console.log(res.body)
+    return JSON.parse(res.body).data
+  }catch(e){
+    console.log(e)
+    return null
+  }
+
+}
 module.exports = {
 naldImport,
 naldLicence,
+getSchedules,
+addSchedule
 
 }
