@@ -7,12 +7,18 @@ var rp = require('request-promise-native').defaults({
   })
 
 //make a simple http request (without a body), uses promises
-function makeURIRequest(uri) {
+function makeURIRequest(uri,headers) {
   return new Promise((resolve, reject) => {
+    if(!headers){
+      var headers = {
+        Authorization : process.env.JWT_TOKEN
+      }
+    }
     console.log('request to '+uri)
     var options = {
       method: 'get',
-      uri: uri
+      uri,
+      headers
     };
     rp(options)
       .then(function(response) {
@@ -38,7 +44,13 @@ function makeURIRequest(uri) {
 
 //make an http request (with a body), uses promises
 function makeURIRequestWithBody(uri, method, data,headers) {
+
   return new Promise((resolve, reject) => {
+    if(!headers){
+      var headers = {
+        Authorization : process.env.JWT_TOKEN
+      }
+    }
   console.log(method+' request to '+uri)
     var options = {
       method: method,

@@ -6,6 +6,8 @@ UI only - NO direct interactions with data
 
 const Admin= require('../lib/admin')
 
+const Water= require('../controllers/water')
+
 
 module.exports = [
   { method: 'GET', path: '/robots.txt', handler: function(request,reply){return reply('exterminate').code(200)}, config:{auth: false,description:'Ooh. Robots'}},
@@ -15,7 +17,6 @@ module.exports = [
   { method: 'GET', path: '/',  handler: function(request,reply){    reply.redirect('/admin');} , config:{auth: false,description:'Get Admin UI index'}},
   { method: 'GET', path: '/admin/permit',  handler: Admin.permitIndex , config:{auth: 'simple' ,description:'UI entry point for permit repo admin'}},
   { method: 'GET', path: '/admin/idm',  handler: Admin.idmIndex , config:{auth: 'simple' ,description:'UI entry point for IDM admin'}},
-  { method: 'GET', path: '/admin/water',  handler: Admin.waterIndex , config:{auth: 'simple' ,description:'UI entry point for IDM admin'}},
 
   { method: 'GET', path: '/admin/findlicence',  handler: Admin.findlicence , config:{auth: 'simple',description:'Get Admin UI licence search'}},
   { method: 'GET', path: '/admin/findlicence/{search}',  handler: Admin.doFindlicence , config:{ auth: 'simple' ,description:'Perform admin UI licence search'}},
@@ -63,5 +64,8 @@ module.exports = [
     { method: 'GET', path: '/admin/nald/import',  handler: Admin.naldImport , config:{auth: 'simple',description:'Import NALD data to temp DB'}},
     { method: 'GET', path: '/admin/nald/licence',  handler: Admin.naldLicence , config:{auth: 'simple',description:'View legacy nald licence'}},
 
+  { method: 'GET', path: '/admin/water',  handler: Water.index , config:{auth: 'simple' ,description:'Water admin index'}},
+  { method: 'GET', path: '/admin/water/scheduler',  handler: Water.scheduler , config:{auth: 'simple' ,description:'Water admin scheduler page'}},
+  { method: 'POST', path: '/admin/water/scheduler',  handler: Water.schedulerAdd , config:{auth: 'simple' ,description:'Add new scheduler item'}},
 
 ]
