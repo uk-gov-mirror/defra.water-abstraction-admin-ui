@@ -185,9 +185,9 @@ function createUser(request, reply) {
   Idm.createUser(request.payload).then(() => {
     //also create CRM record
     var data = {};
-    data.entity_nm = request.payload.username;
+    data.entity_nm = request.payload.user_name;
     data.entity_type = 'individual';
-    data.entity_definition = {};
+    data.entity_definition = "{}";
     Crm.createEntity(data).then((id) => {
       console.log(id)
     }).then(() => {

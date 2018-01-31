@@ -35,15 +35,17 @@ function createEntity(entity){
     //entity_type;
     //entity_definition;
 
-    var uri=process.env.CRM_URI+'/entity' + '?token=' + process.env.JWT_TOKEN
+    var uri=process.env.CRM_URI+'/entity'
     var method='post'
-    Helpers.makeURIRequestWithBody(uri, method,data)
+    console.log("createEntity")
+    console.log(entity)
+    Helpers.makeURIRequestWithBody(uri, method,entity)
     .then((response)=>{
       console.log('crm entity response')
       console.log(response.body)
         resolve(response.body.data.entity_id)
     }).catch((response)=>{
-      console.log(response)
+      console.log(response.error.error)
       console.log('rejecting in crm.createEntity')
       reject()
     })
