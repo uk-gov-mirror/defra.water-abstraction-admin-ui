@@ -49,6 +49,8 @@ module.exports = [
 
   { method: 'GET', path:'/admin/crm/document/{document_id}',  handler: Admin.getDocument , config:{auth: 'simple' ,description:'Get document info'}},
   { method: 'GET', path:'/admin/crm/document/{document_id}/unlink',  handler: Admin.getUnlinkDocument , config:{auth: 'simple' ,description:'Unlink document from company/verification'}},
+  { method: 'GET', path:'/admin/crm/document/unlink-all',  handler: Admin.getUnlinkAllDocuments , config:{auth: 'simple' ,description:'Unlink document from company/verification'}},
+
 
   { method: 'POST', path:'/admin/idm/crm/document/{document_id}/owner',  handler: Admin.setDocumentOwner , config:{auth: 'simple' ,description:'Set document owner in CRM'}},
 
@@ -62,6 +64,9 @@ module.exports = [
 
     { method: 'POST', path: '/admin/crm/entities/{entity_id}/roles',  handler: Admin.addRole, config:{auth: false ,description:'add role to user'} },
     { method: 'DELETE', path: '/admin/crm/entities/{entity_id}/roles/{role_id}',  handler: Admin.deleteRole, config:{auth: false ,description:'delete role from user'} },
+
+    { method: 'GET', path: '/admin/crm/verifications',  handler: Admin.crmGetVerifications, config:{auth: 'simple' ,description:'view list of verifications'} },
+
 
     { method: 'GET', path: '/admin/nald/import',  handler: Admin.naldImport , config:{auth: 'simple',description:'Import NALD data to temp DB'}},
     { method: 'GET', path: '/admin/nald/licence',  handler: Admin.naldLicence , config:{auth: 'simple',description:'View legacy nald licence'}},
