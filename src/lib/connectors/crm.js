@@ -5,6 +5,8 @@ const rp = require('request-promise-native').defaults({
     proxy:null,
     strictSSL :false
   })
+
+// Docs client
 const client = new APIClient(rp, {
   endpoint : process.env.CRM_URI + '/documentHeader',
   headers : {
@@ -12,6 +14,12 @@ const client = new APIClient(rp, {
   }
 });
 
+const verificationsClient = new APIClient(rp, {
+  endpoint : process.env.CRM_URI + '/verification',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
 
 
 /**
@@ -21,6 +29,18 @@ const client = new APIClient(rp, {
  */
 function unlinkDocument(document_id) {
   return client.updateOne(document_id, {
+    verified : null,
+    company_entity_id : null,
+    verification_id : null
+  });
+}
+
+/**
+ * Unlink all documents from company/verification process
+ * @return {Promise} resolves with data from CRM API
+ */
+function unlinkAllDocuments() {
+  return client.updateMany({'system_id' : 'permit-repo'}, {
     verified : null,
     company_entity_id : null,
     verification_id : null
@@ -226,5 +246,7 @@ updateDocumentOwner:updateDocumentOwner,
 getDocument:getDocument,
 addRole:addRole,
 deleteRole:deleteRole,
-unlinkDocument
+unlinkDocument,
+unlinkAllDocuments,
+verifications : verificationsClient
 }

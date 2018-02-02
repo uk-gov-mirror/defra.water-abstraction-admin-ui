@@ -56,13 +56,36 @@
   {{/if}}
 </td>
 <td>
+  <a target="_blank" href="{{ ../uiBaseUrl }}/licences/{{ document_id }}">View</a>
+
+
+
   {{#or company_entity_id verification_id }}
+  | 
   <a class="danger" href="/admin/crm/document/{{document_id}}/unlink">Unlink</a>
   {{/or}}
+
 </td>
 </tr>
 {{/each}}
 </table>
+
+
+
+
+<br />
+<br />
+
+<div class="notice" style="border: none;">
+  <i class="icon icon-important">
+    <span class="visually-hidden">Warning</span>
+  </i>
+  <strong class="bold-small">
+    <a href="/admin/crm/document/unlink-all" class="danger">Unlink all documents from companies/verifications</a>
+  </strong>
+</div>
+
+
     </div>
   </div>
 </main>

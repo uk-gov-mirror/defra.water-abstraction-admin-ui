@@ -375,6 +375,29 @@ async function getUnlinkDocument(request, reply) {
     return reply.redirect('/admin/crm/documents');
  }
 
+ /**
+  * Unlink all documents from company/verification
+  * Redirects to document list
+  */
+async function getUnlinkAllDocuments(request, reply) {
+  const {error} = await Crm.unlinkAllDocuments();
+  if(error) {
+    throw error;
+  }
+  return reply.redirect('/admin/crm/documents');
+}
+
+async function crmGetVerifications(request, reply) {
+  var viewContext = View.contextDefaults(request)
+  viewContext.pageTitle = 'GOV.UK - Admin'
+  const {error, data} = await Crm.verifications.findMany();
+  if(error) {
+    throw error;
+  }
+  viewContext.verifications = data;
+  viewContext.debug.verifications = data;
+  reply.view('water/admin/crmVerifications', viewContext)
+}
 
 function updateUser(request, reply) {
   Idm.updateUser(request.params.user_id, request.payload).then((res) => {
@@ -736,10 +759,12 @@ module.exports = {
   permitIndex,
   crmDocumentHeaders,
   setDocumentOwner,
+  crmGetVerifications,
   idmIndex,
   waterIndex,
   getDocument,
   getUnlinkDocument,
+  getUnlinkAllDocuments,
   updateUser,
   deleteAllLicences,
   loadLicences,
