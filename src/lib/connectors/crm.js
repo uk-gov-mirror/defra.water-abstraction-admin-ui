@@ -1,4 +1,32 @@
 const Helpers = require('../helpers')
+const {APIClient} = require('hapi-pg-rest-api');
+
+const rp = require('request-promise-native').defaults({
+    proxy:null,
+    strictSSL :false
+  })
+const client = new APIClient(rp, {
+  endpoint : process.env.CRM_URI + '/documentHeader',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
+
+
+/**
+ * Unlink a document from company/verification process
+ * @param {String} document_id - the CRM document ID
+ * @return {Promise} resolves with data from CRM API
+ */
+function unlinkDocument(document_id) {
+  return client.updateOne(document_id, {
+    verified : null,
+    company_entity_id : null,
+    verification_id : null
+  });
+}
+
 
 function getLicences(user_name) {
   var uri = process.env.CRM_URI + '/entity/' + user_name + '?token=' + process.env.JWT_TOKEN
@@ -197,6 +225,6 @@ findDocument:findDocument,
 updateDocumentOwner:updateDocumentOwner,
 getDocument:getDocument,
 addRole:addRole,
-deleteRole:deleteRole
-
+deleteRole:deleteRole,
+unlinkDocument
 }

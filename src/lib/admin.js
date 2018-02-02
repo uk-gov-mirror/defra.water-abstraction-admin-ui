@@ -363,6 +363,19 @@ function getDocument(request, reply) {
   })
 }
 
+/**
+ * Unlink document from company/verification
+ * Redirects to document list
+ */
+async function getUnlinkDocument(request, reply) {
+    const {error} = await Crm.unlinkDocument(request.params.document_id);
+    if(error) {
+      throw error;
+    }
+    return reply.redirect('/admin/crm/documents');
+ }
+
+
 function updateUser(request, reply) {
   Idm.updateUser(request.params.user_id, request.payload).then((res) => {
     return reply.redirect(`/admin/idm/users/${request.params.user_id}`);
@@ -726,6 +739,7 @@ module.exports = {
   idmIndex,
   waterIndex,
   getDocument,
+  getUnlinkDocument,
   updateUser,
   deleteAllLicences,
   loadLicences,

@@ -48,6 +48,8 @@ module.exports = [
   { method: 'GET', path:'/admin/crm/documents',  handler: Admin.crmDocumentHeaders , config:{auth: 'simple' ,description:'Create new entity in CRM'}},
 
   { method: 'GET', path:'/admin/crm/document/{document_id}',  handler: Admin.getDocument , config:{auth: 'simple' ,description:'Get document info'}},
+  { method: 'GET', path:'/admin/crm/document/{document_id}/unlink',  handler: Admin.getUnlinkDocument , config:{auth: 'simple' ,description:'Unlink document from company/verification'}},
+
   { method: 'POST', path:'/admin/idm/crm/document/{document_id}/owner',  handler: Admin.setDocumentOwner , config:{auth: 'simple' ,description:'Set document owner in CRM'}},
 
 
