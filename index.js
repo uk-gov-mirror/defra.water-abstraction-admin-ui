@@ -151,14 +151,13 @@ server.register([  {
 
 })
 
-// Start the server
-server.start((err) => {
-  if (err) {
-    throw err
-  }
-
-
-
-  console.log(`Service ${process.env.servicename} running at: ${server.info.uri}`)
-})
+// Start the server if not testing with Lab
+if (!module.parent) {
+  server.start((err) => {
+    if (err) {
+      throw err
+    }
+    console.log(`Service ${process.env.servicename} running at: ${server.info.uri}`)
+  })
+}
 module.exports = server
