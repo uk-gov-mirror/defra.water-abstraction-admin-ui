@@ -21,6 +21,15 @@ const verificationsClient = new APIClient(rp, {
   }
 });
 
+const entitiesClient = new APIClient(rp, {
+  endpoint : process.env.CRM_URI + '/entity',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
+
+
 
 /**
  * Unlink a document from company/verification process
@@ -110,7 +119,7 @@ function findDocument(params){
     //entity_type;
     //entity_definition;
 
-    var uri=process.env.CRM_URI+'/documentHeader/filter' + '?token=' + process.env.JWT_TOKEN
+    var uri=process.env.CRM_URI+'/documentHeader/filter'
     var method='post'
     Helpers.makeURIRequestWithBody(uri, method,data)
     .then((response)=>{
@@ -119,7 +128,7 @@ function findDocument(params){
         resolve(response.body)
     }).catch((response)=>{
       console.log(response)
-      console.log('rejecting in crm.findDocument')
+      console.log('rejecting in crm.findDocument 1')
       reject()
     })
 
@@ -135,7 +144,7 @@ function getDocument(params){
     //entity_type;
     //entity_definition;
 
-    var uri=process.env.CRM_URI+'/documentHeader/filter' + '?token=' + process.env.JWT_TOKEN
+    var uri=process.env.CRM_URI+'/documentHeader/filter'
     var method='post'
     Helpers.makeURIRequestWithBody(uri, method,data)
     .then((response)=>{
@@ -144,7 +153,7 @@ function getDocument(params){
         resolve(response.body)
     }).catch((response)=>{
       console.log(response)
-      console.log('rejecting in crm.findDocument')
+      console.log('rejecting in crm.findDocument 2')
       reject()
     })
 
@@ -248,5 +257,6 @@ addRole:addRole,
 deleteRole:deleteRole,
 unlinkDocument,
 unlinkAllDocuments,
-verifications : verificationsClient
+verifications : verificationsClient,
+entities: entitiesClient
 }

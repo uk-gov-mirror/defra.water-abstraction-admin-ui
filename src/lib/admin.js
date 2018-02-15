@@ -238,11 +238,13 @@ function crmEntities(request, reply) {
   httpRequest(URI, function(error, response, body) {
     var data = JSON.parse(body)
     viewContext.entities = data.data
+    viewContext.pagination = Helpers.addPaginationDetail(data.pagination)
     console.log(viewContext)
     reply.view('water/admin/crmEntities', viewContext)
 
   })
 }
+
 
 function crmEntity(request, reply) {
   if (request.query.filter) {

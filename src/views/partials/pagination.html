@@ -1,0 +1,12 @@
+pages: {{stringify pagination}}
+
+<hr>
+{{#if pagination.previousPage}}
+  <a href="{{pagination.previousPage}}">PREV</a>
+{{/if}}
+{{pagination.page}} of {{pagination.pageCount}}
+
+{{#if pagination.nextPage}}
+  <a href="{{pagination.nextPage}}">NEXT</a> 
+{{/if}}
+<hr>
