@@ -143,13 +143,26 @@ function decryptToken(token){
 }
 
 
+function addPaginationDetail(pagination){
+  pagination.nextPage=pagination.page;
+  if(pagination.nextPage > pagination.pageCount){
+    delete pagination.nextPage
+  }
+  if(pagination.page > 1){
+    pagination.prevPage=pagination.page-1
+  }
+  return pagination;
+}
+
+
 module.exports = {
-  createGUID:createGUID,
-  createHash:createHash,
-  compareHash:compareHash,
-  encryptToken:encryptToken,
-  decryptToken:decryptToken,
-  makeURIRequestWithBody:makeURIRequestWithBody,
-  makeURIRequest:makeURIRequest
+  createGUID,
+  createHash,
+  compareHash,
+  encryptToken,
+  decryptToken,
+  makeURIRequestWithBody,
+  makeURIRequest,
+  addPaginationDetail
 
 }

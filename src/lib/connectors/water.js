@@ -1,4 +1,10 @@
 const Helpers = require('../helpers')
+const {APIClient} = require('hapi-pg-rest-api');
+const rp = require('request-promise-native').defaults({
+    proxy:null,
+    strictSSL :false
+  })
+
 
 function naldImport() {
   console.log('requesting nald import')
@@ -64,10 +70,28 @@ async function addSchedule(data) {
   }
 
 }
+
+
+const notificationsClient = new APIClient(rp, {
+  endpoint : process.env.WATER_URI + '/notification',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
+const notify_templatesClient = new APIClient(rp, {
+  endpoint : process.env.WATER_URI + '/notify_templates',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
 module.exports = {
 naldImport,
 naldLicence,
 getSchedules,
-addSchedule
+addSchedule,
+notifications : notificationsClient,
+notify_templates: notify_templatesClient
 
 }

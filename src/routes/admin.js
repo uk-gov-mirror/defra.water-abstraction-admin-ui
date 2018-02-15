@@ -8,6 +8,8 @@ const Admin= require('../lib/admin')
 
 const Water= require('../controllers/water')
 
+const GenericUI= require('../controllers/genericUI')
+
 
 module.exports = [
   { method: 'GET', path: '/robots.txt', handler: function(request,reply){return reply('exterminate').code(200)}, config:{auth: false,description:'Ooh. Robots'}},
@@ -74,5 +76,18 @@ module.exports = [
   { method: 'GET', path: '/admin/water',  handler: Water.index , config:{auth: 'simple' ,description:'Water admin index'}},
   { method: 'GET', path: '/admin/water/scheduler',  handler: Water.scheduler , config:{auth: 'simple' ,description:'Water admin scheduler page'}},
   { method: 'POST', path: '/admin/water/scheduler',  handler: Water.schedulerAdd , config:{auth: 'simple' ,description:'Add new scheduler item'}},
+
+
+  { method: 'GET', path: '/admin/water/notifications',  handler: async function(request,reply){
+    GenericUI.list(request,reply,"Water","notifications")
+  } , config:{auth: 'simple' ,description:'notifications'}},
+  { method: 'GET', path: '/admin/water/notify_templates',  handler: async function(request,reply){
+    GenericUI.list(request,reply,"Water","notify_templates")
+  } , config:{auth: 'simple' ,description:'notify-templates'}}
+
+  ,
+  { method: 'GET', path: '/admin/crm/entity',  handler: async function(request,reply){
+    GenericUI.list(request,reply,"CRM","entities")
+  } , config:{auth: 'simple' ,description:'crm entities'}}
 
 ]
