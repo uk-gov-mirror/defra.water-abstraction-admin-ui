@@ -17,41 +17,28 @@
         {{title}}
       </h1>
 
-{{> pagination}}
 
-
-KEY: {{key}}
 <table>
-<tr>
-{{#each columns}}
-<td>
-{{name}}
-</td>
-{{/each}}
-</tr>
 
-  {{#each data}}
+  {{#each viewConfig}}
 
 <tr>
-
-  {{#each .}}
-
 
   <td>
-<!--
-    {{this.name}}
-    ( {{this.isKey}} {{this.typeof}} )
--->
-    {{#if isKey}}
-      <a href="{{baseurl}}?id={{this.encodeddata}}">
-        {{this.data}}
-      </a>
-    {{else}}
-    {{this.data}}
-    {{/if}}
+  {{@key}}
   </td>
-  {{/each}}
+
   </tr>
+  {{#each this}}
+  <tr>
+    <td></td>
+    <td>
+      <a href="/admin/generic/{{@../key}}/{{@key}}">{{@key}}</a>
+    </td>
+
+    </tr>
+  {{/each}}
+
 {{/each}}
 </table>
 

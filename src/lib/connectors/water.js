@@ -86,12 +86,19 @@ const notify_templatesClient = new APIClient(rp, {
   }
 });
 
+const pending_importClient = new APIClient(rp, {
+  endpoint : process.env.WATER_URI + '/pending_import',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
 module.exports = {
 naldImport,
 naldLicence,
 getSchedules,
 addSchedule,
 notifications : notificationsClient,
-notify_templates: notify_templatesClient
-
+notify_templates: notify_templatesClient,
+pending_import: pending_importClient
 }

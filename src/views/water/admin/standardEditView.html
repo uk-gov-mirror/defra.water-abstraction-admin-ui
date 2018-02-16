@@ -17,43 +17,34 @@
         {{title}}
       </h1>
 
-{{> pagination}}
-
-
-KEY: {{key}}
+<a href="{{posturl}}&new=true">Duplicate This</a>
+<hr>
+<form method="post" action="{{patchurl}}">
 <table>
-<tr>
-{{#each columns}}
-<td>
-{{name}}
-</td>
-{{/each}}
-</tr>
 
   {{#each data}}
 
 <tr>
 
-  {{#each .}}
-
-
   <td>
-<!--
-    {{this.name}}
-    ( {{this.isKey}} {{this.typeof}} )
--->
+    {{name}}
+  </td>
+  <td>
     {{#if isKey}}
-      <a href="{{baseurl}}?id={{this.encodeddata}}">
-        {{this.data}}
-      </a>
+      {{value}}
     {{else}}
-    {{this.data}}
+      {{#if textarea}}
+      <textarea rows=5 cols=50 name="{{name}}">{{value}}</textarea>
+      {{else}}
+      <input type="text" name="{{name}}" value="{{value}}">
+      {{/if}}
     {{/if}}
   </td>
-  {{/each}}
   </tr>
 {{/each}}
+<tr><td></td><td><input type="submit" value="Update"></td></tr>
 </table>
+</form>
 
     </div>
   </div>
