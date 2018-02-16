@@ -42,7 +42,12 @@
   </td>
   </tr>
 {{/each}}
+
+{{#if editable}}
 <tr><td></td><td><input type="submit" value="Update"></td></tr>
+{{else}}
+<tr><td></td><td>Cannot edit complex object</td></tr>
+{{/if}}
 </table>
 </form>
 
