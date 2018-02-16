@@ -8,7 +8,39 @@ Endpoints.water = require('./../lib/connectors/water');
 
 const viewConfig={};
 viewConfig.water={}
+viewConfig.idm={}
 viewConfig.permit={}
+viewConfig.crm={}
+
+
+viewConfig.crm.documents={
+  title:'Documents',
+  exclude:[],
+  key:'document_id',
+  editable:true
+}
+
+viewConfig.crm.verifications={
+  title:'Verifications',
+  exclude:[],
+  key:'verification_id',
+  editable:true
+}
+
+viewConfig.crm.entities={
+  title:'Entities',
+  exclude:[],
+  key:'entity_id',
+  editable:false
+}
+
+viewConfig.idm.users={
+  title:'Users',
+  exclude:[],
+  key:'user_id',
+  editable:true
+}
+
 viewConfig.water.notifications={
   title:'Scheduled Notifications',
   exclude:[],
@@ -89,7 +121,9 @@ async function list(request,reply){
         data.value=JSON.stringify(data.value)
         data.textarea=true
       }
-
+      if(config.editable){
+      viewContext.editable=true
+      }
 
       viewContext.data.push(data);
     }
@@ -121,14 +155,20 @@ async function list(request,reply){
       console.log(request.query.filter)
       req.Filter=JSON.parse(request.query.filter)
     }
-    console.log(`making request to endpoint ${request.params.endpoint}.${request.params.obj}`)
-      const {data:baseData, pagination}=await Endpoints[request.params.endpoint][request.params.obj].findMany(req.Filter,req.Sort,req.Pagination)
+//    console.log(`woo... making request to endpoint ${request.params.endpoint}.${request.params.obj}`)
 
-    console.log('got response from endpoint')
-    console.log('here it is')
-    console.log(baseData)
-    console.log(pagination)
+try{
+      const res=await Endpoints[request.params.endpoint][request.params.obj].findMany(req.Filter,req.Sort,req.Pagination)
+      console.log('got response from endpoint')
+      console.log(res)
 
+      var baseData=res.data;
+      var pagination=res.pagination;
+}catch(e){
+  console.log('got error from endpoint')
+  console.log(e)
+  return reply(e)
+}
 
     viewContext.pageTitle = 'GOV.UK - Admin'
 

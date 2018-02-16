@@ -1,5 +1,11 @@
 const Helpers = require('../helpers')
 
+const {APIClient} = require('hapi-pg-rest-api');
+const rp = require('request-promise-native').defaults({
+    proxy:null,
+    strictSSL :false
+  })
+
 
 function getUsers(){
   return new Promise((resolve, reject) => {
@@ -98,11 +104,20 @@ function updateUser (user_id, payload) {
   });
 }
 
+
+const usersClient = new APIClient(rp, {
+  endpoint: `${ process.env.IDM_URI }/user`,
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
 module.exports = {
 getUsers,
 getUser,
 createUser,
-updateUser
+updateUser,
+users:usersClient
 
 
 }

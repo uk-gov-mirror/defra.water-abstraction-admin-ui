@@ -258,5 +258,6 @@ deleteRole:deleteRole,
 unlinkDocument,
 unlinkAllDocuments,
 verifications : verificationsClient,
-entities: entitiesClient
+entities: entitiesClient,
+documents: client
 }
