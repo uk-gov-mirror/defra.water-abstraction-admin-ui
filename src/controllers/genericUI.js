@@ -68,6 +68,12 @@ viewConfig.permit.licences={
   editable:true
 }
 
+viewConfig.permit.expiring_licences={
+  title:'Expiring Licences',
+  exclude:[],
+  key:'licence_id',
+  editable:false
+}
 
 
 async function menu(request,reply){
@@ -96,7 +102,22 @@ async function list(request,reply){
     console.log(`making request to endpoint ${request.params.endpoint}.${request.params.obj} with filter`)
     console.log(request.query.id)
     //{data:baseData, pagination}
-    const {data:baseData, pagination}=await Endpoints[request.params.endpoint][request.params.obj].findOne(encodeURIComponent(request.query.id))
+    try{
+
+    const res=await Endpoints[request.params.endpoint][request.params.obj].findOne(encodeURIComponent(request.query.id))
+    console.log('got response from endpoint')
+    console.log(res)
+    if(res.error){
+      console.log(res.error)
+    }
+    var baseData=res.data;
+    var pagination=res.pagination;
+}catch(e){
+console.log('got error from endpoint')
+console.log(e)
+return reply(e)
+}
+
     viewContext.pageTitle = 'GOV.UK - Admin'
     viewContext.posturl=request.url.path
     viewContext.patchurl=request.url.path+'&patch=true'
@@ -155,7 +176,7 @@ async function list(request,reply){
       console.log(request.query.filter)
       req.Filter=JSON.parse(request.query.filter)
     }
-//    console.log(`woo... making request to endpoint ${request.params.endpoint}.${request.params.obj}`)
+    console.log(`woo... making request to endpoint ${request.params.endpoint}.${request.params.obj}`)
 
 try{
       const res=await Endpoints[request.params.endpoint][request.params.obj].findMany(req.Filter,req.Sort,req.Pagination)
