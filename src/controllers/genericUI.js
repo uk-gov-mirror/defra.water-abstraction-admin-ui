@@ -240,7 +240,7 @@ try{
           if(p=='page'){
               qs.push('page='+(parseInt(pagination.page)+1))
           } else {
-              qs.push(p+'='+request.query[p])
+              qs.push(p+'='+encodeURIComponent(request.query[p]))
           }
       }
 
@@ -255,7 +255,7 @@ try{
           if(p=='page'){
               qs.push('page='+(parseInt(pagination.page)-1))
           } else {
-              qs.push(p+'='+request.query[p])
+              qs.push(p+'='+encodeURIComponent(request.query[p]))
           }
       }
 
