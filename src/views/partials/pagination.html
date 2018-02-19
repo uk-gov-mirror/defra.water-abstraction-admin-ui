@@ -1,12 +1,11 @@
-pages: {{stringify pagination}}
 
 <hr>
+Showing matching records:<br>
 {{#if pagination.previousPage}}
   <a href="{{pagination.previousPage}}">PREV</a>
 {{/if}}
 {{pagination.page}} of {{pagination.pageCount}}
 
 {{#if pagination.nextPage}}
-  <a href="{{pagination.nextPage}}">NEXT</a> 
+  <a href="{{pagination.nextPage}}">NEXT</a>
 {{/if}}
-<hr>

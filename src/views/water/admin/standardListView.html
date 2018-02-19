@@ -19,6 +19,43 @@
 
 {{> pagination}}
 
+<hr/>
+Filter: {{baseurl}}<span id="filter"></span>
+{{#each columns}}
+
+<br>
+{{name}}
+:
+<input id="{{name}}" class="filter"/>
+{{/each}}
+
+<button onclick="buildFilter()">Apply Filter</button>
+<script language="javascript">
+
+function buildFilter(){
+  var els = document.getElementsByClassName("filter");
+  var el;
+  var filter={};
+  for (el = 0; el < els.length; el++) {
+    var thisEl=els[el]
+    console.log(thisEl)
+    console.log(thisEl.id+' = ' + thisEl.value)
+    if(thisEl.value.length > 0){
+      filter[thisEl.id]={};
+      if(thisEl.value.indexOf('%')>-1){
+      filter[thisEl.id]["$ilike"]=encodeURI(thisEl.value)
+      }else {
+      filter[thisEl.id]["$equals"]=encodeURI(thisEl.value)        
+      }
+
+    }
+  }
+  window.location='{{baseurl}}?filter='+JSON.stringify(filter)
+
+}
+</script>
+
+<hr/>
 
 KEY: {{key}}
 <table>
