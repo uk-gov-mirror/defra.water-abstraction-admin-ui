@@ -9,6 +9,12 @@ const Helpers = require('../lib/helpers')
 handlebars.registerHelper("equal", require("handlebars-helper-equal"))
 
 
+handlebars.registerHelper('or', function(v1, v2, options) {
+  if(v1 || v2) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+});
 
 
 handlebars.registerHelper( 'concat', function(){

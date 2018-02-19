@@ -1,4 +1,61 @@
 const Helpers = require('../helpers')
+const {APIClient} = require('hapi-pg-rest-api');
+
+const rp = require('request-promise-native').defaults({
+    proxy:null,
+    strictSSL :false
+  })
+
+// Docs client
+const client = new APIClient(rp, {
+  endpoint : process.env.CRM_URI + '/documentHeader',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
+const verificationsClient = new APIClient(rp, {
+  endpoint : process.env.CRM_URI + '/verification',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
+const entitiesClient = new APIClient(rp, {
+  endpoint : process.env.CRM_URI + '/entity',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
+
+
+
+/**
+ * Unlink a document from company/verification process
+ * @param {String} document_id - the CRM document ID
+ * @return {Promise} resolves with data from CRM API
+ */
+function unlinkDocument(document_id) {
+  return client.updateOne(document_id, {
+    verified : null,
+    company_entity_id : null,
+    verification_id : null
+  });
+}
+
+/**
+ * Unlink all documents from company/verification process
+ * @return {Promise} resolves with data from CRM API
+ */
+function unlinkAllDocuments() {
+  return client.updateMany({'system_id' : 'permit-repo'}, {
+    verified : null,
+    company_entity_id : null,
+    verification_id : null
+  });
+}
+
 
 function getLicences(user_name) {
   var uri = process.env.CRM_URI + '/entity/' + user_name + '?token=' + process.env.JWT_TOKEN
@@ -35,15 +92,17 @@ function createEntity(entity){
     //entity_type;
     //entity_definition;
 
-    var uri=process.env.CRM_URI+'/entity' + '?token=' + process.env.JWT_TOKEN
+    var uri=process.env.CRM_URI+'/entity'
     var method='post'
-    Helpers.makeURIRequestWithBody(uri, method,data)
+    console.log("createEntity")
+    console.log(entity)
+    Helpers.makeURIRequestWithBody(uri, method,entity)
     .then((response)=>{
       console.log('crm entity response')
       console.log(response.body)
         resolve(response.body.data.entity_id)
     }).catch((response)=>{
-      console.log(response)
+      console.log(response.error.error)
       console.log('rejecting in crm.createEntity')
       reject()
     })
@@ -60,7 +119,7 @@ function findDocument(params){
     //entity_type;
     //entity_definition;
 
-    var uri=process.env.CRM_URI+'/documentHeader/filter' + '?token=' + process.env.JWT_TOKEN
+    var uri=process.env.CRM_URI+'/documentHeader/filter'
     var method='post'
     Helpers.makeURIRequestWithBody(uri, method,data)
     .then((response)=>{
@@ -69,7 +128,7 @@ function findDocument(params){
         resolve(response.body)
     }).catch((response)=>{
       console.log(response)
-      console.log('rejecting in crm.findDocument')
+      console.log('rejecting in crm.findDocument 1')
       reject()
     })
 
@@ -85,7 +144,7 @@ function getDocument(params){
     //entity_type;
     //entity_definition;
 
-    var uri=process.env.CRM_URI+'/documentHeader/filter' + '?token=' + process.env.JWT_TOKEN
+    var uri=process.env.CRM_URI+'/documentHeader/filter'
     var method='post'
     Helpers.makeURIRequestWithBody(uri, method,data)
     .then((response)=>{
@@ -94,7 +153,7 @@ function getDocument(params){
         resolve(response.body)
     }).catch((response)=>{
       console.log(response)
-      console.log('rejecting in crm.findDocument')
+      console.log('rejecting in crm.findDocument 2')
       reject()
     })
 
@@ -195,6 +254,10 @@ findDocument:findDocument,
 updateDocumentOwner:updateDocumentOwner,
 getDocument:getDocument,
 addRole:addRole,
-deleteRole:deleteRole
-
+deleteRole:deleteRole,
+unlinkDocument,
+unlinkAllDocuments,
+verifications : verificationsClient,
+entities: entitiesClient,
+documents: client
 }

@@ -1,4 +1,10 @@
 const Helpers = require('../helpers')
+const {APIClient} = require('hapi-pg-rest-api');
+const rp = require('request-promise-native').defaults({
+    proxy:null,
+    strictSSL :false
+  })
+
 
 function naldImport() {
   console.log('requesting nald import')
@@ -38,8 +44,61 @@ function naldLicence(licence_number) {
 }
 
 
+async function getSchedules() {
+  var uri = process.env.WATER_URI + '/scheduler'
+  try{
+    res = await Helpers.makeURIRequest(uri)
+    return JSON.parse(res.body).data
+  }catch(e){
+    return null
+  }
+
+}
+
+async function addSchedule(data) {
+  console.log('requesting nald licence')
+  var uri = process.env.WATER_URI + '/scheduler'
+  console.log(uri)
+  try{
+    res = await Helpers.makeURIRequestWithBody(uri,"post",data)
+    console.log('res.data')
+    console.log(res.body)
+    return JSON.parse(res.body).data
+  }catch(e){
+    console.log(e)
+    return null
+  }
+
+}
+
+
+const notificationsClient = new APIClient(rp, {
+  endpoint : process.env.WATER_URI + '/notification',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
+const notify_templatesClient = new APIClient(rp, {
+  endpoint : process.env.WATER_URI + '/notify_templates',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
+const pending_importClient = new APIClient(rp, {
+  endpoint : process.env.WATER_URI + '/pending_import',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
 module.exports = {
 naldImport,
 naldLicence,
-
+getSchedules,
+addSchedule,
+notifications : notificationsClient,
+notify_templates: notify_templatesClient,
+pending_import: pending_importClient
 }

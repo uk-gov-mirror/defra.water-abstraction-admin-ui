@@ -11,6 +11,9 @@ const Crm = require('./connectors/crm')
 const Water = require('./connectors/water')
 const DB = require('./connectors/db')
 
+const Permit = require('./connectors/permit');
+
+
 // @TODO tidy up
 const rp = require('request-promise-native').defaults({
     proxy:null,
@@ -46,22 +49,12 @@ function waterIndex(request, reply) {
   reply.view('water/admin/waterIndex', viewContext)
 }
 
-function fields(request, reply) {
-  //view the system fields page
-  var viewContext = {}
-  var uri = process.env.PERMIT_URI + 'API/1.0/field'
-  httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
-    var viewContext = View.contextDefaults(request)
-    viewContext.pageTitle = 'GOV.UK - Admin/Fields'
-    viewContext.data = JSON.parse(body)
-    viewContext.debug.data = viewContext.data
-    reply.view('water/admin/fields', viewContext)
-  })
 
-}
 
 function regimes(request, reply) {
   //view the regimes page
+
+
   var uri = process.env.PERMIT_URI + 'regime'
   httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
     var viewContext = View.contextDefaults(request)
@@ -138,23 +131,19 @@ function doFindlicence(request, reply) {
   })
 }
 
-function viewlicence(request, reply) {
+async function viewlicence(request, reply) {
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - View Licence Data'
-
-  const Permit = require('./connectors/permit')
-  Permit.getLicence(request.params.licence_id).then((licence) => {
-    viewContext.licence = licence
-    viewContext.licence_id = request.params.licence_id
+  var {data,error} = await Permit.licences.findOne(request.params.licence_id)
+    if(error){
+      throw error
+    }
+    viewContext.licence = data
+    viewContext.licence_id = data.licence_id
     reply.view('water/admin/viewlicenceData', viewContext)
-  })
-
-
-
-
 }
 
-function viewLicenceRaw(request, reply) {
+async function viewLicenceRaw(request, reply) {
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - View Licence Data'
 
@@ -196,9 +185,9 @@ function createUser(request, reply) {
   Idm.createUser(request.payload).then(() => {
     //also create CRM record
     var data = {};
-    data.entity_nm = request.payload.username;
+    data.entity_nm = request.payload.user_name;
     data.entity_type = 'individual';
-    data.entity_definition = {};
+    data.entity_definition = "{}";
     Crm.createEntity(data).then((id) => {
       console.log(id)
     }).then(() => {
@@ -245,15 +234,17 @@ function crmEntities(request, reply) {
   var viewContext = View.contextDefaults(request)
   viewContext.pageTitle = 'GOV.UK - Admin'
 
-  URI = process.env.CRM_URI + '/entity?entity_type=' + request.query.entity_type + '&token=' + process.env.JWT_TOKEN
+  URI = process.env.CRM_URI + '/entity?filter=' + JSON.stringify({entity_type: request.query.entity_type}) + '&token=' + process.env.JWT_TOKEN
   httpRequest(URI, function(error, response, body) {
     var data = JSON.parse(body)
     viewContext.entities = data.data
+    viewContext.pagination = Helpers.addPaginationDetail(data.pagination)
     console.log(viewContext)
     reply.view('water/admin/crmEntities', viewContext)
 
   })
 }
+
 
 function crmEntity(request, reply) {
   if (request.query.filter) {
@@ -367,11 +358,48 @@ function getDocument(request, reply) {
   }
   console.log(params)
   Crm.getDocument(params).then((res) => {
+
     viewContext.document_id = request.params.document_id
     viewContext.document = res
     viewContext.debug.document = res
     reply.view('water/admin/crmDocument', viewContext)
   })
+}
+
+/**
+ * Unlink document from company/verification
+ * Redirects to document list
+ */
+async function getUnlinkDocument(request, reply) {
+    const {error} = await Crm.unlinkDocument(request.params.document_id);
+    if(error) {
+      throw error;
+    }
+    return reply.redirect('/admin/crm/documents');
+ }
+
+ /**
+  * Unlink all documents from company/verification
+  * Redirects to document list
+  */
+async function getUnlinkAllDocuments(request, reply) {
+  const {error} = await Crm.unlinkAllDocuments();
+  if(error) {
+    throw error;
+  }
+  return reply.redirect('/admin/crm/documents');
+}
+
+async function crmGetVerifications(request, reply) {
+  var viewContext = View.contextDefaults(request)
+  viewContext.pageTitle = 'GOV.UK - Admin'
+  const {error, data} = await Crm.verifications.findMany();
+  if(error) {
+    throw error;
+  }
+  viewContext.verifications = data;
+  viewContext.debug.verifications = data;
+  reply.view('water/admin/crmVerifications', viewContext)
 }
 
 function updateUser(request, reply) {
@@ -554,7 +582,7 @@ function normalise(licenceRows) {
 
 
 
-function exportLicence(licence, orgId, licenceTypeId) {
+async function exportLicence(licence, orgId, licenceTypeId) {
 
 
 
@@ -564,26 +592,29 @@ function exportLicence(licence, orgId, licenceTypeId) {
     licence_end_dt: "2018-01-01T00:00:00.000Z",
     licence_status_id: "1",
     licence_type_id: licenceTypeId,
-    licence_org_id: orgId,
-    attributes: {
-      "licenceData": licence
-    }
+    licence_regime_id: orgId,
+    licence_data_value:  JSON.stringify(licence)
   }
 
 
-  var url=  process.env.PERMIT_URI + 'regime/' + orgId + '/licencetype/' + licenceTypeId + '/licence?token=' + process.env.JWT_TOKEN
-  console.log(url)
-  Helpers.makeURIRequestWithBody(
-    url,
-    'post',
-    requestBody
-  ).then((body) => {
+
+
+
+    delete requestBody.regime_id;
+    var {data, error} = await Permit.licences.create(requestBody)
+    if(error){
+      throw error
+    }
+
+    var permitData=data;
+    console.log(permitData)
+
     console.log(`Added ${licence.name} to Permit repo`);
-    const data = {}
+    var data = {}
     data.regime_entity_id = '0434dc31-a34e-7158-5775-4694af7a60cf'
 
     data.system_id = 'permit-repo'
-    data.system_internal_id = body.body.data.licence_id
+    data.system_internal_id = permitData.licence_id
     data.system_external_id = licence.id
 
     // Get metadata
@@ -597,8 +628,7 @@ function exportLicence(licence, orgId, licenceTypeId) {
        Town : licence.town,
        County : licence.county,
        Postcode : licence.postCode,
-       Country : licence.country,
-    });
+       Country : licence.country})
 
     return rp({
       method : 'POST',
@@ -619,10 +649,7 @@ function exportLicence(licence, orgId, licenceTypeId) {
     });
 
 
-  }).catch((error) => {
-    console.log(error);
-    return error
-  })
+
   return
 }
 
@@ -706,6 +733,10 @@ function naldLicence(request,reply){
 })
 }
 
+function fields(request,reply){
+  reply()
+}
+
 module.exports = {
   index,
   fields,
@@ -731,9 +762,12 @@ module.exports = {
   permitIndex,
   crmDocumentHeaders,
   setDocumentOwner,
+  crmGetVerifications,
   idmIndex,
   waterIndex,
   getDocument,
+  getUnlinkDocument,
+  getUnlinkAllDocuments,
   updateUser,
   deleteAllLicences,
   loadLicences,

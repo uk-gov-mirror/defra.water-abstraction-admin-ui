@@ -1,0 +1,99 @@
+{{> styles}}
+<main id="content">
+  {{>element-phase-tag}}
+  <nav>
+    <div class="breadcrumbs">
+      <ol>
+        <li><a href="/">Your services</a></li>
+        <li><a href="/admin">admin</a></li>
+
+        <li>title: {{title}}</li>
+      </ol>
+    </div>
+  </nav>
+  <div class="grid-row">
+    <div class="column-full">
+      <h1 class="heading-xlarge">
+        {{title}}
+      </h1>
+
+{{> pagination}}
+
+<hr/>
+Filter: {{baseurl}}<span id="filter"></span>
+{{#each columns}}
+
+<br>
+{{name}}
+:
+<input id="{{name}}" class="filter"/>
+{{/each}}
+
+<button onclick="buildFilter()">Apply Filter</button>
+<script language="javascript">
+
+function buildFilter(){
+  var els = document.getElementsByClassName("filter");
+  var el;
+  var filter={};
+  for (el = 0; el < els.length; el++) {
+    var thisEl=els[el]
+    console.log(thisEl)
+    console.log(thisEl.id+' = ' + thisEl.value)
+    if(thisEl.value.length > 0){
+      filter[thisEl.id]={};
+      if(thisEl.value.indexOf('%')>-1){
+      filter[thisEl.id]["$ilike"]=encodeURI(thisEl.value)
+      }else {
+      filter[thisEl.id]["$equals"]=encodeURI(thisEl.value)        
+      }
+
+    }
+  }
+  window.location='{{baseurl}}?filter='+JSON.stringify(filter)
+
+}
+</script>
+
+<hr/>
+
+KEY: {{key}}
+<table>
+<tr>
+{{#each columns}}
+<td>
+{{name}}
+</td>
+{{/each}}
+</tr>
+
+  {{#each data}}
+
+<tr>
+
+  {{#each .}}
+
+
+  <td>
+<!--
+    {{this.name}}
+    ( {{this.isKey}} {{this.typeof}} )
+-->
+    {{#if isKey}}
+      <a href="{{baseurl}}?id={{this.encodeddata}}">
+        {{this.data}}
+      </a>
+    {{else}}
+    {{this.data}}
+    {{/if}}
+  </td>
+  {{/each}}
+  </tr>
+{{/each}}
+</table>
+
+    </div>
+  </div>
+</main>
+{{> footerjs}}
+{{> debug}}
