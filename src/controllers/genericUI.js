@@ -177,11 +177,10 @@ return reply(e)
       req.Filter=JSON.parse(request.query.filter)
     }
     console.log(`woo... making request to endpoint ${request.params.endpoint}.${request.params.obj}`)
-
+    console.log(req.Filter)
 try{
       const res=await Endpoints[request.params.endpoint][request.params.obj].findMany(req.Filter,req.Sort,req.Pagination)
       console.log('got response from endpoint')
-      console.log(res)
 
       var baseData=res.data;
       var pagination=res.pagination;
@@ -263,6 +262,8 @@ try{
       pagination.previousPage=qs.join('&')
     }
     viewContext.pagination=pagination;
+    viewContext.query=request.query
+
     reply.view('water/admin/standardListView', viewContext)
   }
 
