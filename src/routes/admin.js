@@ -449,7 +449,16 @@ module.exports = [{
     handler: GenericUI.menu,
     config: {
       auth: 'simple',
-      description: 'generic UI for listview for standard objects'
+      description: 'generic menu UI for standard objects'
+    }
+  },
+  {
+    method: 'GET',
+    path: '/admin/generic/{endpoint}',
+    handler: GenericUI.submenu,
+    config: {
+      auth: 'simple',
+      description: 'generic submenu UI for standard objects'
     }
   },
   {

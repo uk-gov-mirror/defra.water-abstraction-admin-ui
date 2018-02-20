@@ -4,10 +4,9 @@
   <nav>
     <div class="breadcrumbs">
       <ol>
-        <li><a href="/">Your services</a></li>
         <li><a href="/admin">admin</a></li>
-
-        <li>title: {{title}}</li>
+        <li><a href="/admin/generic/{{endpoint}}">{{endpoint}}</a></li>
+        <li>{{obj}}</li>
       </ol>
     </div>
   </nav>
@@ -21,15 +20,19 @@
 
 <hr/>
 Filter: {{baseurl}}<span id="filter"></span>
+<table>
 {{#each columns}}
 
-<br>
+<tr><td>
 {{name}}
-:
+</td><td>
 <input id="{{name}}" class="filter"/>
+</td></tr>
 {{/each}}
-
-<button onclick="buildFilter()">Apply Filter</button>
+<tr><td colspan="2" align="right">
+  <button onclick="buildFilter()">Apply Filter</button>
+</td></tr>
+</table>
 <script language="javascript">
 
 function buildFilter(){
@@ -45,7 +48,7 @@ function buildFilter(){
       if(thisEl.value.indexOf('%')>-1){
       filter[thisEl.id]["$ilike"]=encodeURI(thisEl.value)
       }else {
-      filter[thisEl.id]["$equals"]=encodeURI(thisEl.value)        
+      filter[thisEl.id]["$equals"]=encodeURI(thisEl.value)
       }
 
     }
@@ -55,7 +58,7 @@ function buildFilter(){
 }
 </script>
 
-<hr/>
+
 
 KEY: {{key}}
 <table>
