@@ -6,42 +6,33 @@
       <ol>
         
         <li><a href="/admin">admin</a></li>
-
-        <li>generic</li>
+        <li><a href="/admin/generic">generic</a></li>
+        <li>{{title}}</li>
       </ol>
     </div>
   </nav>
   <div class="grid-row">
     <div class="column-full">
       <h1 class="heading-xlarge">
-        Generic Endpoint UI
+        {{title}}
       </h1>
 
 
 <table>
 
+
+
   {{#each viewConfig}}
-
-<tr>
-
-  <td>
-    <a href="/admin/generic/{{@key}}">
-  {{@key}}
-</a>
-  </td>
-
-  </tr>
-  {{#each this}}
   <tr>
     <td></td>
     <td>
-      <a href="/admin/generic/{{@../key}}/{{@key}}">{{@key}}</a>
+      <a href="/admin/generic/{{../title}}/{{@key}}">{{@key}}</a>
     </td>
 
     </tr>
   {{/each}}
 
-{{/each}}
+
 </table>
 
     </div>

@@ -90,6 +90,15 @@ async function menu(request,reply){
   reply.view('water/admin/standardMenuView', viewContext)
 }
 
+async function submenu(request,reply){
+  var viewContext = View.contextDefaults(request)
+  viewContext.title=request.params.endpoint
+  viewContext.viewConfig=viewConfig[request.params.endpoint]
+  console.log('lets go!')
+  reply.view('water/admin/standardSubMenuView', viewContext)
+}
+
+
 async function list(request,reply){
 
   const config=viewConfig[request.params.endpoint][request.params.obj];
@@ -100,6 +109,9 @@ async function list(request,reply){
 
     //load list view
     var viewContext = View.contextDefaults(request)
+
+
+
     const req={};
     req.Filter={}
 //    req.Filter[config.key]=request.query.id
@@ -158,7 +170,9 @@ return reply(e)
 //    console.log(viewContext.data)
 
     viewContext.title=config.title;
-
+    viewContext.endpoint=request.params.endpoint
+    viewContext.obj=request.params.obj
+    viewContext.id=request.query.id
     if(request.query.new){
     reply.view('water/admin/standardDuplicateView', viewContext)
     } else {
@@ -271,6 +285,9 @@ try{
     viewContext.pagination=pagination;
     viewContext.query=request.query
 
+    viewContext.endpoint=request.params.endpoint
+    viewContext.obj=request.params.obj
+
     reply.view('water/admin/standardListView', viewContext)
   }
 
@@ -357,5 +374,6 @@ async function createorUpdate(request,reply){
 module.exports={
 list,
 createorUpdate,
-menu
+menu,
+submenu
 }

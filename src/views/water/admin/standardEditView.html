@@ -4,10 +4,11 @@
   <nav>
     <div class="breadcrumbs">
       <ol>
-        <li><a href="/">Your services</a></li>
         <li><a href="/admin">admin</a></li>
+        <li><a href="/admin/generic/{{endpoint}}">{{endpoint}}</a></li>
+        <li><a href="/admin/generic/{{endpoint}}/{{obj}}">{{obj}}</a></li>
+        <li>{{id}}</li>
 
-        <li>title: {{title}}</li>
       </ol>
     </div>
   </nav>
@@ -26,17 +27,17 @@
 
 <tr>
 
-  <td>
+  <td valign="top">
     {{name}}
   </td>
-  <td>
+  <td valign="top">
     {{#if isKey}}
       {{value}}
     {{else}}
       {{#if textarea}}
-      <textarea rows=5 cols=50 name="{{name}}">{{value}}</textarea>
+      <textarea rows=5 cols=100 name="{{name}}">{{value}}</textarea>
       {{else}}
-      <input type="text" name="{{name}}" value="{{value}}">
+      <input type="text" size=100 name="{{name}}" value="{{value}}">
       {{/if}}
     {{/if}}
   </td>
