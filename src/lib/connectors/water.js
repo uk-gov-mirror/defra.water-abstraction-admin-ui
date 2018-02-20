@@ -93,6 +93,14 @@ const pending_importClient = new APIClient(rp, {
   }
 });
 
+
+const schedulerClient = new APIClient(rp, {
+  endpoint : process.env.WATER_URI + '/scheduler',
+  headers : {
+    Authorization : process.env.JWT_TOKEN
+  }
+});
+
 module.exports = {
 naldImport,
 naldLicence,
@@ -100,5 +108,6 @@ getSchedules,
 addSchedule,
 notifications : notificationsClient,
 notify_templates: notify_templatesClient,
-pending_import: pending_importClient
+pending_import: pending_importClient,
+scheduler:schedulerClient
 }

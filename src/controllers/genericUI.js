@@ -54,6 +54,13 @@ viewConfig.water.notify_templates={
   editable:true
 }
 
+viewConfig.water.scheduler={
+  title:'Scheduled Tasks',
+  exclude:[],
+  key:'task_id',
+  editable:true
+}
+
 viewConfig.water.pending_import={
   title:'Imported Licences',
   exclude:[],
@@ -296,7 +303,7 @@ async function createorUpdate(request,reply){
     }
     console.log(encodeURIComponent(request.query.id))
 
-    console.log(`making request to endpoint ${request.params.endpoint}.${request.params.obj} with payload`)
+    console.log(`making request to UPDATE endpoint ${request.params.endpoint}.${request.params.obj} with payload`)
 
     try{
       const res = await Endpoints[request.params.endpoint][request.params.obj].updateOne(encodeURIComponent(request.query.id), request.payload)
@@ -315,16 +322,22 @@ async function createorUpdate(request,reply){
   } else {
     console.log(encodeURIComponent(request.query.id))
     console.log(request.payload)
-    console.log(`making request to endpoint ${request.params.endpoint}.${request.params.obj} with filter`)
+    console.log(`making request to CREATE  endpoint ${request.params.endpoint}.${request.params.obj} with payload`)
 
-
+    console.log(request.payload)
 
     try{
       const res = await Endpoints[request.params.endpoint][request.params.obj].create(request.payload)
+      if(res.error){
+        console.log(res.error.details)
+        return reply(res.error)
+      }
+      return reply(res)
       console.log('all good')
       const redir=request.url.path.split('?')[0]+'?'+config.key+'='+res.data[config.key]
-      console.log(redir)
-        return reply.redirect(redir);
+//      console.log(redir)
+
+        //return reply.redirect(redir);
     } catch(e){
       console.log('bbluergh')
         console.log(e)
