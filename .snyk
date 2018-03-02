@@ -1,0 +1,181 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.10.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:hoek:20180212':
+    - bcrypt > node-pre-gyp > request > hawk > cryptiles > boom > hoek:
+        reason: No update available
+        expires: '2018-03-23T16:16:20.991Z'
+    - bcrypt > node-pre-gyp > request > hawk > sntp > hoek:
+        reason: No update available
+        expires: '2018-03-23T16:16:20.991Z'
+    - bcrypt > node-pre-gyp > request > hawk > boom > hoek:
+        reason: No update available
+        expires: '2018-03-23T16:16:20.991Z'
+    - bcrypt > node-pre-gyp > request > hawk > hoek:
+        reason: No update available
+        expires: '2018-03-23T16:16:20.991Z'
+    - blipp > joi > topo > hoek:
+        reason: No update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - blipp > joi > hoek:
+        reason: No update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - blipp > hoek:
+        reason: No update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > shot > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > pez > nigel > vise > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > pez > nigel > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > pez > content > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > pez > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > pez > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > content > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > wreck > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > wreck > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > subtext > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+    - hapi > statehood > iron > cryptiles > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > statehood > iron > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > statehood > iron > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > catbox-memory > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > mimos > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > topo > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > accept > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > accept > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > ammo > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > ammo > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > call > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > call > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > cryptiles > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > joi > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > joi > topo > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > catbox > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > catbox > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > catbox > joi > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > catbox > joi > topo > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > heavy > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > heavy > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > heavy > joi > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > heavy > joi > topo > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > iron > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > iron > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > iron > cryptiles > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > podium > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > podium > joi > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > podium > joi > topo > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > statehood > joi > topo > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > shot > joi > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > shot > joi > topo > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.992Z'
+    - hapi > statehood > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.993Z'
+    - hapi > statehood > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.993Z'
+    - hapi > statehood > cryptiles > boom > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.993Z'
+    - hapi > statehood > joi > hoek:
+        reason: NO update for HAPI 16
+        expires: '2018-03-23T16:16:20.993Z'
+    - notifications-node-client > jsonwebtoken > joi > hoek:
+        reason: No update available
+        expires: '2018-03-23T16:16:20.993Z'
+  'npm:moment:20170905':
+    - blipp > joi > moment:
+        reason: No update for HAPI 16
+        expires: '2018-03-23T16:16:20.991Z'
+patch: {}
