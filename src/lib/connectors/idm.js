@@ -117,7 +117,8 @@ getUsers,
 getUser,
 createUser,
 updateUser,
-users:usersClient
+users:usersClient,
+usersClient
 
 
 }
