@@ -146,7 +146,7 @@ server.register([  {
   server.route(require('./src/routes/public'))
   //route for admin UI components
   server.route(require('./src/routes/admin'))
-
+  server.route(require('./src/routes/status'))
 
 })
 
