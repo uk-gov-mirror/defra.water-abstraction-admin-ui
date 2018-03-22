@@ -66,6 +66,24 @@ async function create(request, reply) {
           var newCrmUser = await CRM.entities.create(createCrmUser)
           console.log(newCrmUser)
 
+          var crmUser = await CRM.entities.findMany({entity_nm:user_name},{},{})
+          var crmRegime = await CRM.entities.findMany({entity_nm:'water-abstraction'},{},{})
+
+          var roleData = {};
+          data.entity_id = crmUser.data[0].entity_id
+          data.role = 'admin';
+          data.regime_entity_id = crmRegime.data[0].entity_id;
+          data.is_primary = 0
+          data.company_entity_id=''
+
+          try{
+            var createrole = await CRM.addRole(data)
+            console.log('created role')
+          } catch(e){
+            console.log(e)
+          }
+
+
         }catch(e){
           console.log(e)
         }
@@ -74,6 +92,11 @@ async function create(request, reply) {
         result.crm.existing++
         console.log('crm entity exists')
       }
+
+
+
+
+
     }catch(e){
       console.log(e)
     }
