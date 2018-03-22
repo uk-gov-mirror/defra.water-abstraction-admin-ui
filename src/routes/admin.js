@@ -15,7 +15,7 @@ module.exports = [{
     method: 'GET',
     path: '/robots.txt',
     handler: function(request, reply) {
-      return reply('exterminate').code(200)
+      return reply('User-agent: * Disallow: /').code(200)
     },
     config: {
       auth: false,
@@ -351,7 +351,7 @@ module.exports = [{
     path: '/admin/import',
     handler: Admin.loadLicences,
     config: {
-      auth: false,
+      auth: 'simple',
       description: 'load licences'
     }
   },
@@ -360,7 +360,7 @@ module.exports = [{
     path: '/admin/import',
     handler: Admin.loadLicencesUI,
     config: {
-      auth: false,
+      auth: 'simple',
       description: 'load licences ui'
     }
   },
@@ -370,7 +370,7 @@ module.exports = [{
     path: '/admin/crm/entities/{entity_id}/roles',
     handler: Admin.addRole,
     config: {
-      auth: false,
+      auth: 'simple',
       description: 'add role to user'
     }
   },
@@ -379,7 +379,7 @@ module.exports = [{
     path: '/admin/crm/entities/{entity_id}/roles/{role_id}',
     handler: Admin.deleteRole,
     config: {
-      auth: false,
+      auth: 'simple',
       description: 'delete role from user'
     }
   },
