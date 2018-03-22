@@ -10,6 +10,8 @@ const Water = require('../controllers/water')
 
 const GenericUI = require('../controllers/genericUI')
 
+const AdminUser = require('../controllers/adminUser')
+
 
 module.exports = [{
     method: 'GET',
@@ -479,6 +481,28 @@ module.exports = [{
       auth: 'simple',
       description: 'generic UI for listview for standard objects'
     }
+  },
+
+  {
+    method: 'GET',
+    path: '/admin/createAdminUser',
+    handler: AdminUser.createAdminUsersUI,
+    config: {
+      auth: "simple",
+      description: 'Create new admin users from list'
+    }
+  },
+
+  {
+    method: 'POST',
+    path: '/admin/createAdminUser',
+    handler: AdminUser.create,
+    config: {
+      auth: false,
+      description: 'Create new admin users from list'
+    }
   }
+
+
 
 ]
