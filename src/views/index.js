@@ -73,7 +73,7 @@ const Path = require('path')
 const defaultContext = {
   assetPath: '/public/',
   topOfPage: 'Login Handler',
-  head: '<link href="public/stylesheets/overrides.css" media="screen" rel="stylesheet" />',
+  head: '<link href="public/stylesheets/overrides.css" media="screen" rel="stylesheet" /><meta name="robots" content="noindex, nofollow">',
   pageTitle: ' Generic Page',
   htmlLang: 'en',
   bodyClasses: 'some classes here',

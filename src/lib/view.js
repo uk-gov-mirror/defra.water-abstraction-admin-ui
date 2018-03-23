@@ -24,7 +24,7 @@ function viewContextDefaults (request) {
   viewContext.insideHeader = ''
   viewContext.headerClass = 'with-proposition'
   viewContext.topOfPage = null
-  viewContext.head = null
+  viewContext.head = '<link href="public/stylesheets/overrides.css" media="screen" rel="stylesheet" /><meta name="robots" content="noindex, nofollow">'
   viewContext.bodyStart = null
   viewContext.afterHeader = null
   viewContext.path = request.path

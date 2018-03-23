@@ -10,12 +10,14 @@ const Water = require('../controllers/water')
 
 const GenericUI = require('../controllers/genericUI')
 
+const AdminUser = require('../controllers/adminUser')
+
 
 module.exports = [{
     method: 'GET',
     path: '/robots.txt',
     handler: function(request, reply) {
-      return reply('exterminate').code(200)
+      return reply('User-agent: * Disallow: /').code(200)
     },
     config: {
       auth: false,
@@ -351,7 +353,7 @@ module.exports = [{
     path: '/admin/import',
     handler: Admin.loadLicences,
     config: {
-      auth: false,
+      auth: 'simple',
       description: 'load licences'
     }
   },
@@ -360,7 +362,7 @@ module.exports = [{
     path: '/admin/import',
     handler: Admin.loadLicencesUI,
     config: {
-      auth: false,
+      auth: 'simple',
       description: 'load licences ui'
     }
   },
@@ -370,7 +372,7 @@ module.exports = [{
     path: '/admin/crm/entities/{entity_id}/roles',
     handler: Admin.addRole,
     config: {
-      auth: false,
+      auth: 'simple',
       description: 'add role to user'
     }
   },
@@ -379,7 +381,7 @@ module.exports = [{
     path: '/admin/crm/entities/{entity_id}/roles/{role_id}',
     handler: Admin.deleteRole,
     config: {
-      auth: false,
+      auth: 'simple',
       description: 'delete role from user'
     }
   },
@@ -479,6 +481,28 @@ module.exports = [{
       auth: 'simple',
       description: 'generic UI for listview for standard objects'
     }
+  },
+
+  {
+    method: 'GET',
+    path: '/admin/createAdminUser',
+    handler: AdminUser.createAdminUsersUI,
+    config: {
+      auth: "simple",
+      description: 'Create new admin users from list'
+    }
+  },
+
+  {
+    method: 'POST',
+    path: '/admin/createAdminUser',
+    handler: AdminUser.create,
+    config: {
+      auth: false,
+      description: 'Create new admin users from list'
+    }
   }
+
+
 
 ]
