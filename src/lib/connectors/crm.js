@@ -49,7 +49,15 @@ function unlinkDocument(document_id) {
  * @return {Promise} resolves with data from CRM API
  */
 function unlinkAllDocuments() {
-  return client.updateMany({'system_id' : 'permit-repo'}, {
+
+  const filter = {
+    system_id : 'permit-repo',
+    verification_id : {
+      $ne : null
+    }
+  }
+
+  return client.updateMany(filter, {
     verified : null,
     company_entity_id : null,
     verification_id : null

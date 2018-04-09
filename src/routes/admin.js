@@ -307,7 +307,15 @@ module.exports = [{
       description: 'Unlink document from company/verification'
     }
   },
-
+  {
+    method: 'GET',
+    path: '/admin/crm/document/unlink-success',
+    handler: Admin.getUnlinkSuccess,
+    config: {
+      auth: 'simple',
+      description: 'Documents unlinked successfully'
+    }
+  },
 
   {
     method: 'POST',
