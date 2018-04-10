@@ -51,11 +51,8 @@ function unlinkDocument(document_id) {
 function unlinkAllDocuments() {
 
   const filter = {
-    system_id : 'permit-repo',
-    verification_id : {
-      $ne : null
-    }
-  }
+    system_id : 'permit-repo'
+  };
 
   return client.updateMany(filter, {
     verified : null,
