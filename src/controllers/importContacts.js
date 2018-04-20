@@ -1,4 +1,5 @@
 const csvParse = require('csv-parse/lib/sync');
+const Joi = require('joi');
 const View = require('./../lib/view');
 
 /**
@@ -19,10 +20,37 @@ class InvalidDataError extends Error {
   }
 }
 
+
+/**
+ * Import a single data row
+ * @param {Object} row
+ * @param {String} row.email - contact email address
+ * @param {String} row.role - how this contact relates to the licence
+ * @param {String} row.licence_number - abstraction licence number
+ * @return {Promise} resolves with import status info
+ */
+async function importRow(row) {
+  const schema = {
+    email: Joi.string().trim().lowercase().email(),
+    role: Joi.string(),
+    licence_number: Joi.string()
+  };
+
+  const { error, value } = Joi.validate(row, schema);
+
+  if (error) {
+    return { row, error };
+  }
+
+
+
+}
+
 /**
  * Post handler for importing contacts
+ * @param {String} request.payload.contacts - CSV contact data pasted in textarea field
  */
-function postImportContacts(request, reply) {
+async function postImportContacts(request, reply) {
   const viewContext = View.contextDefaults(request)
 
   try {
