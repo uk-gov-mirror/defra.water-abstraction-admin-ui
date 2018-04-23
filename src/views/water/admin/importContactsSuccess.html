@@ -1,0 +1,56 @@
+{{> styles}}
+<main id="content">
+  {{>element-phase-tag}}
+  <nav>
+    <div class="breadcrumbs">
+      <ol>
+
+        <li><a href="/admin">admin</a></li>
+        <li>Import contacts
+
+        </li>
+      </ol>
+    </div>
+  </nav>
+  <div class="grid-row">
+    <div class="column-full">
+      <h1 class="heading-xlarge">
+        Import contacts
+      </h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Email Address</th><th>Licence Number</th><th>Role</th><th>Details</th><th>Error</th>
+          </tr>
+        </thead>
+        <tbody>
+            {{#each result}}
+            <tr>
+              <td>{{ this.row.email }}</td>
+              <td>{{ this.row.licence_number}}</td>
+              <td>{{ this.row.role }}</td>
+              <td>
+                  Entity: {{ this.entity.entity_id }}<br />
+                  Document: {{ this.document.document_id }}<br />
+                  Document Entity: {{ this.documentEntity.document_entity_id }}
+              </td>
+              <td>
+                {{#if this.error }}
+                {{ this.error.name }}
+                {{ this.error.message }}
+                {{/if}}
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+
+
+    </div>
+  </div>
+</main>
+
+
+{{> footerjs}}
+{{> debug}}
