@@ -11,6 +11,7 @@ const Water = require('../controllers/water')
 const GenericUI = require('../controllers/genericUI')
 
 const AdminUser = require('../controllers/adminUser')
+const ImportContacts = require('../controllers/importContacts');
 
 
 module.exports = [{
@@ -307,7 +308,15 @@ module.exports = [{
       description: 'Unlink document from company/verification'
     }
   },
-
+  {
+    method: 'GET',
+    path: '/admin/crm/document/unlink-success',
+    handler: Admin.getUnlinkSuccess,
+    config: {
+      auth: 'simple',
+      description: 'Documents unlinked successfully'
+    }
+  },
 
   {
     method: 'POST',
@@ -498,8 +507,28 @@ module.exports = [{
     path: '/admin/createAdminUser',
     handler: AdminUser.create,
     config: {
-      auth: false,
+      auth: "simple",
       description: 'Create new admin users from list'
+    }
+  },
+
+  {
+    method: 'GET',
+    path: '/admin/import-contacts',
+    handler: ImportContacts.getImportContacts,
+    config: {
+      auth: "simple",
+      description: 'Import iep/area email addresses to documents'
+    }
+  },
+
+  {
+    method: 'POST',
+    path: '/admin/import-contacts',
+    handler: ImportContacts.postImportContacts,
+    config: {
+      auth: "simple",
+      description: 'Post handler for import iep/area email addresses to documents'
     }
   }
 

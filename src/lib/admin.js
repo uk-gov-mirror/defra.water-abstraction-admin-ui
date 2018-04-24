@@ -371,11 +371,11 @@ function getDocument(request, reply) {
  * Redirects to document list
  */
 async function getUnlinkDocument(request, reply) {
-    const {error} = await Crm.unlinkDocument(request.params.document_id);
+    const {error, rowCount} = await Crm.unlinkDocument(request.params.document_id);
     if(error) {
       throw error;
     }
-    return reply.redirect('/admin/crm/documents');
+    return reply.redirect('/admin/crm/document/unlink-success?count=' + rowCount);
  }
 
  /**
@@ -383,11 +383,22 @@ async function getUnlinkDocument(request, reply) {
   * Redirects to document list
   */
 async function getUnlinkAllDocuments(request, reply) {
-  const {error} = await Crm.unlinkAllDocuments();
+  const {error, rowCount} = await Crm.unlinkAllDocuments();
   if(error) {
     throw error;
   }
-  return reply.redirect('/admin/crm/documents');
+  return reply.redirect('/admin/crm/document/unlink-success?rowCount=' + rowCount);
+}
+
+
+/**
+ * Success page when unlinking is complete
+ * @param {String} request.query.rowCount - the number of rows updated by previous query
+ */
+function getUnlinkSuccess(request, reply) {
+  var viewContext = View.contextDefaults(request);
+  viewContext.rowCount = request.query.rowCount;
+  reply.view('water/admin/crmUnlinkDocumentSuccess', viewContext)
 }
 
 async function crmGetVerifications(request, reply) {
@@ -768,6 +779,7 @@ module.exports = {
   getDocument,
   getUnlinkDocument,
   getUnlinkAllDocuments,
+  getUnlinkSuccess,
   updateUser,
   deleteAllLicences,
   loadLicences,
