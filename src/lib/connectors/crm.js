@@ -5,7 +5,7 @@ const rp = require('request-promise-native').defaults({
   proxy: null,
   strictSSL: false
 })
-
+const crmKPI = require('./crm/kpi');
 // Docs client
 const client = new APIClient(rp, {
   endpoint: process.env.CRM_URI + '/documentHeader',
@@ -272,5 +272,6 @@ module.exports = {
   verifications: verificationsClient,
   entities: entitiesClient,
   documents: client,
-  documentEntities: documentEntitiesClient
+  documentEntities: documentEntitiesClient,
+  kpi: crmKPI
 }

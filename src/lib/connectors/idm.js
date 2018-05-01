@@ -5,7 +5,7 @@ const rp = require('request-promise-native').defaults({
     proxy:null,
     strictSSL :false
   })
-
+const idmKPI = require('./idm/kpi');
 
 function getUsers(){
   return new Promise((resolve, reject) => {
@@ -118,7 +118,8 @@ getUser,
 createUser,
 updateUser,
 users:usersClient,
-usersClient
+usersClient,
+kpi: idmKPI
 
 
 }
