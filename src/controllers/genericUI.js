@@ -27,6 +27,14 @@ viewConfig.crm.verifications = {
   editable: true
 }
 
+viewConfig.crm.document_verifications = {
+  title: 'Document Verifications',
+  exclude: [],
+  key: 'document_id',
+  editable: true
+}
+
+
 viewConfig.crm.entities = {
   title: 'Entities',
   exclude: [],
@@ -224,12 +232,12 @@ async function list(request, reply) {
 
     viewContext.columns = [];
     for (var key in baseData[0]) {
-      console.log(key)
+      //console.log(key)
       if (!config.exclude.includes(key)) {
         viewContext.columns.push({ name: key });
       }
     }
-    console.log(viewContext.columns)
+    //console.log(viewContext.columns)
     viewContext.data = [];
 
     baseData.forEach((r) => {
@@ -253,42 +261,44 @@ async function list(request, reply) {
       }
       viewContext.data.push(row);
     })
-
+    console.log('DATA')
     console.log(viewContext.data)
 
     viewContext.title = config.title;
-    if (pagination.page * pagination.perPage < pagination.totalRows) {
-      qs = [request.url.path.split('?')[0] + "?"]
+    if(pagination && pagination.page){
+      if (pagination.page * pagination.perPage < pagination.totalRows) {
+        qs = [request.url.path.split('?')[0] + "?"]
 
-      if (!request.query.page) {
-        request.query.page = 1
-      }
-      for (var p in request.query) {
-        if (p == 'page') {
-          qs.push('page=' + (parseInt(pagination.page) + 1))
-        } else {
-          qs.push(p + '=' + encodeURIComponent(request.query[p]))
+        if (!request.query.page) {
+          request.query.page = 1
         }
-      }
-
-
-      pagination.nextPage = qs.join('&')
-
-    }
-    if (pagination.page > 1) {
-      qs = [request.url.path.split('?')[0] + "?"]
-
-      for (var p in request.query) {
-        if (p == 'page') {
-          qs.push('page=' + (parseInt(pagination.page) - 1))
-        } else {
-          qs.push(p + '=' + encodeURIComponent(request.query[p]))
+        for (var p in request.query) {
+          if (p == 'page') {
+            qs.push('page=' + (parseInt(pagination.page) + 1))
+          } else {
+            qs.push(p + '=' + encodeURIComponent(request.query[p]))
+          }
         }
-      }
 
-      pagination.previousPage = qs.join('&')
-    }
+
+        pagination.nextPage = qs.join('&')
+
+      }
+      if (pagination.page > 1) {
+        qs = [request.url.path.split('?')[0] + "?"]
+
+        for (var p in request.query) {
+          if (p == 'page') {
+            qs.push('page=' + (parseInt(pagination.page) - 1))
+          } else {
+            qs.push(p + '=' + encodeURIComponent(request.query[p]))
+          }
+        }
+
+        pagination.previousPage = qs.join('&')
+      }
     viewContext.pagination = pagination;
+    }
     viewContext.query = request.query
 
     viewContext.endpoint = request.params.endpoint

@@ -36,6 +36,12 @@ const documentEntitiesClient = new APIClient(rp, {
   }
 });
 
+const documentVerificationsClient = new APIClient(rp, {
+  endpoint: process.env.CRM_URI + '/document_verifications',
+  headers: {
+    Authorization: process.env.JWT_TOKEN
+  }
+});
 
 
 /**
@@ -273,5 +279,6 @@ module.exports = {
   entities: entitiesClient,
   documents: client,
   documentEntities: documentEntitiesClient,
+  document_verifications: documentVerificationsClient,
   kpi: crmKPI
 }
