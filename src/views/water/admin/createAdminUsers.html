@@ -22,7 +22,7 @@
 
         Emails: <textarea rows=10 cols=80 id="user_name"></textarea><br/>
         <button onClick="createAccounts()">Create Accounts</button>
-
+        <div id="response">Enter a new line delimited list of email addresses to create new admin user accounts in CRM and IDM.</div>
     </div>
   </div>
 </main>
@@ -33,6 +33,27 @@ function createAccounts(){
   var xhr = new XMLHttpRequest();
   xhr.open("POST", '/admin/createAdminUser', true);
   xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log(xhr.responseText)
+      res=JSON.parse(xhr.responseText)
+      data=res.idmUsers
+      var text=`<br><b>Results</b><pre>IDM:
+      ${JSON.stringify(res.idm)}
+
+      CRM:
+      ${JSON.stringify(res.crm)}
+      </pre>
+      <table><tr><th>Login</th><th>Reset GUID</th></tr>`;
+        console.log(data)
+      for (u in data){
+        console.log(u)
+        text+=`<tr><td>${data[u].user_name}</td><td>${data[u].reset_guid}</td></tr>`
+      }
+      text+='</table>';
+      document.getElementById('response').innerHTML=(text);
+    }
+}
   xhr.send(JSON.stringify({
       user_name: data
   }));
