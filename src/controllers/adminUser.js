@@ -11,12 +11,12 @@ function createAdminUsersUI(request, reply) {
 }
 
 async function create(request, reply) {
-
+      var idmUsers=[]
       const result={idm:{created:0,existing:0},crm:{created:0,existing:0}}
       for (var e in request.payload.user_name){
         var user_name=request.payload.user_name[e]
       console.log(request.payload)
-      var data = {};
+      var data = {}
 
       try{
       var idmUser = await IDM.usersClient.findMany({user_name:user_name},{},{})
@@ -33,7 +33,9 @@ async function create(request, reply) {
         console.log(createIdmUser)
         try{
           var newidmUser = await IDM.usersClient.create(createIdmUser)
+          console.log("newidmUser")
           console.log(newidmUser)
+          idmUsers.push(createIdmUser)
 //          return reply(newidmUser)
         }catch(e){
           console.log(e)
@@ -101,7 +103,7 @@ async function create(request, reply) {
       console.log(e)
     }
   }
-
+  result.idmUsers=idmUsers;
       return reply(result)
 }
 

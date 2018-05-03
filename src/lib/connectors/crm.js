@@ -5,7 +5,7 @@ const rp = require('request-promise-native').defaults({
   proxy: null,
   strictSSL: false
 })
-
+const crmKPI = require('./crm/kpi');
 // Docs client
 const client = new APIClient(rp, {
   endpoint: process.env.CRM_URI + '/documentHeader',
@@ -36,6 +36,12 @@ const documentEntitiesClient = new APIClient(rp, {
   }
 });
 
+const documentVerificationsClient = new APIClient(rp, {
+  endpoint: process.env.CRM_URI + '/document_verifications',
+  headers: {
+    Authorization: process.env.JWT_TOKEN
+  }
+});
 
 
 /**
@@ -272,5 +278,7 @@ module.exports = {
   verifications: verificationsClient,
   entities: entitiesClient,
   documents: client,
-  documentEntities: documentEntitiesClient
+  documentEntities: documentEntitiesClient,
+  document_verifications: documentVerificationsClient,
+  kpi: crmKPI
 }
