@@ -83,14 +83,13 @@ async function createEntity(entity) {
 async function findOrCreateIndividual(emailAddress) {
   const entity = {
     entity_nm: emailAddress,
-    entity_type: 'individual',
-    source: 'contact_import'
+    entity_type: 'individual'
   };
   const existing = await findEntity(entity);
   if (existing) {
     return existing;
   }
-  return createEntity(entity);
+  return createEntity({ ...entity, source: 'contact_import' });
 }
 
 
