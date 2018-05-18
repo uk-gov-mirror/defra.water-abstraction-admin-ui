@@ -20,6 +20,12 @@
 
       <p>CSV must have column headers <strong>email,role,licence_number</strong></p>
 
+      <div class="panel panel-border-wide" style="border-top: none;">
+        <p>
+          Existing contacts with same role will be overwritten.
+        </p>
+      </div>
+
       {{#if error }}
         <p>Error: {{ error.message }}</p>
       {{/if}}

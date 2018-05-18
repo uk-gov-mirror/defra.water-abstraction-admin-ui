@@ -94,6 +94,21 @@ async function findOrCreateIndividual(emailAddress) {
 
 
 /**
+ * Detach existing contacts with a certain role from a document
+ * @param {String} documentId
+ * @param {String} role
+ * @return {Promise} resolves when deleted
+ */
+async function deleteExistingContacts(documentId, role) {
+  return documentEntities
+    .setParams({ documentId })
+    .delete({
+      role
+    });
+}
+
+
+/**
  * Import a single data row
  * @param {Object} row
  * @param {String} row.email - contact email address
@@ -138,6 +153,13 @@ async function importRow(row) {
 
     // Create entity
     const entity = await findOrCreateIndividual(email);
+
+    // Delete existing roles
+    const { error: deleteRoleError } = await deleteExistingContacts(document.document_id, role);
+
+    if (deleteRoleError && deleteRoleError.name !== 'NotFoundError') {
+      return { row, error: deleteRoleError };
+    }
 
     // Create role
     const { data: documentEntity, error: documentEntityError } = await documentEntities
