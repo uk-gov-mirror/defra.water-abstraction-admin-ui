@@ -83,14 +83,28 @@ async function createEntity(entity) {
 async function findOrCreateIndividual(emailAddress) {
   const entity = {
     entity_nm: emailAddress,
-    entity_type: 'individual',
-    source: 'contact_import'
+    entity_type: 'individual'
   };
   const existing = await findEntity(entity);
   if (existing) {
     return existing;
   }
-  return createEntity(entity);
+  return createEntity({ ...entity, source: 'contact_import' });
+}
+
+
+/**
+ * Detach existing contacts with a certain role from a document
+ * @param {String} documentId
+ * @param {String} role
+ * @return {Promise} resolves when deleted
+ */
+async function deleteExistingContacts(documentId, role) {
+  return documentEntities
+    .setParams({ documentId })
+    .delete({
+      role
+    });
 }
 
 
@@ -139,6 +153,13 @@ async function importRow(row) {
 
     // Create entity
     const entity = await findOrCreateIndividual(email);
+
+    // Delete existing roles
+    const { error: deleteRoleError } = await deleteExistingContacts(document.document_id, role);
+
+    if (deleteRoleError && deleteRoleError.name !== 'NotFoundError') {
+      return { row, error: deleteRoleError };
+    }
 
     // Create role
     const { data: documentEntity, error: documentEntityError } = await documentEntities
