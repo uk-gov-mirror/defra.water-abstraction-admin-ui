@@ -41,8 +41,8 @@ function prepareData(data) {
   const prepared = [];
 
   for (const row of data) {
-    const { wiski_id: wiskiId, licence_number: licence_ref } = row;
-    const station = { wiskiId };
+    const { station_reference: stationReference, licence_number: licence_ref } = row;
+    const station = { stationReference };
     let licence;
     if (!(licence = find(prepared, { licence_ref }))) {
       licence = {
@@ -70,7 +70,7 @@ function validateData(data) {
   if (data.length < 1) {
     throw new InvalidDataError('No rows found');
   }
-  if (!(data[0].wiski_id && data[0].licence_number)) {
+  if (!(data[0].station_reference && data[0].licence_number)) {
     throw new InvalidDataError('Invalid columns specified');
   }
   return data;
