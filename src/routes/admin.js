@@ -12,6 +12,7 @@ const GenericUI = require('../controllers/genericUI')
 
 const AdminUser = require('../controllers/adminUser')
 const ImportContacts = require('../controllers/importContacts');
+const ImportStations = require('../controllers/importGaugingStations');
 
 
 module.exports = [{
@@ -529,6 +530,26 @@ module.exports = [{
     config: {
       auth: "simple",
       description: 'Post handler for import iep/area email addresses to documents'
+    }
+  },
+
+  {
+    method: 'GET',
+    path: '/admin/import-stations',
+    handler: ImportStations.getImportStations,
+    config: {
+      auth: "simple",
+      description: 'Import gauging stations linked to licence'
+    }
+  },
+
+  {
+    method: 'POST',
+    path: '/admin/import-stations',
+    handler: ImportStations.postImportStations,
+    config: {
+      auth: "simple",
+      description: 'Post handler for import gauging stations'
     }
   }
 
