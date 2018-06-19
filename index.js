@@ -1,12 +1,10 @@
-
-
 //provides Admin gui, consumes water service
 require('dotenv').config()
 
 const Hapi = require('hapi')
 
 
-const serverOptions = {connections: {router: {stripTrailingSlash: true}}}
+const serverOptions = { connections: { router: { stripTrailingSlash: true } } }
 const server = new Hapi.Server(serverOptions)
 const SanitizePayload = require('hapi-sanitize-payload')
 
@@ -48,13 +46,13 @@ var yar_options = {
 
 
 
-server.register([  {
-      register: require('node-hapi-airbrake-js'),
-      options: {
-        key: process.env.errbit_key,
-        host: process.env.errbit_server
-      }
-  },{
+server.register([{
+    register: require('node-hapi-airbrake-js'),
+    options: {
+      key: process.env.errbit_key,
+      host: process.env.errbit_server
+    }
+  }, {
     // Plugin to display the routes table to console at startup
     // See https://www.npmjs.com/package/blipp
     register: require('blipp'),
@@ -70,73 +68,51 @@ server.register([  {
 
 
 
-  require('hapi-auth-basic'), require('hapi-auth-jwt2'), require('inert'), require('vision')], (err) => {
+  require('hapi-auth-basic'), require('inert'), require('vision')
+], (err) => {
   if (err) {
     throw err
   }
 
-  function validateBasic (request, user_name, password, callback) {
+  function validateBasic(request, user_name, password, callback) {
     // basic login for admin function UI
     console.log(`Validating user request for ${user_name} with ${password}`)
 
-    var data={};
-    data.user_name=user_name
-    data.password=password
+    var data = {};
+    data.user_name = user_name
+    data.password = password
     const httpRequest = require('request').defaults({
-        proxy:null,
-        strictSSL :false
-      })
+      proxy: null,
+      strictSSL: false
+    })
 
-    var method='post'
-    URI=process.env.IDM_URI+'/user/loginAdmin'+ '?token=' + process.env.JWT_TOKEN;
+    var method = 'post'
+    URI = process.env.IDM_URI + '/user/loginAdmin' + '?token=' + process.env.JWT_TOKEN;
     console.log(URI)
-      httpRequest({
-                method: method,
-                url: URI ,
-                form: data
-            },
-            function (err, httpResponse, body) {
-                console.log('got http ' + method + ' response')
-                responseData=JSON.parse(body)
-                if (responseData.err) {
-                  return callback(null, false)
-                } else {
-                  callback(null, true, { id: responseData.user_id, name: data.user_name })
-                }
+    httpRequest({
+        method: method,
+        url: URI,
+        form: data
+      },
+      function(err, httpResponse, body) {
+        console.log('got http ' + method + ' response')
+        responseData = JSON.parse(body)
+        if (responseData.err) {
+          return callback(null, false)
+        } else {
+          callback(null, true, { id: responseData.user_id, name: data.user_name })
+        }
 
 
-            });
+      });
 
   }
 
-  function validateJWT(decoded, request, callback){
-    // bring your own validation function
-    console.log(request.url.path)
-    console.log(request.payload)
-      console.log('CALL WITH TOKEN')
-      console.log(decoded)
-        // TODO: JWT tokens to DB...
-        // do your checks to see if the person is valid
-      if (!decoded.id) {
-        console.log('boo... JWT failed')
-        return callback(null, false)
-      } else {
-        console.log('huzah... JWT OK')
-        return callback(null, true)
-      }
-    }
 
 
   server.auth.strategy('simple', 'basic', { validateFunc: validateBasic })
 
-  server.auth.strategy('jwt', 'jwt',
-    { key: process.env.JWT_SECRET,          // Never Share your secret key
-      validateFunc: validateJWT,            // validate function defined above
-      verifyOptions: {}, // pick a strong algorithm
-      verifyFunc: validateJWT
-    })
-
-  server.auth.default('jwt')
+  server.auth.default('simple');
 
   // load views
   server.views(require('./src/views'))
