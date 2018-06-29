@@ -704,25 +704,24 @@ function deleteRole(request, reply) {
   })
 }
 
-async function stats(request,reply){
-  var users=Idm.getUsers()
-//      TODO: update stats
-      var stats={loggedin:{users:[],domains:[]},notloggedin:{users:[],domains:[]}}
-      for(userRef in users){
-        var user=users[userRef]
-        if(user.last_login != null){
-          status="loggedin"
-        } else {
-          status="notloggedin"
-        }
-        stats[status].users.push(user.user_name)
-        var domain=user.user_name.split('@')[1].trim()
-        if(!stats[status].domains[domain]){
-          stats[status].domains[domain]=[]
-        }
-        stats[status].domains[domain].push(user.user_name)
-      }
-      return reply(stats)
+async function stats (request, reply) {
+  const users = await Idm.getUsers();
+  const stats = {
+    loggedin: { users: [], domains: [] },
+    notloggedin: {users: [], domains: []
+    }
+  };
+
+  users.forEach(user => {
+    const status = (user.last_login !== null) ? 'loggedin' : 'notloggedin';
+    stats[status].users.push(user.user_name);
+    const domain = user.user_name.split('@')[1].trim();
+    if (!stats[status].domains[domain]) {
+      stats[status].domains[domain] = [];
+    }
+    stats[status].domains[domain].push(user.user_name);
+  });
+  return reply(stats);
 }
 
 function naldImport(request,reply){
