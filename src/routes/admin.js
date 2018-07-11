@@ -348,16 +348,6 @@ module.exports = [{
       description: 'Get all entities in JSON from CRM'
     }
   },
-
-  {
-    method: 'GET',
-    path: '/admin/danger/999/delete_all_licences',
-    handler: Admin.deleteAllLicences,
-    config: {
-      auth: 'simple',
-      description: 'delete all licences'
-    }
-  },
   {
     method: 'POST',
     path: '/admin/import',
