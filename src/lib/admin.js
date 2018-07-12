@@ -193,31 +193,23 @@ function createUser(request, reply) {
     }).then(() => {
       users(request, reply)
     })
-
-
-
-
   })
 }
 
-
-function user(request, reply) {
-  console.log('requested user')
-  var viewContext = View.contextDefaults(request)
+function user (request, reply) {
   Idm.getUser({
     user_id: request.params.user_id
   }).then((user) => {
-    var viewContext = View.contextDefaults(request)
-    viewContext.pageTitle = 'GOV.UK - Admin/Fields'
-    viewContext.user = user
-    viewContext.user_id = request.params.user_id
-    viewContext.debug.users = viewContext.user
-    console.log('*** adminIndex ***')
-    reply.view('water/admin/viewuser', viewContext)
-  })
+    const viewContext = View.contextDefaults(request);
+    const viewUser = user;
+    viewUser.user_data = JSON.stringify(user.user_data, null, 2);
+    viewContext.pageTitle = 'GOV.UK - Admin/Fields';
+    viewContext.user = viewUser;
+    viewContext.user_id = request.params.user_id;
+    viewContext.debug.users = viewContext.user;
+    reply.view('water/admin/viewuser', viewContext);
+  });
 }
-
-
 
 function crm(request, reply) {
   //view the admin page
