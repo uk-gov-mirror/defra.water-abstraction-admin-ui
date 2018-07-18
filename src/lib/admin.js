@@ -421,26 +421,8 @@ function updateUser(request, reply) {
   })
 }
 
-/** temporary features because we don't yet have a full admin system....**/
-
-function deleteAllLicences(request, reply) {
-  console.log('DELETE ALL LICENCES')
-  var query = `
-      delete from crm.document_association;
-      delete from crm.document_header;
-      delete from permit.licence_data;
-      delete from permit.licence;`
-  var queryParams
-  DB.query(query, queryParams)
-    .then((res) => {
-      reply(res)
-    })
-}
-
-
-var licenceRows = [];
-
 function loadLicences(request, reply) {
+  var licenceRows = [];
   var csv = require("fast-csv");
   var CSV_STRING = request.payload.data
   csv
@@ -780,7 +762,6 @@ module.exports = {
   getUnlinkAllDocuments,
   getUnlinkSuccess,
   updateUser,
-  deleteAllLicences,
   loadLicences,
   loadLicencesUI,
   viewLicenceRaw,
@@ -789,4 +770,4 @@ module.exports = {
   stats,
   naldImport,
   naldLicence
-}
+};
