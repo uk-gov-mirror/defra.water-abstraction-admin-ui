@@ -32,7 +32,6 @@ Roles
   <td>email</td>
   <td>regime</td>
   <td>company</td>
-  <td>is_primary</td>
   </tr>
 
 
@@ -43,7 +42,6 @@ Roles
 <td><a href="/admin/crm/entities/{{entity_id}}">{{individual_name}}</a></td>
 <td><a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_name}}</a></td>
 <td><a href="/admin/crm/entities/{{company_entity_id}}">{{company_name}}</a></td>
-<td>{{is_primary}}</td>
 <td><button onclick="deleteRole('{{entity_role_id}}')">Delete Role</button></td>
 </tr>
 {{/each}}
@@ -63,8 +61,6 @@ Roles
 <td> - </td>
 <td><select id='regime_id'><option value="">-</option></select></td>
 <td><select id='company_id'><option value="">-</option></select></td>
-<td><input type="checkbox" id="is_primary" value="1">
-</td>
 <td><button onclick="addRole()">Add Role</button></td>
 </tr>
 {{/equal}}
@@ -96,16 +92,8 @@ Roles
             companies.append($("<option />").val(this.entity_id).text(this.entity_nm));
           }
         });
-        $('#entities').fuzzyDropdown({
-          mainContainer: '#entitySearch',
-          enableBrowserDefaultScroll: true
-        });
     }});
-
-
   };
-
-
 
   var timer = function() {
     if (window.jQuery ) {
@@ -139,18 +127,14 @@ Roles
   }
 
 function addRole(){
-  var data={
-      "role":$("#role").val(),
-      "regime":$("#regime_id").val(),
-      "company":$("#company_id").val(),
-      "is_primary":"0"
-  }
-  if($("#is_primary").is(':checked')){
-    data.is_primary=1
-  }
-  console.log(data)
+  var data= {
+    role: $("#role").val(),
+    regime: $("#regime_id").val(),
+    company: $("#company_id").val()
+  };
+  console.log(data);
   var url="/admin/crm/entities/{{entities.entity.entity_id}}/roles";
-  console.log(url)
+  console.log(url);
   $.ajax({
     type: "POST",
     url: url,
@@ -163,7 +147,6 @@ function addRole(){
     },
     dataType: 'json'
   });
-
 }
 
 

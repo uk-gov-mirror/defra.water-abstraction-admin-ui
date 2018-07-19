@@ -75,7 +75,6 @@ async function create(request, reply) {
           data.entity_id = crmUser.data[0].entity_id
           data.role = 'admin';
           data.regime_entity_id = crmRegime.data[0].entity_id;
-          data.is_primary = 0
           data.company_entity_id=''
 
           try{

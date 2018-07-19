@@ -655,35 +655,24 @@ function loadLicencesUI(request, reply) {
   reply.view('water/admin/import', viewContext)
 }
 
-function addRole(request, reply) {
+function addRole (request, reply) {
+  const { role, regime, company } = request.payload;
+  const data = {
+    entity_id: request.params.entity_id,
+    role,
+    regime_entity_id: regime,
+    company_entity_id: company
+  };
 
-
-
-  console.log(request.payload)
-  var data = {};
-  data.entity_id = request.params.entity_id
-  data.role = request.payload.role;
-  data.regime_entity_id = request.payload.regime;
-  data.company_entity_id = request.payload.company;
-  if (request.payload.is_primary) {
-    data.is_primary = 1
-  } else {
-    data.is_primary = 0
-  }
-  Crm.addRole(data).then(() => {
-    console.log()
-    reply({});
-  })
+  Crm.addRole(data).then(() => reply({}));
 }
 
-function deleteRole(request, reply) {
-  console.log(request.payload)
-  var data = {};
-  data.entity_id = request.params.entity_id
-  data.role_id = request.params.role_id;
-  Crm.deleteRole(data).then(() => {
-    reply({});
-  })
+function deleteRole (request, reply) {
+  const data = {
+    entity_id: request.params.entity_id,
+    role_id: request.params.role_id
+  };
+  Crm.deleteRole(data).then(() => reply({}));
 }
 
 async function stats (request, reply) {
