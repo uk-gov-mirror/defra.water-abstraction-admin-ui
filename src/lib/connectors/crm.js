@@ -1,10 +1,10 @@
-const Helpers = require('../helpers')
+const Helpers = require('../helpers');
 const { APIClient } = require('hapi-pg-rest-api');
 
 const rp = require('request-promise-native').defaults({
   proxy: null,
   strictSSL: false
-})
+});
 const crmKPI = require('./crm/kpi');
 // Docs client
 const client = new APIClient(rp, {
@@ -28,7 +28,6 @@ const entitiesClient = new APIClient(rp, {
   }
 });
 
-
 const documentEntitiesClient = new APIClient(rp, {
   endpoint: process.env.CRM_URI + '/document/{documentId}/entities',
   headers: {
@@ -43,14 +42,13 @@ const documentVerificationsClient = new APIClient(rp, {
   }
 });
 
-
 /**
  * Unlink a document from company/verification process
  * @param {String} document_id - the CRM document ID
  * @return {Promise} resolves with data from CRM API
  */
-function unlinkDocument(document_id) {
-  return client.updateOne(document_id, {
+function unlinkDocument (documentId) {
+  return client.updateOne(documentId, {
     verified: null,
     company_entity_id: null,
     verification_id: null
@@ -61,8 +59,7 @@ function unlinkDocument(document_id) {
  * Unlink all documents from company/verification process
  * @return {Promise} resolves with data from CRM API
  */
-function unlinkAllDocuments() {
-
+function unlinkAllDocuments () {
   const filter = {
     system_id: 'permit-repo'
   };
@@ -74,205 +71,107 @@ function unlinkAllDocuments() {
   });
 }
 
-
-function getLicences(user_name) {
-  var uri = process.env.CRM_URI + '/entity/' + user_name + '?token=' + process.env.JWT_TOKEN
+function createEntity (entity) {
   return new Promise((resolve, reject) => {
-    Helpers.makeURIRequest(uri)
+    const uri = process.env.CRM_URI + '/entity';
+    Helpers.makeURIRequestWithBody(uri, 'post', entity)
       .then((response) => {
-        var data = JSON.parse(response.body)
-        resolve(data.data.documentAssociations)
-      }).catch((response) => {
-        reject(response)
-      })
+        console.log('crm entity response', response.body);
+        resolve(response.body.data.entity_id);
+      }).catch(error => {
+        console.error(error);
+        reject(error);
+      });
   });
 }
 
-
-function getLicenceInternalID(licences, document_id) {
-  /**this function gets the internal ID (i.e. the ID of the licence in the permit repository) from the document_id
-  (from the CRM document header record) which can then be used to retrieve the full licence from the repo **/
+function findDocument (params) {
   return new Promise((resolve, reject) => {
-    var thisLicence = licences.find(x => x.document_id === document_id)
-    if (thisLicence) {
-      resolve(thisLicence)
-    } else {
-      reject('Licence with ID ' + document_id + ' could not be found.')
+    const uri = process.env.CRM_URI + '/documentHeader/filter';
+    Helpers.makeURIRequestWithBody(uri, 'post', params)
+      .then((response) => {
+        resolve(response.body);
+      }).catch(error => {
+        console.error(error);
+        reject(error);
+      });
+  });
+}
+
+function updateDocumentOwner (params) {
+  return new Promise((resolve, reject) => {
+    var uri = process.env.CRM_URI + '/documentHeader/' + params.document_id + '/owner?token=' + process.env.JWT_TOKEN;
+    var method = 'put';
+    var data = { entity_id: params.entity_id };
+    console.log(data);
+    Helpers.makeURIRequestWithBody(uri, method, data)
+      .then((response) => {
+        console.log('crm entity response');
+        console.log(response.body);
+        resolve(response.body);
+      }).catch(error => {
+        console.error(error);
+        reject(error);
+      });
+  });
+}
+
+function getDocument (params) {
+  return new Promise((resolve, reject) => {
+    const uri = process.env.CRM_URI + '/documentHeader/' + params.document_id + '?token=' + process.env.JWT_TOKEN;
+    const data = { entity_id: params.entity_id };
+    console.log(data);
+    Helpers.makeURIRequestWithBody(uri, 'get', data)
+      .then((response) => {
+        resolve(response.body);
+      }).catch(error => {
+        console.error(error);
+        reject(error);
+      });
+  });
+}
+
+function addRole (params) {
+  return new Promise((resolve, reject) => {
+    const data = params;
+    if (data.company_entity_id && data.company_entity_id.length === 0) {
+      delete data.company_entity_id;
     }
-  })
-}
+    const uri = process.env.CRM_URI + '/entity/' + data.entity_id + '/roles';
+    const method = 'post';
+    const headers = { Authorization: process.env.JWT_TOKEN };
 
-function createEntity(entity) {
-
-  return new Promise((resolve, reject) => {
-    var data = entity;
-    //entity_nm;
-    //entity_type;
-    //entity_definition;
-
-    var uri = process.env.CRM_URI + '/entity'
-    var method = 'post'
-    console.log("createEntity")
-    console.log(entity)
-    Helpers.makeURIRequestWithBody(uri, method, entity)
-      .then((response) => {
-        console.log('crm entity response')
-        console.log(response.body)
-        resolve(response.body.data.entity_id)
-      }).catch((response) => {
-        console.log(response.error.error)
-        console.log('rejecting in crm.createEntity')
-        reject()
-      })
-
-  });
-
-}
-
-function findDocument(params) {
-
-  return new Promise((resolve, reject) => {
-    var data = params;
-    //entity_nm;
-    //entity_type;
-    //entity_definition;
-
-    var uri = process.env.CRM_URI + '/documentHeader/filter'
-    var method = 'post'
-    Helpers.makeURIRequestWithBody(uri, method, data)
-      .then((response) => {
-        console.log('crm findDocument response')
-        console.log(response.body)
-        resolve(response.body)
-      }).catch((response) => {
-        console.log(response)
-        console.log('rejecting in crm.findDocument 1')
-        reject()
-      })
-
-  });
-
-}
-
-function getDocument(params) {
-
-  return new Promise((resolve, reject) => {
-    var data = params;
-    //entity_nm;
-    //entity_type;
-    //entity_definition;
-
-    var uri = process.env.CRM_URI + '/documentHeader/filter'
-    var method = 'post'
-    Helpers.makeURIRequestWithBody(uri, method, data)
-      .then((response) => {
-        console.log('crm findDocument response')
-        console.log(response.body)
-        resolve(response.body)
-      }).catch((response) => {
-        console.log(response)
-        console.log('rejecting in crm.findDocument 2')
-        reject()
-      })
-
-  });
-
-}
-
-function updateDocumentOwner(params) {
-  return new Promise((resolve, reject) => {
-    var uri = process.env.CRM_URI + '/documentHeader/' + params.document_id + '/owner?token=' + process.env.JWT_TOKEN
-    var method = 'put'
-    var data = { entity_id: params.entity_id }
-    console.log(data)
-    Helpers.makeURIRequestWithBody(uri, method, data)
-      .then((response) => {
-        console.log('crm entity response')
-        console.log(response.body)
-        resolve(response.body)
-      }).catch((response) => {
-        console.log(response)
-        console.log('rejecting in crm.createEntity')
-        reject()
-      })
-  })
-}
-
-function getDocument(params) {
-  return new Promise((resolve, reject) => {
-
-    var uri = process.env.CRM_URI + '/documentHeader/' + params.document_id + '?token=' + process.env.JWT_TOKEN
-    var method = 'get'
-    var data = { entity_id: params.entity_id }
-    console.log(data)
-    Helpers.makeURIRequestWithBody(uri, method, data)
-      .then((response) => {
-        console.log('crm entity response')
-        console.log(response.body)
-        resolve(response.body)
-      }).catch((response) => {
-        console.log(response)
-        console.log('rejecting in crm.createEntity')
-        reject()
-      })
-
-
-  })
-}
-
-
-function addRole(params) {
-  return new Promise((resolve, reject) => {
-    var data = params
-    if (data.company_entity_id.length == 0) {
-      delete data.company_entity_id
-    }
-    console.log(data)
-    var uri = process.env.CRM_URI + '/entity/' + data.entity_id + '/roles'
-    var method = 'post'
-    console.log('***** ADD ROLE ****')
-    var headers = {
-      Authorization: process.env.JWT_TOKEN
-    }
     Helpers.makeURIRequestWithBody(uri, method, data, headers)
       .then((response) => {
-        resolve(response.body)
-      }).catch((response) => {
-        console.log(response.error.error)
-        console.log('rejecting in crm.addRole')
-        reject()
+        resolve(response.body);
       })
-
-
-  })
+      .catch(error => {
+        console.error(error);
+        reject(error);
+      });
+  });
 }
 
-function deleteRole(params) {
+function deleteRole (params) {
   return new Promise((resolve, reject) => {
-    var data = {}
-    var uri = process.env.CRM_URI + '/entity/' + params.entity_id + '/roles/' + params.role_id
-    var method = 'delete'
-    console.log('***** deleteRole ROLE ****')
-    var headers = {
-      Authorization: process.env.JWT_TOKEN
-    }
-    Helpers.makeURIRequestWithBody(uri, method, data, headers)
+    const data = {};
+    const uri = process.env.CRM_URI + '/entity/' + params.entity_id + '/roles/' + params.role_id;
+    const headers = { Authorization: process.env.JWT_TOKEN };
+    Helpers.makeURIRequestWithBody(uri, 'delete', data, headers)
       .then((response) => {
-        resolve(response.body)
-      }).catch((response) => {
-        reject()
+        resolve(response.body);
       })
-
-
-  })
+      .catch(error => reject(error));
+  });
 }
+
 module.exports = {
-  createEntity: createEntity,
-  findDocument: findDocument,
-  updateDocumentOwner: updateDocumentOwner,
-  getDocument: getDocument,
-  addRole: addRole,
-  deleteRole: deleteRole,
+  createEntity,
+  findDocument,
+  updateDocumentOwner,
+  getDocument,
+  addRole,
+  deleteRole,
   unlinkDocument,
   unlinkAllDocuments,
   verifications: verificationsClient,
@@ -281,4 +180,4 @@ module.exports = {
   documentEntities: documentEntitiesClient,
   document_verifications: documentVerificationsClient,
   kpi: crmKPI
-}
+};
