@@ -341,21 +341,15 @@ function setDocumentOwner(request, reply) {
   })
 }
 
-function getDocument(request, reply) {
-  var viewContext = View.contextDefaults(request)
-  console.log('get document')
-  console.log('document:')
-  var params = {
-    document_id: request.params.document_id
-  }
-  console.log(params)
+function getDocument (request, reply) {
+  const viewContext = View.contextDefaults(request);
+  const params = { document_id: request.params.document_id };
   Crm.getDocument(params).then((res) => {
-
-    viewContext.document_id = request.params.document_id
-    viewContext.document = res
-    viewContext.debug.document = res
-    reply.view('water/admin/crmDocument', viewContext)
-  })
+    viewContext.document_id = request.params.document_id;
+    viewContext.document = res;
+    viewContext.debug.document = res;
+    reply.view('water/admin/crmDocument', viewContext);
+  });
 }
 
 /**
