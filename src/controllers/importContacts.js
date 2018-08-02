@@ -80,9 +80,9 @@ async function createEntity(entity) {
  * @param {String} emailAddress
  * @return {Promise} resolves with entity data
  */
-async function findOrCreateIndividual(emailAddress) {
+async function findOrCreateIndividual(emailAddress = '') {
   const entity = {
-    entity_nm: emailAddress,
+    entity_nm: emailAddress.toLowerCase(),
     entity_type: 'individual'
   };
   const existing = await findEntity(entity);

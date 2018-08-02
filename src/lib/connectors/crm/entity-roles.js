@@ -1,8 +1,7 @@
 'use strict';
 
-const {
-  APIClient
-} = require('hapi-pg-rest-api');
+const { APIClient } = require('hapi-pg-rest-api');
+
 const rp = require('request-promise-native').defaults({
   proxy: null,
   strictSSL: false
@@ -10,7 +9,7 @@ const rp = require('request-promise-native').defaults({
 
 // Create API client
 const client = new APIClient(rp, {
-  endpoint: `${process.env.CRM_URI}/kpi`,
+  endpoint: `${process.env.CRM_URI}/entity/{entity_id}/roles`,
   headers: {
     Authorization: process.env.JWT_TOKEN
   }

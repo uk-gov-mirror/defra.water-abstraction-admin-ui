@@ -1,0 +1,26 @@
+{{> styles}}
+<main id="content">
+  {{>element-phase-tag}}
+  <nav>
+    <div class="breadcrumbs">
+      <ol>
+        <li><a href="/admin">admin</a></li>
+        <li><a href="/admin/idm">idm</a></li>
+        <li><a href="/admin/idm/users">users</a></li>
+      </ol>
+    </div>
+  </nav>
+  <div class="grid-row">
+    <div class="column-full">
+      <h1 class="heading-xlarge">Permit Repository Admin</h1>
+      {{#if deleteFailure}}
+      <h2 class="heading-large">Failed to delete user</h2>
+      {{else}}
+      <h2 class="heading-large">User deleted</h2>
+      {{/if}}
+      <a href="/admin/idm/users">Back to all users</a>
+    </div>
+  </div>
+</main>
+{{> footerjs}}
+{{> debug}}

@@ -1,5 +1,6 @@
 const Helpers = require('../helpers');
 const { APIClient } = require('hapi-pg-rest-api');
+const entityRolesClient = require('./crm/entity-roles');
 
 const rp = require('request-promise-native').defaults({
   proxy: null,
@@ -76,7 +77,6 @@ function createEntity (entity) {
     const uri = process.env.CRM_URI + '/entity';
     Helpers.makeURIRequestWithBody(uri, 'post', entity)
       .then((response) => {
-        console.log('crm entity response', response.body);
         resolve(response.body.data.entity_id);
       }).catch(error => {
         console.error(error);
@@ -165,11 +165,93 @@ function deleteRole (params) {
   });
 }
 
+const getEntityRoles = entityId => {
+  return entityRolesClient
+    .setParams({ entity_id: entityId })
+    .findMany()
+    .then(response => response.data);
+};
+
+const getEntityContactDocuments = entityId => {
+  const uri = `${process.env.CRM_URI}/contacts/${entityId}/documents`;
+  return Helpers.makeURIRequest(uri)
+    .then(response => {
+      return JSON.parse(response.body);
+    })
+    .catch(error => {
+      console.error(error);
+      throw error;
+    });
+};
+
+/**
+ * Get all document_entity values for the given entity id,
+ * then delete each one.
+ */
+const deleteEntityContactDocuments = entityID => {
+  return getEntityContactDocuments(entityID)
+    .then(contactDocuments => {
+      const promises = contactDocuments.data.map(doc => {
+        return documentEntitiesClient
+          .setParams({ documentId: doc.document_id })
+          .delete({ entity_id: entityID });
+      });
+      return Promise.all(promises);
+    });
+};
+
+const getEntitiesByEmail = email => {
+  return entitiesClient.findMany({
+    entity_nm: email,
+    entity_type: 'individual'
+  })
+  .then(response => response.data)
+  .catch(error => {
+    console.error(error);
+    throw error;
+  });
+};
+
+const deleteVerificationDocuments = verificationID => {
+  const uri = `${process.env.CRM_URI}/verification/${verificationID}/documents`;
+  return Helpers.makeURIRequest(uri, 'delete')
+    .catch(error => {
+      console.error(error);
+      throw error;
+    });
+};
+
+const deleteVerifications = verificationIDs => {
+  const promises = verificationIDs.map(id => verificationsClient.delete({ verification_id: id }));
+  return Promise.all(promises);
+};
+
+/**
+ * Removes all items from the verification_documents and
+ * verifications table that are linked to the given entity ID
+ */
+const deleteVerificationsByEntityID = entityID => {
+  return verificationsClient.findMany({ entity_id: entityID })
+    .then(response => {
+      const verificationIDs = response.data.map(item => item.verification_id);
+      const promises = verificationIDs.map(deleteVerificationDocuments);
+      return Promise.all(promises)
+        .then(() => verificationIDs);
+    })
+    .then(deleteVerifications);
+};
+
+const deleteEntityRoles = entityID => {
+  const params = { entity_id: entityID };
+  return entityRolesClient.setParams(params).delete(params);
+};
+
 module.exports = {
   createEntity,
   findDocument,
   updateDocumentOwner,
   getDocument,
+  getEntityRoles,
   addRole,
   deleteRole,
   unlinkDocument,
@@ -179,5 +261,10 @@ module.exports = {
   documents: client,
   documentEntities: documentEntitiesClient,
   document_verifications: documentVerificationsClient,
-  kpi: crmKPI
+  kpi: crmKPI,
+  getEntityContactDocuments,
+  getEntitiesByEmail,
+  deleteVerificationsByEntityID,
+  deleteEntityRoles,
+  deleteEntityContactDocuments
 };
