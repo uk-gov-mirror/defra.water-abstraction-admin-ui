@@ -4,22 +4,24 @@ UI only - NO direct interactions with data
 
 */
 
-const Admin = require('../lib/admin')
+const Admin = require('../lib/admin');
 
-const Water = require('../controllers/water')
+const Water = require('../controllers/water');
 
-const GenericUI = require('../controllers/genericUI')
+const GenericUI = require('../controllers/genericUI');
 
-const AdminUser = require('../controllers/adminUser')
+const AdminUser = require('../controllers/adminUser');
 const ImportContacts = require('../controllers/importContacts');
 const ImportStations = require('../controllers/importGaugingStations');
+const moduleRoutes = require('../modules/routes');
 
-
-module.exports = [{
+module.exports = [
+  ...moduleRoutes,
+  {
     method: 'GET',
     path: '/robots.txt',
-    handler: function(request, reply) {
-      return reply('User-agent: * Disallow: /').code(200)
+    handler: function (request, reply) {
+      return reply('User-agent: * Disallow: /').code(200);
     },
     config: {
       auth: false,
@@ -29,8 +31,8 @@ module.exports = [{
   {
     method: 'GET',
     path: '/status',
-    handler: function(request, reply) {
-      return reply('ok').code(200)
+    handler: function (request, reply) {
+      return reply('ok').code(200);
     },
     config: {
       auth: false,
@@ -58,7 +60,7 @@ module.exports = [{
   {
     method: 'GET',
     path: '/',
-    handler: function(request, reply) {
+    handler: function (request, reply) {
       reply.redirect('/admin');
     },
     config: {
@@ -176,11 +178,6 @@ module.exports = [{
       description: 'Update password'
     }
   },
-
-
-
-
-
 
   {
     method: 'GET',
@@ -329,7 +326,6 @@ module.exports = [{
     }
   },
 
-
   {
     method: 'GET',
     path: '/admin/crm/entities/{entity_id}',
@@ -396,7 +392,6 @@ module.exports = [{
     }
   },
 
-
   {
     method: 'GET',
     path: '/admin/nald/import',
@@ -444,7 +439,6 @@ module.exports = [{
     }
   },
 
-
   {
     method: 'GET',
     path: '/admin/generic',
@@ -488,7 +482,7 @@ module.exports = [{
     path: '/admin/createAdminUser',
     handler: AdminUser.createAdminUsersUI,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Create new admin users from list'
     }
   },
@@ -498,7 +492,7 @@ module.exports = [{
     path: '/admin/createAdminUser',
     handler: AdminUser.create,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Create new admin users from list'
     }
   },
@@ -508,7 +502,7 @@ module.exports = [{
     path: '/admin/import-contacts',
     handler: ImportContacts.getImportContacts,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Import iep/area email addresses to documents'
     }
   },
@@ -518,7 +512,7 @@ module.exports = [{
     path: '/admin/import-contacts',
     handler: ImportContacts.postImportContacts,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Post handler for import iep/area email addresses to documents'
     }
   },
@@ -528,7 +522,7 @@ module.exports = [{
     path: '/admin/import-stations',
     handler: ImportStations.getImportStations,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Import gauging stations linked to licence'
     }
   },
@@ -538,11 +532,9 @@ module.exports = [{
     path: '/admin/import-stations',
     handler: ImportStations.postImportStations,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Post handler for import gauging stations'
     }
   }
 
-
-
-]
+];

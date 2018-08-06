@@ -1,0 +1,63 @@
+{{> styles}}
+<main id="content">
+  {{>element-phase-tag}}
+  <nav>
+    <div class="breadcrumbs">
+      <ol>
+        <li><a href="/admin">admin</a></li>
+        <li><a href="/admin/returns">Returns</a></li>
+        <li><a href="/admin/returns/logs/{{ regionCode }}/{{ formatId }}">Logs</a></li>
+        <li>Lines</li>
+      </ol>
+    </div>
+  </nav>
+  <div class="grid-row">
+    <div class="column-full">
+      <h1 class="heading-xlarge">
+        Lines
+      </h1>
+
+
+
+  {{#if lines }}
+
+  <h2 class="heading-medium">Formats</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Form Date</th>
+        <th>Return Date</th>
+        <th>Quantity</th>
+        <th>Unit</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each lines}}
+    <tr>
+      <td>{{ returnDate ARFL_DATE_FROM }}</td>
+      <td>{{ returnDate RET_DATE }}</td>
+      <td>{{ RET_QTY }}</td>
+      <td>{{ UNIT_RET_FLAG }}</td>
+      <td>
+
+        <details>
+  <summary><span class="summary">Data</span></summary>
+  <div class="panel panel-border-narrow">
+    <pre>{{ prettyStringify this }}</pre>
+  </div>
+</details>
+
+      </td>
+
+    </tr>
+    {{/each}}
+    </tbody>
+  </table>
+  {{/if}}
+
+  </div>
+</main>
+{{> footerjs}}
+{{> debug}}
