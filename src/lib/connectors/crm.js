@@ -1,3 +1,4 @@
+const urlJoin = require('url-join');
 const Helpers = require('../helpers');
 const { APIClient } = require('hapi-pg-rest-api');
 const entityRolesClient = require('./crm/entity-roles');
@@ -7,41 +8,22 @@ const rp = require('request-promise-native').defaults({
   strictSSL: false
 });
 const crmKPI = require('./crm/kpi');
+
+const createCrmApiClient = path => {
+  return new APIClient(rp, {
+    endpoint: urlJoin(process.env.CRM_URI, path),
+    headers: {
+      Authorization: process.env.JWT_TOKEN
+    }
+  });
+};
+
 // Docs client
-const client = new APIClient(rp, {
-  endpoint: process.env.CRM_URI + '/documentHeader',
-  headers: {
-    Authorization: process.env.JWT_TOKEN
-  }
-});
-
-const verificationsClient = new APIClient(rp, {
-  endpoint: process.env.CRM_URI + '/verification',
-  headers: {
-    Authorization: process.env.JWT_TOKEN
-  }
-});
-
-const entitiesClient = new APIClient(rp, {
-  endpoint: process.env.CRM_URI + '/entity',
-  headers: {
-    Authorization: process.env.JWT_TOKEN
-  }
-});
-
-const documentEntitiesClient = new APIClient(rp, {
-  endpoint: process.env.CRM_URI + '/document/{documentId}/entities',
-  headers: {
-    Authorization: process.env.JWT_TOKEN
-  }
-});
-
-const documentVerificationsClient = new APIClient(rp, {
-  endpoint: process.env.CRM_URI + '/document_verifications',
-  headers: {
-    Authorization: process.env.JWT_TOKEN
-  }
-});
+const client = createCrmApiClient('documentHeader');
+const verificationsClient = createCrmApiClient('verification');
+const entitiesClient = createCrmApiClient('entity');
+const documentEntitiesClient = createCrmApiClient('document/{documentId}/entities');
+const documentVerificationsClient = createCrmApiClient('document_verifications');
 
 /**
  * Unlink a document from company/verification process
