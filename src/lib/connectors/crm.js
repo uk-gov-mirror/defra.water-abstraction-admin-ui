@@ -1,4 +1,3 @@
-const urlJoin = require('url-join');
 const Helpers = require('../helpers');
 const { APIClient } = require('hapi-pg-rest-api');
 const entityRolesClient = require('./crm/entity-roles');
@@ -11,7 +10,7 @@ const crmKPI = require('./crm/kpi');
 
 const createCrmApiClient = path => {
   return new APIClient(rp, {
-    endpoint: urlJoin(process.env.CRM_URI, path),
+    endpoint: process.env.CRM_URI + path,
     headers: {
       Authorization: process.env.JWT_TOKEN
     }
@@ -19,11 +18,11 @@ const createCrmApiClient = path => {
 };
 
 // Docs client
-const client = createCrmApiClient('documentHeader');
-const verificationsClient = createCrmApiClient('verification');
-const entitiesClient = createCrmApiClient('entity');
-const documentEntitiesClient = createCrmApiClient('document/{documentId}/entities');
-const documentVerificationsClient = createCrmApiClient('document_verifications');
+const client = createCrmApiClient('/documentHeader');
+const verificationsClient = createCrmApiClient('/verification');
+const entitiesClient = createCrmApiClient('/entity');
+const documentEntitiesClient = createCrmApiClient('/document/{documentId}/entities');
+const documentVerificationsClient = createCrmApiClient('/document_verifications');
 
 /**
  * Unlink a document from company/verification process
