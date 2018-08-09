@@ -9,41 +9,23 @@ const Promise = require('bluebird');
  * Each contact is set up as a CRM individual entity, and linked to the
  * document via the document_entities table
  */
-function getImportContacts(request, reply) {
-  const viewContext = View.contextDefaults(request)
+function getImportContacts (request, reply) {
+  const viewContext = View.contextDefaults(request);
   reply.view('water/admin/importContacts.html', viewContext);
 }
 
-
 class InvalidDataError extends Error {
-  constructor(message) {
+  constructor (message) {
     super(message);
     this.name = 'InvalidDataError';
   }
 }
 
 class LicenceNotFoundError extends Error {
-  constructor(message) {
+  constructor (message) {
     super(message);
     this.name = 'LicenceNotFoundError';
   }
-}
-
-
-
-/**
- * Find individual entity
- * @param {String} emailAddress
- */
-async function findIndividualEntity(emailAddress) {
-
-  if (error) {
-    throw error;
-  }
-  if (data.length === 1) {
-    return data[0];
-  }
-  return null;
 }
 
 /**
@@ -51,10 +33,10 @@ async function findIndividualEntity(emailAddress) {
  * @param {Object} filter
  * @return {Promise} resolves with entity data if found
  */
-async function findEntity(filter) {
+async function findEntity (filter) {
   const { data, error } = await entities.findMany(filter);
   if (error) {
-    throw error
+    throw error;
   }
   if (data.length === 1) {
     return data[0];
@@ -67,10 +49,10 @@ async function findEntity(filter) {
  * @param {Object} entity - entity data to save
  * @return {Promise} resolves with entity data if found
  */
-async function createEntity(entity) {
+async function createEntity (entity) {
   const { data, error } = await entities.create(entity);
   if (error) {
-    throw error
+    throw error;
   }
   return data;
 }
@@ -80,7 +62,7 @@ async function createEntity(entity) {
  * @param {String} emailAddress
  * @return {Promise} resolves with entity data
  */
-async function findOrCreateIndividual(emailAddress = '') {
+async function findOrCreateIndividual (emailAddress = '') {
   const entity = {
     entity_nm: emailAddress.toLowerCase(),
     entity_type: 'individual'
@@ -92,21 +74,17 @@ async function findOrCreateIndividual(emailAddress = '') {
   return createEntity({ ...entity, source: 'contact_import' });
 }
 
-
 /**
  * Detach existing contacts with a certain role from a document
  * @param {String} documentId
  * @param {String} role
  * @return {Promise} resolves when deleted
  */
-async function deleteExistingContacts(documentId, role) {
+async function deleteExistingContacts (documentId, role) {
   return documentEntities
     .setParams({ documentId })
-    .delete({
-      role
-    });
+    .delete({ role });
 }
-
 
 /**
  * Import a single data row
@@ -116,8 +94,7 @@ async function deleteExistingContacts(documentId, role) {
  * @param {String} row.licence_number - abstraction licence number
  * @return {Promise} resolves with import status info
  */
-async function importRow(row) {
-
+async function importRow (row) {
   const schema = {
     email: Joi.string().trim().lowercase().email(),
     role: Joi.string(),
@@ -139,7 +116,6 @@ async function importRow(row) {
   const { email, role, licence_number } = value;
 
   try {
-
     // Find document
     const { error, data: [document] } = await documents.findMany({ system_external_id: licence_number });
 
@@ -166,7 +142,7 @@ async function importRow(row) {
       .setParams({ documentId: document.document_id })
       .create({
         entity_id: entity.entity_id,
-        role,
+        role
       });
 
     if (documentEntityError) {
@@ -177,15 +153,14 @@ async function importRow(row) {
   } catch (error) {
     return { row, error };
   }
-
 }
 
 /**
  * Post handler for importing contacts
  * @param {String} request.payload.contacts - CSV contact data pasted in textarea field
  */
-async function postImportContacts(request, reply) {
-  const viewContext = View.contextDefaults(request)
+async function postImportContacts (request, reply) {
+  const viewContext = View.contextDefaults(request);
 
   try {
     const data = csvParse(request.payload.contacts, { columns: true, skip_lines_with_empty_values: true });
@@ -200,14 +175,11 @@ async function postImportContacts(request, reply) {
     viewContext.result = await Promise.map(data, importRow, { concurrency: 1 });
 
     reply.view('water/admin/importContactsSuccess.html', viewContext);
-
   } catch (error) {
     viewContext.error = error;
     reply.view('water/admin/importContacts.html', viewContext);
   }
-
 }
-
 
 module.exports = {
   getImportContacts,

@@ -181,9 +181,9 @@ const deleteEntityContactDocuments = entityID => {
     });
 };
 
-const getEntitiesByEmail = email => {
+const getEntitiesByEmail = (email = '') => {
   return entitiesClient.findMany({
-    entity_nm: email,
+    entity_nm: email.toLowerCase(),
     entity_type: 'individual'
   })
   .then(response => response.data)
