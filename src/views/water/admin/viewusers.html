@@ -30,65 +30,25 @@
         <tr>
           <th>User ID</th>
           <th>Username</th>
-          <th>Is Admin</th>
-          <th>Info</th>
+          <th>Application</th>
           <th>Reset GUID</th>
           <th>Reset Required</th>
           <th>Bad Login Count</th>
+          <th>External ID</th>
         </tr>
         {{#each users}}
         <tr>
           <td><a href="/admin/idm/users/{{user_id}}">{{user_id}}</a></td>
           <td>{{user_name}}</td>
-          <td>{{admin}}</td>
-          <td>{{user_data}}</td>
+          <td>{{application}}</td>
           <td>{{reset_guid}}</td>
           <td>{{reset_required}}</td>
           <td>{{bad_logins}}</td>
+          <td>{{external_id}}</td>
         </tr>
         {{/each}}
-        <tr>
-          <form method="post" action="/admin/idm/users">
-          <td>NEW</td>
-          <td><input name="user_name"/></td>
-          <td><input name="admin" size=1 value="0"/></td>
-          <td><input name="user_data" value='{"firstname":"","usertype":"project"}'/></td>
-          <td></td>
-          <td><input name="reset_required" size=1 value="1"/></td>
-          <td><input name="password" size=10 type=text /></td>
-          <td><button type="submit">Create</button></td>
-        </tr>
       </table>
-
-
     </div>
   </div>
 </main>
 {{> footerjs}} {{> debug}}
-
-
-<script language="javascript">
-  $("#licencesearch").bind("keyup change", doFind);
-
-  function doFind() {
-    var val = $('#licencesearch').val()
-    console.log(val)
-    url = '/admin/findlicence/' + val
-    $.ajax({
-      url: url,
-      success: function(res, err) {
-        var html = '<table>';
-        for (r in res.data) {
-          if (res.data[r]) {
-            html += `<tr><td><a href="/admin/licence/${res.data[r].licence_id}">${res.data[r].licence_id}</a></td><td>${res.data[r].licence_ref}</td><td>${res.data[r].licence_search_key}<br>`;
-          }
-
-        }
-        html += '</table>'
-        $("#results").html(html)
-        console.log(err)
-      }
-    });
-
-  }
-</script>

@@ -10,8 +10,7 @@ const idmKPI = require('./idm/kpi');
 function getUsers () {
   return new Promise((resolve, reject) => {
     var uri = process.env.IDM_URI + '/user';
-    var method = 'get';
-    Helpers.makeURIRequest(uri, method)
+    Helpers.makeURIRequest(uri)
     .then((response) => {
       console.log('--- user response ---');
       console.log(JSON.parse(response.body).data);
@@ -27,8 +26,7 @@ function getUsers () {
 function getUser (params) {
   return new Promise((resolve, reject) => {
     var uri = process.env.IDM_URI + '/user/' + params.user_id + '?token=' + process.env.JWT_TOKEN;
-    var method = 'get';
-    Helpers.makeURIRequest(uri, method)
+    Helpers.makeURIRequest(uri)
     .then((response) => {
       console.log('user response');
       console.log(response.body);
