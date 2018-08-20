@@ -56,6 +56,13 @@ function validateBasic (request, userName, password, callback) {
   });
 }
 
+const validateJWT = (decoded, request, callback) => {
+  const isValid = !!decoded.id;
+  console.log(decoded);
+  console.log(isValid);
+  return callback(null, isValid);
+};
+
 server.register([
   {
     register: require('node-hapi-airbrake-js'),
@@ -76,6 +83,7 @@ server.register([
     options: yarOptions
   },
   require('hapi-auth-basic'),
+  require('hapi-auth-jwt2'),
   require('inert'),
   require('vision')
 ], (err) => {
@@ -85,6 +93,12 @@ server.register([
 
   server.auth.strategy('simple', 'basic', { validateFunc: validateBasic });
   server.auth.default('simple');
+
+  server.auth.strategy('jwt', 'jwt',
+    { key: process.env.JWT_SECRET,          // Never Share your secret key
+      validateFunc: validateJWT,            // validate function defined above
+      verifyOptions: { algorithms: [ 'HS256' ] } // pick a strong algorithm
+    });
 
   // load views
   server.views(require('./src/views'));
