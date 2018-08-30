@@ -361,7 +361,7 @@ module.exports = [
     }
   },
   {
-    method: 'DELETE',
+    method: 'POST',
     path: '/admin/crm/entities/{entity_id}/roles/{role_id}',
     handler: Admin.deleteRole,
     config: {

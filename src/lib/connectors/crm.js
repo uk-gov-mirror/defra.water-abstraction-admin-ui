@@ -247,5 +247,6 @@ module.exports = {
   getEntitiesByEmail,
   deleteVerificationsByEntityID,
   deleteEntityRoles,
-  deleteEntityContactDocuments
+  deleteEntityContactDocuments,
+  entityRoles: entityRolesClient
 };

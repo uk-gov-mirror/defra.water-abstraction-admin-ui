@@ -170,21 +170,20 @@ function crmEntities (request, reply) {
   });
 }
 
-function crmEntity (request, reply) {
+async function crmEntity (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  const URI = process.env.CRM_URI + '/entity/' + request.params.entity_id + '?token=' + process.env.JWT_TOKEN;
-  httpRequest(URI, function (error, response, body) {
-    if (error) {
-      console.log(error);
-    }
-    console.log('response from ' + URI);
-    console.log(body);
-    const data = JSON.parse(body);
-    data.data.entity = data.data.entity;
-    viewContext.entities = data.data;
-    viewContext.debug.entities = data;
-    reply.view('water/admin/crmEntity', viewContext);
+
+  const { entity_id: entityId } = request.params;
+
+  const { data: entity } = await Crm.entities.findOne(entityId);
+
+  const { data: entityRoles } = await Crm.entityRoles.setParams({entity_id: entityId}).findMany();
+
+  reply.view('water/admin/crmEntity', {
+    ...viewContext,
+    entity,
+    entityRoles
   });
 }
 
@@ -534,12 +533,13 @@ function addRole (request, reply) {
   Crm.addRole(data).then(() => reply({}));
 }
 
-function deleteRole (request, reply) {
+async function deleteRole (request, reply) {
   const data = {
     entity_id: request.params.entity_id,
     role_id: request.params.role_id
   };
-  Crm.deleteRole(data).then(() => reply({}));
+  await Crm.deleteRole(data);
+  return reply.redirect(`/admin/crm/entities/${request.params.entity_id}`);
 }
 
 async function stats (request, reply) {

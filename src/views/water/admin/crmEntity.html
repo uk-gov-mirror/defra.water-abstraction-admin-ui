@@ -8,7 +8,7 @@
         <li><a href="/admin">admin</a></li>
         <li><a href="/admin/crm">crm</a></li>
         <li><a href="/admin/crm/entities">entities</a>
-        <li><a href="/admin/crm/entities/{{entity.entity_id}}">{{entities.entity.entity_type}}: {{entities.entity.entity_nm}}</a>
+        <li><a href="/admin/crm/entities/{{entity.entity_id}}">{{entity.entity_type}}: {{entity.entity_nm}}</a>
 
         </li>
       </ol>
@@ -29,39 +29,45 @@ Roles
   <tr>
   <td>entity_role_id</td>
   <td>role</td>
-  <td>email</td>
+  <!-- <td>email</td> -->
   <td>regime</td>
   <td>company</td>
+  <td></td>
   </tr>
 
 
-{{#each entities.entityRoles}}
+{{#each entityRoles}}
 <tr>
 <td>{{entity_role_id}}</td>
 <td>{{role}}</td>
-<td><a href="/admin/crm/entities/{{entity_id}}">{{individual_name}}</a></td>
-<td><a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_name}}</a></td>
-<td><a href="/admin/crm/entities/{{company_entity_id}}">{{company_name}}</a></td>
-<td><button onclick="deleteRole('{{entity_role_id}}')">Delete Role</button></td>
+<!-- <td><a href="/admin/crm/entities/{{entity_id}}">{{entity_id}}</a></td> -->
+<td><a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_entity_id}}</a></td>
+<td><a href="/admin/crm/entities/{{company_entity_id}}">{{company_entity_id}}</a></td>
+<td>
+  <form method="POST" action="/admin/crm/entities/{{ entity_id }}/roles/{{ entity_role_id }}">
+    <button class="button" type="submit">Delete</button>
+  </form>
+</td>
+
 </tr>
 {{/each}}
-{{#equal entities.entity.entity_type "individual"}}
+{{#equal entity.entity_type "individual"}}
 <tr>
 <td>Add Role:
 <td><select id='role'>
 <option value="user">User</option>
 <option value="primary_user">Primary User</option>
+<option value="user_returns">Returns User</option>
 <option value="agent">Agent</option>
 <option value="admin">Admin</option>
-<option value="ar_admin">AR Admin</option>
 <option value="ar_user">AR User</option>
 <option value="ar_approver">AR Approval</option>
 
 </select></td>
-<td> - </td>
+<!-- <td> - </td> -->
 <td><select id='regime_id'><option value="">-</option></select></td>
 <td><select id='company_id'><option value="">-</option></select></td>
-<td><button onclick="addRole()">Add Role</button></td>
+<td><button class="button" type="submit" onclick="addRole()">Add</button></td>
 </tr>
 {{/equal}}
 </table>
@@ -133,7 +139,7 @@ function addRole(){
     company: $("#company_id").val()
   };
   console.log(data);
-  var url="/admin/crm/entities/{{entities.entity.entity_id}}/roles";
+  var url="/admin/crm/entities/{{entity.entity_id}}/roles";
   console.log(url);
   $.ajax({
     type: "POST",
@@ -150,21 +156,6 @@ function addRole(){
 }
 
 
-function deleteRole(role_id){
-  var url="/admin/crm/entities/{{entities.entity.entity_id}}/roles/"+role_id;
-  console.log(url)
-  $.ajax({
-    type: "delete",
-    url: url,
-    success: function(res,err){
-      console.log(err)
-      console.log(res)
-      console.log('yay')
-      location.reload()
-    }
-  });
-
-}
 </script>
 
 <style>
