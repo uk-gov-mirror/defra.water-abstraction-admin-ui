@@ -1,25 +1,22 @@
 /*
-
-UI only - NO direct interactions with data
-
+  UI only - NO direct interactions with data
 */
-
-const Admin = require('../lib/admin')
-
-const Water = require('../controllers/water')
-
-const GenericUI = require('../controllers/genericUI')
-
-const AdminUser = require('../controllers/adminUser')
+const Admin = require('../lib/admin');
+const Water = require('../controllers/water');
+const GenericUI = require('../controllers/genericUI');
+const AdminUser = require('../controllers/adminUser');
 const ImportContacts = require('../controllers/importContacts');
 const ImportStations = require('../controllers/importGaugingStations');
+const moduleRoutes = require('../modules/routes');
+const usersController = require('../controllers/users');
 
-
-module.exports = [{
+module.exports = [
+  ...moduleRoutes,
+  {
     method: 'GET',
     path: '/robots.txt',
-    handler: function(request, reply) {
-      return reply('User-agent: * Disallow: /').code(200)
+    handler: function (request, reply) {
+      return reply('User-agent: * Disallow: /').code(200);
     },
     config: {
       auth: false,
@@ -29,8 +26,8 @@ module.exports = [{
   {
     method: 'GET',
     path: '/status',
-    handler: function(request, reply) {
-      return reply('ok').code(200)
+    handler: function (request, reply) {
+      return reply('ok').code(200);
     },
     config: {
       auth: false,
@@ -58,7 +55,7 @@ module.exports = [{
   {
     method: 'GET',
     path: '/',
-    handler: function(request, reply) {
+    handler: function (request, reply) {
       reply.redirect('/admin');
     },
     config: {
@@ -84,7 +81,6 @@ module.exports = [{
       description: 'UI entry point for IDM admin'
     }
   },
-
   {
     method: 'GET',
     path: '/admin/findlicence',
@@ -123,26 +119,8 @@ module.exports = [{
   },
   {
     method: 'GET',
-    path: '/admin/licence/{licence_id}/addshortcode',
-    handler: Admin.addShortcode,
-    config: {
-      auth: 'simple',
-      description: 'Add a shortcode to a licence'
-    }
-  },
-  {
-    method: 'GET',
-    path: '/admin/fields',
-    handler: Admin.fields,
-    config: {
-      auth: 'simple',
-      description: 'View available system fields'
-    }
-  },
-  {
-    method: 'GET',
     path: '/admin/idm/users',
-    handler: Admin.users,
+    handler: usersController.users,
     config: {
       auth: 'simple',
       description: 'View users'
@@ -151,7 +129,7 @@ module.exports = [{
   {
     method: 'POST',
     path: '/admin/idm/users',
-    handler: Admin.createUser,
+    handler: usersController.createUser,
     config: {
       auth: 'simple',
       description: 'Create user'
@@ -160,28 +138,48 @@ module.exports = [{
   {
     method: 'GET',
     path: '/admin/idm/users/{user_id}',
-    handler: Admin.user,
+    handler: usersController.user,
     config: {
       auth: 'simple',
       description: 'View user'
     }
   },
-
   {
     method: 'POST',
     path: '/admin/idm/users/{user_id}',
-    handler: Admin.updateUser,
+    handler: usersController.updateUser,
     config: {
       auth: 'simple',
       description: 'Update password'
     }
   },
-
-
-
-
-
-
+  {
+    method: 'GET',
+    path: '/admin/idm/users/{user_id}/delete',
+    handler: usersController.getDeleteUser,
+    config: {
+      auth: 'simple',
+      description: 'Check user details before confirming delete'
+    }
+  },
+  {
+    method: 'POST',
+    path: '/admin/idm/users/{user_id}/delete',
+    handler: usersController.postDeleteUser,
+    config: {
+      auth: 'simple',
+      description: 'Deletes the user'
+    }
+  },
+  {
+    method: 'GET',
+    path: '/admin/idm/users/deleted',
+    handler: usersController.getUserDeleted,
+    config: {
+      auth: 'simple',
+      description: 'Displays the result of the user deletion'
+    }
+  },
   {
     method: 'GET',
     path: '/admin/regime',
@@ -207,15 +205,6 @@ module.exports = [{
     config: {
       auth: 'simple',
       description: 'View specific licence type for regime '
-    }
-  },
-  {
-    method: 'POST',
-    path: '/admin/regime/{regime_id}/licencetypes/{type_id}/field',
-    handler: Admin.addFieldToregimeLicenceType,
-    config: {
-      auth: 'simple',
-      description: 'Add field to licence type'
     }
   },
   {
@@ -281,7 +270,6 @@ module.exports = [{
       description: 'Create new entity in CRM'
     }
   },
-
   {
     method: 'GET',
     path: '/admin/crm/document/{document_id}',
@@ -318,7 +306,6 @@ module.exports = [{
       description: 'Documents unlinked successfully'
     }
   },
-
   {
     method: 'POST',
     path: '/admin/idm/crm/document/{document_id}/owner',
@@ -328,8 +315,6 @@ module.exports = [{
       description: 'Set document owner in CRM'
     }
   },
-
-
   {
     method: 'GET',
     path: '/admin/crm/entities/{entity_id}',
@@ -366,7 +351,6 @@ module.exports = [{
       description: 'load licences ui'
     }
   },
-
   {
     method: 'POST',
     path: '/admin/crm/entities/{entity_id}/roles',
@@ -377,7 +361,7 @@ module.exports = [{
     }
   },
   {
-    method: 'DELETE',
+    method: 'POST',
     path: '/admin/crm/entities/{entity_id}/roles/{role_id}',
     handler: Admin.deleteRole,
     config: {
@@ -385,7 +369,6 @@ module.exports = [{
       description: 'delete role from user'
     }
   },
-
   {
     method: 'GET',
     path: '/admin/crm/verifications',
@@ -395,8 +378,6 @@ module.exports = [{
       description: 'view list of verifications'
     }
   },
-
-
   {
     method: 'GET',
     path: '/admin/nald/import',
@@ -415,7 +396,6 @@ module.exports = [{
       description: 'View legacy nald licence'
     }
   },
-
   {
     method: 'GET',
     path: '/admin/water',
@@ -443,8 +423,6 @@ module.exports = [{
       description: 'Add new scheduler item'
     }
   },
-
-
   {
     method: 'GET',
     path: '/admin/generic',
@@ -472,7 +450,6 @@ module.exports = [{
       description: 'generic UI for listview for standard objects'
     }
   },
-
   {
     method: 'POST',
     path: '/admin/generic/{endpoint}/{obj}',
@@ -482,67 +459,58 @@ module.exports = [{
       description: 'generic UI for listview for standard objects'
     }
   },
-
   {
     method: 'GET',
     path: '/admin/createAdminUser',
     handler: AdminUser.createAdminUsersUI,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Create new admin users from list'
     }
   },
-
   {
     method: 'POST',
     path: '/admin/createAdminUser',
     handler: AdminUser.create,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Create new admin users from list'
     }
   },
-
   {
     method: 'GET',
     path: '/admin/import-contacts',
     handler: ImportContacts.getImportContacts,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Import iep/area email addresses to documents'
     }
   },
-
   {
     method: 'POST',
     path: '/admin/import-contacts',
     handler: ImportContacts.postImportContacts,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Post handler for import iep/area email addresses to documents'
     }
   },
-
   {
     method: 'GET',
     path: '/admin/import-stations',
     handler: ImportStations.getImportStations,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Import gauging stations linked to licence'
     }
   },
-
   {
     method: 'POST',
     path: '/admin/import-stations',
     handler: ImportStations.postImportStations,
     config: {
-      auth: "simple",
+      auth: 'simple',
       description: 'Post handler for import gauging stations'
     }
   }
-
-
-
-]
+];

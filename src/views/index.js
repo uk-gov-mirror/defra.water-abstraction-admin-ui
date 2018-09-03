@@ -1,45 +1,49 @@
-const handlebars = require('handlebars')
-console.log('working dir for views')
-console.log(__dirname)
+const handlebars = require('handlebars');
+const moment = require('moment');
+console.log('working dir for views');
+console.log(__dirname);
 
-const Helpers = require('../lib/helpers')
+const Helpers = require('../lib/helpers');
 
+handlebars.registerHelper('equal', require('handlebars-helper-equal'));
 
-
-handlebars.registerHelper("equal", require("handlebars-helper-equal"))
-
-
-handlebars.registerHelper('or', function(v1, v2, options) {
-  if(v1 || v2) {
+handlebars.registerHelper('or', function (v1, v2, options) {
+  if (v1 || v2) {
     return options.fn(this);
   }
   return options.inverse(this);
 });
 
-
-handlebars.registerHelper( 'concat', function(){
-  var arg = Array.prototype.slice.call(arguments,0);
+handlebars.registerHelper('concat', function () {
+  var arg = Array.prototype.slice.call(arguments, 0);
   arg.pop();
   return arg.join('');
-})
+});
 
-
-handlebars.registerHelper( 'stringify', function(variable){
+handlebars.registerHelper('stringify', function (variable) {
   var arg = JSON.stringify(variable);
   return arg;
-})
+});
+handlebars.registerHelper('prettyStringify', function (variable) {
+  var arg = JSON.stringify(variable, null, 2);
+  return arg;
+});
 
-handlebars.registerHelper( 'parse', function(variable){
-  try{
-  var arg = JSON.parse(variable);
-} catch(e){
-  return variable
-}
+handlebars.registerHelper('returnDate', function (value) {
+  return moment(value, 'YYYYMMDD').format('DD/MM/YYYY');
+});
+
+handlebars.registerHelper('parse', function (variable) {
+  try {
+    var arg = JSON.parse(variable);
+  } catch (e) {
+    return variable;
+  }
 
   return arg;
-})
-handlebars.registerHelper( 'showhide', function(){
-  var arg = Array.prototype.slice.call(arguments,0);
+});
+handlebars.registerHelper('showhide', function () {
+  var arg = Array.prototype.slice.call(arguments, 0);
   arg.pop();
   /**
   <details>
@@ -51,24 +55,23 @@ handlebars.registerHelper( 'showhide', function(){
     </div>
   </details>
   **/
-  var htmlContent='';
-  htmlContent+=''
-  htmlContent+='<details>'
-  htmlContent+='<summary><span class="summary" tabindex="0">'+arg[0]+'</span></summary>'
-  htmlContent+='<div class="panel panel-border-narrow">'
-  htmlContent+='<h3 class="heading-small">'+arg[1]+'</h3>'
-  htmlContent+=arg[2]
-  htmlContent+='</div>'
-  htmlContent+='</details>'
+  var htmlContent = '';
+  htmlContent += '';
+  htmlContent += '<details>';
+  htmlContent += '<summary><span class="summary" tabindex="0">' + arg[0] + '</span></summary>';
+  htmlContent += '<div class="panel panel-border-narrow">';
+  htmlContent += '<h3 class="heading-small">' + arg[1] + '</h3>';
+  htmlContent += arg[2];
+  htmlContent += '</div>';
+  htmlContent += '</details>';
   return htmlContent;
-})
+});
 
-
-handlebars.registerHelper( 'guid', function(){
+handlebars.registerHelper('guid', function () {
   return Helpers.createGUID();
-})
+});
 
-const Path = require('path')
+const Path = require('path');
 
 const defaultContext = {
   assetPath: '/public/',
@@ -86,15 +89,13 @@ const defaultContext = {
   globalHeaderText: 'GOV.UK',
   insideHeader: '',
 
-
-
   propositionHeader: '<div class="header-proposition"><div class="content"><nav id="proposition-menu"><a href="/" id="proposition-name">Water resource licensing admin service</a></nav></div></div>',
   afterHeader: '',
   footerTop: '',
   footerSupportLinks: '<ul><li><a href="/logout">Log Out</a></li></ul>',
   licenceMessage: '<p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>',
   bodyEnd: ''
-}
+};
 
 module.exports = {
   engines: {
@@ -106,4 +107,4 @@ module.exports = {
   layout: 'govuk_template',
   partialsPath: Path.join(__dirname, 'partials/'),
   context: defaultContext
-}
+};

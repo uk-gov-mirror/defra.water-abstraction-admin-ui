@@ -1,45 +1,39 @@
 var bcrypt = require('bcrypt');
 
-//contains generic functions unrelated to a specific component
-var rp = require('request-promise-native').defaults({
-    proxy:null,
-    strictSSL :false
-  })
+// contains generic functions unrelated to a specific component
+const rp = require('request-promise-native').defaults({
+  proxy: null,
+  strictSSL: false
+});
 
-//make a simple http request (without a body), uses promises
-function makeURIRequest(uri,headers) {
+// make a simple http request (without a body), uses promises
+function makeURIRequest (uri, method = 'get') {
   return new Promise((resolve, reject) => {
-    if(!headers){
-      var headers = {
-        Authorization : process.env.JWT_TOKEN
-      }
-    }
-    console.log('request to '+uri)
-    var options = {
+    const options = {
       method: 'get',
       uri,
-      headers
+      headers: { Authorization: process.env.JWT_TOKEN }
     };
     rp(options)
-      .then(function(response) {
-
-        var responseData = {};
-        responseData.error = null
-        responseData.statusCode = 200
-        responseData.body = response
-        console.log('resolve request to '+uri)
+      .then(function (response) {
+        const responseData = {
+          error: null,
+          statusCode: 200,
+          body: response
+        };
+        console.log('resolve request to ' + uri);
         resolve(responseData);
       })
-      .catch(function(response) {
-        var responseData = {};
-        responseData.error = response.error
-        responseData.statusCode = response.statusCode
-        responseData.body = response.body
-        console.log('reject request to '+uri)
-        //console.log(responseData)
+      .catch(function (response) {
+        const responseData = {
+          error: response.error,
+          statusCode: response.statusCode,
+          body: response.body
+        };
+        console.log('reject request to ' + uri);
         reject(responseData);
       });
-  })
+  });
 }
 
 //make an http request (with a body), uses promises
@@ -96,26 +90,8 @@ s4() + '-' + s4() + s4() + s4()
 }
 
 
-function createHash(string){
-  return new Promise((resolve, reject) => {
-  const saltRounds = 10;
-  bcrypt.hash(string, saltRounds, function(err, hash) {
-    if(err){
-      reject(err)
-    }
-    resolve(hash)
-  })
-});
-}
-
 function compareHash(string1,string2,cb){
-  console.log('bcrypt compare')
-  console.log('atring 1 ='+string1)
-  console.log('atring 2 ='+string2)
   bcrypt.compare(string1,string2, (err, res)=> {
-    console.log('bcrypt compare')
-    console.log(err)
-    console.log(res)
     if(res){
       console.log('password OK, authorised!')
     } else {
@@ -157,12 +133,10 @@ function addPaginationDetail(pagination){
 
 module.exports = {
   createGUID,
-  createHash,
   compareHash,
   encryptToken,
   decryptToken,
   makeURIRequestWithBody,
   makeURIRequest,
   addPaginationDetail
-
-}
+};

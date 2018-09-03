@@ -5,3 +5,6 @@
 .env
 /etl/.env
 /views/
+*.swp
+coverage
+lcov.info

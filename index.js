@@ -1,52 +1,70 @@
-//provides Admin gui, consumes water service
-require('dotenv').config()
+// provides Admin gui, consumes water service
+require('dotenv').config();
+const config = require('./config');
+const Hapi = require('hapi');
 
-const Hapi = require('hapi')
+const serverOptions = { connections: { router: { stripTrailingSlash: true } } };
+const server = new Hapi.Server(serverOptions);
 
-
-const serverOptions = { connections: { router: { stripTrailingSlash: true } } }
-const server = new Hapi.Server(serverOptions)
-const SanitizePayload = require('hapi-sanitize-payload')
-
-
-
-const Helpers = require('./src/lib/helpers.js')
-
-server.connection({ port: process.env.PORT || 8000 })
+server.connection({ port: process.env.PORT || 8000 });
 
 if (process.env.DATABASE_URL) {
   // get heroku db params from env vars
-
-
-  var workingVariable = process.env.DATABASE_URL.replace('postgres://', '')
-  process.env.PGUSER = workingVariable.split('@')[0].split(':')[0]
-  process.env.PGPASSWORD = workingVariable.split('@')[0].split(':')[1]
-  process.env.PGHOST = workingVariable.split('@')[1].split(':')[0]
-  process.env.PSPORT = workingVariable.split('@')[1].split(':')[1].split('/')[0]
-  process.env.PGDATABASE = workingVariable.split('@')[1].split(':')[1].split('/')[1]
-}
-
-const cacheKey = process.env.cacheKey || 'super-secret-cookie-encryption-key'
-const sessionPluginOptions = {
-  cache: { segment: 'unique-cache-sement' },
-  cookie: { isSecure: false },
-  key: 'bla-bla-bla'
+  const workingVariable = process.env.DATABASE_URL.replace('postgres://', '');
+  process.env.PGUSER = workingVariable.split('@')[0].split(':')[0];
+  process.env.PGPASSWORD = workingVariable.split('@')[0].split(':')[1];
+  process.env.PGHOST = workingVariable.split('@')[1].split(':')[0];
+  process.env.PSPORT = workingVariable.split('@')[1].split(':')[1].split('/')[0];
+  process.env.PGDATABASE = workingVariable.split('@')[1].split(':')[1].split('/')[1];
 }
 
 // isSecure = true for live...
-var yar_options = {
+const yarOptions = {
   storeBlank: false,
   cookieOptions: {
     password: 'the-password-must-be-at-least-32-characters-long',
     isSecure: false
   }
+};
+
+function validateBasic (request, userName, password, callback) {
+  const data = {
+    user_name: userName,
+    password,
+    application: config.application
+  };
+  const httpRequest = require('request').defaults({
+    proxy: null,
+    strictSSL: false
+  });
+
+  const method = 'post';
+  const url = `${process.env.IDM_URI}/user/login?token=${process.env.JWT_TOKEN}`;
+
+  httpRequest({ method, url, form: data }, function (err, httpResponse, body) {
+    if (err) {
+      console.log(err);
+      return callback(null, false);
+    }
+
+    const responseData = JSON.parse(body);
+
+    if (responseData.error) {
+      return callback(null, false);
+    }
+    return callback(null, true, { id: responseData.user_id, name: data.user_name });
+  });
 }
 
+const validateJWT = (decoded, request, callback) => {
+  const isValid = !!decoded.id;
+  console.log(decoded);
+  console.log(isValid);
+  return callback(null, isValid);
+};
 
-
-
-
-server.register([{
+server.register([
+  {
     register: require('node-hapi-airbrake-js'),
     options: {
       key: process.env.errbit_key,
@@ -62,77 +80,44 @@ server.register([{
   },
   {
     register: require('yar'),
-    options: yar_options
+    options: yarOptions
   },
-
-
-
-
-  require('hapi-auth-basic'), require('inert'), require('vision')
+  require('hapi-auth-basic'),
+  require('hapi-auth-jwt2'),
+  require('inert'),
+  require('vision')
 ], (err) => {
   if (err) {
-    throw err
+    throw err;
   }
 
-  function validateBasic(request, user_name, password, callback) {
-    // basic login for admin function UI
-    console.log(`Validating user request for ${user_name} with ${password}`)
-
-    var data = {};
-    data.user_name = user_name
-    data.password = password
-    const httpRequest = require('request').defaults({
-      proxy: null,
-      strictSSL: false
-    })
-
-    var method = 'post'
-    URI = process.env.IDM_URI + '/user/loginAdmin' + '?token=' + process.env.JWT_TOKEN;
-    console.log(URI)
-    httpRequest({
-        method: method,
-        url: URI,
-        form: data
-      },
-      function(err, httpResponse, body) {
-        console.log('got http ' + method + ' response')
-        responseData = JSON.parse(body)
-        if (responseData.err) {
-          return callback(null, false)
-        } else {
-          callback(null, true, { id: responseData.user_id, name: data.user_name })
-        }
-
-
-      });
-
-  }
-
-
-
-  server.auth.strategy('simple', 'basic', { validateFunc: validateBasic })
-
+  server.auth.strategy('simple', 'basic', { validateFunc: validateBasic });
   server.auth.default('simple');
 
+  server.auth.strategy('jwt', 'jwt',
+    { key: process.env.JWT_SECRET,          // Never Share your secret key
+      validateFunc: validateJWT,            // validate function defined above
+      verifyOptions: { algorithms: [ 'HS256' ] } // pick a strong algorithm
+    });
+
   // load views
-  server.views(require('./src/views'))
+  server.views(require('./src/views'));
 
   // load routes
-  //route for public static content
-  server.route(require('./src/routes/public'))
-  //route for admin UI components
-  server.route(require('./src/routes/admin'))
-  server.route(require('./src/routes/status'))
-
-})
+  // route for public static content
+  server.route(require('./src/routes/public'));
+  // route for admin UI components
+  server.route(require('./src/routes/admin'));
+  server.route(require('./src/routes/status'));
+});
 
 // Start the server if not testing with Lab
 if (!module.parent) {
   server.start((err) => {
     if (err) {
-      throw err
+      throw err;
     }
-    console.log(`Service ${process.env.servicename} running at: ${server.info.uri}`)
-  })
+    console.log(`Service ${process.env.servicename} running at: ${server.info.uri}`);
+  });
 }
-module.exports = server
+module.exports = server;

@@ -4,7 +4,6 @@
   <nav>
     <div class="breadcrumbs">
       <ol>
-        
         <li><a href="/admin">admin</a></li>
         <li><a href="/admin/idm">idm</a></li>
         <li><a href="/admin/idm/users">users</a></li>
@@ -14,61 +13,61 @@
   </nav>
   <div class="grid-row">
     <div class="column-full">
-      <h1 class="heading-xlarge">
-        Permit Repository Admin
-      </h1>
-      <h1 class="heading-large">
-      View User
-      </h1>
-      <table>
-<form id="user" method="post" action="/admin/idm/users/{{user.user_id}}">
-<tr><td>User ID</td><td>{{user.user_id}}</td></tr>
-<tr><td>Email</td><td><input size="70"  name="user_name" value="{{user.user_name}}"></tr>
-<tr><td>Is Admin</td><td><input name="admin" value="{{user.admin}}"></tr>
-<tr><td>Metadata</td><td><textarea rows="5" cols=75 name="user_data">{{user.user_data}}</textarea></tr>
-<tr><td>Reset GUID</td><td><input size="70" name="reset_guid" value="{{user.reset_guid}}"></tr>
-<tr><td>Reset required</td><td><input name="reset_required" value="{{user.reset_required}}"></tr>
-<tr><td>Last Login</td><td>{{user.last_login}}</tr>
-<tr><td>Bad Logins</td><td><input name="bad_logins" value="{{user.bad_logins}}"></tr>
-<tr><td></td><td><button type="submit">UPDATE</button></td></tr>
-<!--- /admin/idm/updatePassword/{user_name} --->
-</form>
-</table>
-
-
+      <h1 class="heading-xlarge">Permit Repository Admin</h1>
+      <h1 class="heading-large">View User</h1>
+      <form id="user" method="post" action="/admin/idm/users/{{user.user_id}}">
+        <table>
+          <tr>
+            <td>User ID</td>
+            <td>{{user.user_id}}</td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td><input size="70"  name="user_name" value="{{user.user_name}}"></td>
+          </tr>
+          <tr>
+            <td>Application</td>
+            <td>{{user.application}}</td>
+          </tr>
+          <tr>
+            <td>Metadata</td>
+            <td><textarea rows="5" cols=75 name="user_data">{{user.user_data}}</textarea></td>
+          </tr>
+          <tr>
+            <td>Reset GUID</td>
+            <td><input size="70" name="reset_guid" value="{{user.reset_guid}}"></td>
+          </tr>
+          <tr>
+            <td>Reset required</td>
+            <td><input name="reset_required" value="{{user.reset_required}}"></td>
+          </tr>
+          <tr>
+            <td>External ID</td>
+            <td>{{user.external_id}}</td>
+          </tr>
+          <tr>
+            <td>Last Login</td>
+            <td>{{user.last_login}}</td>
+          </tr>
+          <tr>
+            <td>Bad Logins</td>
+            <td><input name="bad_logins" value="{{user.bad_logins}}"></td>
+          </tr>
+          <tr>
+            <td>Roles</td>
+            <td><textarea rows="5" cols=75 name="role">{{user.role}}</textarea></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <button class="button" type="submit">Update</button>
+              <a href="/admin/idm/users/{{user.user_id}}/delete">Delete this user</a>
+            </td>
+          </tr>
+        </table>
+      </form>
     </div>
   </div>
 </main>
-{{> footerjs}} {{> debug}}
-
-
-<script language="javascript">
-
-
-function updateUser(){
-
-
-  var URI="/admin/idm/updatePassword/{{user.user_name}}"
-
-  var data = $("#user").serializeArray()
-  console.log(data);
-
-  console.log(URI)
-
-
-  return false
-
-  $.ajax({
-    type: "POST",
-    url: URI,
-    data: data,
-    success: function(res,err){
-      console.log(err)
-      console.log(res)
-      location.reload()
-    },
-    dataType: 'json'
-  });
-
-}
-</script>
+{{> footerjs}}
+{{> debug}}
