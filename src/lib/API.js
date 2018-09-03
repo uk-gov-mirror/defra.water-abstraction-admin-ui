@@ -1,8 +1,5 @@
-const baseFilePath = __dirname + '/../public/data/licences/'
-const Helpers = require('./helpers')
-const DB = require('./connectors/db')
-
-
+const DB = require('./connectors/db');
+const uuid = require('uuid/v4');
 
 const dbSchema = {
   schemaName: 'permit',
@@ -16,29 +13,7 @@ const dbSchema = {
     licenceShortcode: 'licence_shortcode',
     licenceUsers: 'user_licence'
   }
-
-}
-
-function makeURIRequest (uri, cb) {
-  httpRequest(uri+'?token='+process.env.JWT_TOKEN, function (error, response, body) {
-    var data = JSON.parse(body)
-    cb(data)
-  })
-}
-
-function makeURIPostRequest(uri,data,cb){
-  console.log('make http post')
-  httpRequest.post({
-            url: uri+'?token='+process.env.JWT_TOKEN,
-            form: data
-        },
-        function (err, httpResponse, body) {
-            console.log('got http post')
-//            console.log(err, body);
-            cb({err:err,data:body})
-
-        });
-}
+};
 
 function getFields (request, reply) {
   var query = `SELECT * from ${dbSchema.schemaName}.${dbSchema.tables.systemFields}`
@@ -598,7 +573,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzLCJuYW1lIjoiQ2hhcmxpZSIsImlhdCI
 }
 
 function createShortcode (request, reply) {
-  var shortcode = Helpers.createGUID()
+  var shortcode = uuid();
   query = `
     insert into  ${dbSchema.schemaName}.${dbSchema.tables.licenceShortcode}
     (licence_id,shortcode,issued_dt) values ($1,$2,current_timestamp)`
@@ -695,7 +670,7 @@ function licenceShortcodes (licence_id, cb) {
 }
 
 function licenceAddshortcode (licence_id, cb) {
-  var shortcode = Helpers.createGUID()
+  var shortcode = uuid();
   query = `
       insert into  ${dbSchema.schemaName}.${dbSchema.tables.licenceShortcode}
       (licence_id,shortcode,issued_dt,expiry_dt) values ($1,$2,CURRENT_DATE,CURRENT_DATE + INTERVAL '7 day')`
@@ -734,7 +709,6 @@ module.exports = {
     get: getLicenceType,
     getFields: getlicenceTypeFields,
     createField: createlicenceTypeField
-
   },
   licence: {
     list: listLicences,
@@ -745,16 +719,12 @@ module.exports = {
     shortcodes: licenceShortcodes,
     users: licenceUsers,
     addshortcode: licenceAddshortcode
-
   },
   general: {
-    reset: reset,
-    makeURIRequest:makeURIRequest,
-    makeURIPostRequest:makeURIPostRequest
-
+    reset
   },
   shortcode: {
     create: createShortcode,
     use: useShortcode
   }
-}
+};

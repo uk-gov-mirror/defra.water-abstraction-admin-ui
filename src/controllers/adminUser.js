@@ -1,7 +1,7 @@
 const IDM = require('../lib/connectors/idm');
 const CRM = require('../lib/connectors/crm');
-const Helpers = require('../lib/helpers');
 const View = require('../lib/view');
+const uuid = require('uuid/v4');
 
 const createCrmAdminRole = async (entityId, regimeId) => {
   const role = {
@@ -50,12 +50,12 @@ const getOrCreateIdmUser = async (userName, externalId) => {
       user_name: userName,
       user_data: { 'usertype': 'internal', 'firstname': '' },
       application: 'water_vml',
-      password: Helpers.createGUID(),
+      password: uuid(),
       role: {
         scopes: ['internal']
       },
       reset_required: 1,
-      reset_guid: Helpers.createGUID(),
+      reset_guid: uuid(),
       external_id: externalId
     };
 
