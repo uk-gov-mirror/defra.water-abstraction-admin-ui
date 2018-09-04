@@ -20,7 +20,7 @@
     "govuk-elements-sass": "^3.1.1",
     "govuk_frontend_toolkit": "^7.0.1",
     "govuk_template_mustache": "^0.22.3",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-run-sequence": "^0.3.2",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.0",
@@ -54,6 +54,7 @@
     "path": "^0.12.7",
     "pg": "^7.1.0",
     "request-promise-native": "^1.0.5",
+    "uuid": "^3.3.2",
     "vision": "^4.1.1",
     "yar": "^8.1.2"
   },
