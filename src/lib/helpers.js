@@ -88,9 +88,16 @@ function addPaginationDetail (pagination) {
   return pagination;
 }
 
+const showUnlinkAll = env => {
+  return env.test_mode === true ||
+    env.test_mode === 'true' ||
+    env.NODE_ENV === 'preprod';
+};
+
 module.exports = {
   decryptToken,
   makeURIRequestWithBody,
   makeURIRequest,
-  addPaginationDetail
+  addPaginationDetail,
+  showUnlinkAll
 };

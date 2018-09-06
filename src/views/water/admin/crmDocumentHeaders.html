@@ -4,7 +4,6 @@
   <nav>
     <div class="breadcrumbs">
       <ol>
-        
         <li><a href="/admin">admin</a></li>
         <li><a href="/admin/crm">crm</a></li>
         <li><a href="/admin/crm/entities">entities</a></li>
@@ -13,79 +12,70 @@
   </nav>
   <div class="grid-row">
     <div class="column-full">
-      <h1 class="heading-xlarge">
-        Permit Repository Admin / CRM / Documents
-      </h1>
-<table>
-<tr>
-  <th>Licence Ref</th>
-  <th>Name</th>
-  <th>Custom Name</th>
-  <th>Status</th>
-  <th>Actions</th>
-</tr>
-{{#each permits}}
-<tr>
+      <h1 class="heading-xlarge">Permit Repository Admin / CRM / Documents</h1>
+      <table>
+        <tr>
+          <th>Licence Ref</th>
+          <th>Name</th>
+          <th>Custom Name</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+        {{#each permits}}
+        <tr>
+          <td>
+            <details>
+              <summary><span class="summary">{{system_external_id}}</span></summary>
+              <div>
+                <ul class="list list-bullet">
+                  <li>Document ID: <a href='/admin/crm/document/{{document_id}}'>{{document_id}}</a></li>
+                  <li>Regime ID:  <a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_entity_id}}</a></li>
+                  <li>System ID:  {{system_id}}</li>
+                  <li>Permit Repo ID:  <a href="/admin/licence/{{system_internal_id}}">{{system_internal_id}}</a></li>
+                  <li>Company ID:  {{ company_entity_id }}</li>
+                  <li>Verification ID:  {{ verification_id }}</li>
+                </ul>
+              </div>
+            </details>
+          </td>
+          <td>{{document_original_name}}</td>
+          <td>{{stringify document_custom_name}}</td>
+          <td>
+            {{#if company_entity_id }}
+              Linked
+            {{else}}
+              {{#if verification_id}}
+                Pending
+              {{else}}
+                Unlinked
+              {{/if}}
+            {{/if}}
+          </td>
+          <td>
+            <a target="_blank" href="{{ ../uiBaseUrl }}/licences/{{ document_id }}">View</a>
 
-  <td>
-    <details>
-      <summary><span class="summary">{{system_external_id}}</span></summary>
-      <div>
-        <ul class="list list-bullet">
-          <li>Document ID: <a href='/admin/crm/document/{{document_id}}'>{{document_id}}</a></li>
-          <li>Regime ID:  <a href="/admin/crm/entities/{{regime_entity_id}}">{{regime_entity_id}}</a></li>
-          <li>System ID:  {{system_id}}</li>
-          <li>Permit Repo ID:  <a href="/admin/licence/{{system_internal_id}}">{{system_internal_id}}</a></li>
-          <li>Company ID:  {{ company_entity_id }}</li>
-          <li>Verification ID:  {{ verification_id }}</li>
-        </ul>
+            {{#or company_entity_id verification_id }}
+            | 
+            <a class="danger" href="/admin/crm/document/{{document_id}}/unlink">Unlink</a>
+            {{/or}}
+
+          </td>
+        </tr>
+        {{/each}}
+      </table>
+
+      <br />
+
+      {{#if allowUnlinkAll}}
+      <div class="notice" style="border: none;">
+        <i class="icon icon-important">
+          <span class="visually-hidden">Warning</span>
+        </i>
+        <strong class="bold-small">
+          <a href="/admin/crm/document/unlink-all" class="danger">Unlink all documents from companies/verifications</a>
+        </strong>
       </div>
-    </details>
-  </td>
-<td>{{document_original_name}}</td>
-<td>{{stringify document_custom_name}}</td>
-<td>
-  {{#if company_entity_id }}
-    Linked
-  {{else}}
-    {{#if verification_id}}
-      Pending
-    {{else}}
-      Unlinked
-    {{/if}}
-  {{/if}}
-</td>
-<td>
-  <a target="_blank" href="{{ ../uiBaseUrl }}/licences/{{ document_id }}">View</a>
-
-
-
-  {{#or company_entity_id verification_id }}
-  | 
-  <a class="danger" href="/admin/crm/document/{{document_id}}/unlink">Unlink</a>
-  {{/or}}
-
-</td>
-</tr>
-{{/each}}
-</table>
-
-
-
-
-<br />
-<br />
-
-<div class="notice" style="border: none;">
-  <i class="icon icon-important">
-    <span class="visually-hidden">Warning</span>
-  </i>
-  <strong class="bold-small">
-    <a href="/admin/crm/document/unlink-all" class="danger">Unlink all documents from companies/verifications</a>
-  </strong>
-</div>
-
-
+      {{/if}}
     </div>
   </div>
 </main>
