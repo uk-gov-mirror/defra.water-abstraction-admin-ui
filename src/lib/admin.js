@@ -3,7 +3,7 @@ const httpRequest = require('request').defaults({
   proxy: null,
   strictSSL: false
 });
-const Helpers = require('./helpers');
+const helpers = require('./helpers');
 const View = require('./view');
 const Idm = require('./connectors/idm');
 const Crm = require('./connectors/crm');
@@ -165,7 +165,7 @@ function crmEntities (request, reply) {
 
     const data = JSON.parse(body);
     viewContext.entities = data.data;
-    viewContext.pagination = Helpers.addPaginationDetail(data.pagination);
+    viewContext.pagination = helpers.addPaginationDetail(data.pagination);
     reply.view('water/admin/crmEntities', viewContext);
   });
 }
@@ -233,6 +233,7 @@ function crmAllEntitiesJSON (request, reply) {
 function crmDocumentHeaders (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
+  viewContext.allowUnlinkAll = helpers.showUnlinkAll(process.env);
   Crm.findDocument(request.params.search).then((response) => {
     viewContext.permits = response.data;
     viewContext.debug.permits = response.data;

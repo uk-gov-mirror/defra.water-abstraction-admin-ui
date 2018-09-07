@@ -9,8 +9,9 @@ const ImportContacts = require('../controllers/importContacts');
 const ImportStations = require('../controllers/importGaugingStations');
 const moduleRoutes = require('../modules/routes');
 const usersController = require('../controllers/users');
+const helpers = require('../lib/helpers');
 
-module.exports = [
+const routes = [
   ...moduleRoutes,
   {
     method: 'GET',
@@ -290,15 +291,6 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/admin/crm/document/unlink-all',
-    handler: Admin.getUnlinkAllDocuments,
-    config: {
-      auth: 'simple',
-      description: 'Unlink document from company/verification'
-    }
-  },
-  {
-    method: 'GET',
     path: '/admin/crm/document/unlink-success',
     handler: Admin.getUnlinkSuccess,
     config: {
@@ -514,3 +506,17 @@ module.exports = [
     }
   }
 ];
+
+if (helpers.showUnlinkAll(process.env)) {
+  routes.push({
+    method: 'GET',
+    path: '/admin/crm/document/unlink-all',
+    handler: Admin.getUnlinkAllDocuments,
+    config: {
+      auth: 'simple',
+      description: 'Unlink document from company/verification'
+    }
+  });
+}
+
+module.exports = routes;

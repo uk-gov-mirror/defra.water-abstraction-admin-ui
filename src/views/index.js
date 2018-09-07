@@ -1,8 +1,5 @@
 const handlebars = require('handlebars');
 const moment = require('moment');
-console.log('working dir for views');
-console.log(__dirname);
-
 const Helpers = require('../lib/helpers');
 
 handlebars.registerHelper('equal', require('handlebars-helper-equal'));
