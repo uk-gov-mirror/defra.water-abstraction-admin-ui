@@ -89,8 +89,7 @@ function addPaginationDetail (pagination) {
 }
 
 const showUnlinkAll = env => {
-  return env.test_mode === true ||
-    env.test_mode === 'true' ||
+  return [true, 'true', '1'].includes(env.test_mode) ||
     env.NODE_ENV === 'preprod';
 };
 
