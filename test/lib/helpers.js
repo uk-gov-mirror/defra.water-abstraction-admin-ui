@@ -12,6 +12,11 @@ experiment('showUnlinkAll', () => {
     expect(showUnlinkAll(env)).to.be.true();
   });
 
+  test('returns true if the test_mode value is "1"', async () => {
+    const env = { test_mode: '1', NODE_ENV: 'development' };
+    expect(showUnlinkAll(env)).to.be.true();
+  });
+
   test('returns true if the NODE_ENV env value is preprod', async () => {
     const env = { test_mode: false, NODE_ENV: 'preprod' };
     expect(showUnlinkAll(env)).to.be.true();
