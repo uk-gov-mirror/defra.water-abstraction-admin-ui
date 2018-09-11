@@ -3,7 +3,8 @@ const Endpoints = {
   crm: require('./../lib/connectors/crm'),
   idm: require('./../lib/connectors/idm'),
   permit: require('./../lib/connectors/permit'),
-  water: require('./../lib/connectors/water')
+  water: require('./../lib/connectors/water'),
+  returns: require('./../lib/connectors/returns')
 };
 
 const createConfigItem = (title, key, editable = true, exclude = []) => ({ title, key, editable, exclude });
@@ -32,6 +33,9 @@ const viewConfig = {
       'licence_type_id', 'licence_status_id'
     ]),
     expiring_licences: createConfigItem('Expiring Licences', 'licence_id', false)
+  },
+  returns: {
+    returns: createConfigItem('Returns', 'return_id', true)
   }
 };
 
