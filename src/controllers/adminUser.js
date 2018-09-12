@@ -81,26 +81,28 @@ async function create (request, reply) {
 
   const regimeId = await getRegimeId();
 
-  const allRequests = request.payload.user_name.map(async userName => {
-    try {
-      const crmResult = await getOrCreateCrmEntity(userName, regimeId);
+  const allRequests = request.payload.user_name
+    .map(userName => userName.trim().toLowerCase())
+    .map(async userName => {
+      try {
+        const crmResult = await getOrCreateCrmEntity(userName, regimeId);
 
-      result.crm.created += crmResult.created;
-      result.crm.existing += crmResult.existing;
+        result.crm.created += crmResult.created;
+        result.crm.existing += crmResult.existing;
 
-      const idmResult = await getOrCreateIdmUser(userName, crmResult.entity.entity_id);
+        const idmResult = await getOrCreateIdmUser(userName, crmResult.entity.entity_id);
 
-      result.idm.created += idmResult.created;
-      result.idm.existing += idmResult.existing;
+        result.idm.created += idmResult.created;
+        result.idm.existing += idmResult.existing;
 
-      if (idmResult.created) {
-        result.idmUsers.push(idmResult.user);
+        if (idmResult.created) {
+          result.idmUsers.push(idmResult.user);
+        }
+      } catch (error) {
+        console.error(error);
+        throw error;
       }
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  });
+    });
 
   Promise.all(allRequests)
     .then(() => {
