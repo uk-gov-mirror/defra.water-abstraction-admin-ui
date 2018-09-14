@@ -35,7 +35,9 @@ const viewConfig = {
     expiring_licences: createConfigItem('Expiring Licences', 'licence_id', false)
   },
   returns: {
-    returns: createConfigItem('Returns', 'return_id', true)
+    returns: createConfigItem('Returns', 'return_id', true),
+    versions: createConfigItem('Versions', 'version_id', true),
+    lines: createConfigItem('Lines', 'line_id', true)
   }
 };
 
