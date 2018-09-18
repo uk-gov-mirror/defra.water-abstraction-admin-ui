@@ -4,8 +4,7 @@
   "description": "Web app for Water Abstraction Permit service",
   "main": "index.js",
   "scripts": {
-    "heroku-prebuild": "npm install --only=dev",
-    "heroku-postbuild": "gulp clean && gulp copy-govuk-files && gulp install-govuk-files && gulp copy-static-assets && gulp sass",
+    "install-assets": "gulp build",
     "test": "./node_modules/lab/bin/lab -t 55 -m 0 -r lcov -o lcov.info -r console -o stdout",
     "test-cov-html": "lab -r html -o coverage.html"
   },
@@ -20,13 +19,14 @@
     "govuk-elements-sass": "^3.1.1",
     "govuk_frontend_toolkit": "^7.0.1",
     "govuk_template_mustache": "^0.22.3",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-run-sequence": "^0.3.2",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.0",
     "gulp-standard": "^10.0.0",
     "lab": "^14.1.1",
     "run-sequence": "^2.1.0",
+    "sinon": "^6.2.0",
     "snyk": "^1.90.2",
     "standard": "^10.0.2"
   },
@@ -54,6 +54,7 @@
     "path": "^0.12.7",
     "pg": "^7.1.0",
     "request-promise-native": "^1.0.5",
+    "uuid": "^3.3.2",
     "vision": "^4.1.1",
     "yar": "^8.1.2"
   },
