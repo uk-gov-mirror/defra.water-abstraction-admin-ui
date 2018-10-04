@@ -68,6 +68,15 @@ handlebars.registerHelper('guid', function () {
   return Helpers.createGUID();
 });
 
+handlebars.registerHelper('formatISODate', function (dateInput, options) {
+  if (!dateInput) {
+    return null;
+  }
+  const date = moment(dateInput);
+  const { format = 'D MMMM YYYY' } = options.hash;
+  return date.isValid() ? date.format(format) : dateInput;
+});
+
 const Path = require('path');
 
 const defaultContext = {

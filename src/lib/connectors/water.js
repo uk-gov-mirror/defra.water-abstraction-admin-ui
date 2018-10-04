@@ -144,6 +144,26 @@ const getReturnsLines = async(regionCode, formatId, dateFrom) => {
   });
 };
 
+const getReturnsNotificationOptions = (payload, isPreview) => {
+  return {
+    uri: process.env.WATER_URI + `/returns-notifications/invite/${isPreview ? 'preview' : 'send'}`,
+    method: 'POST',
+    body: payload,
+    json: true,
+    headers: {
+      Authorization: `Bearer ${process.env.JWT_TOKEN}`
+    }
+  };
+};
+
+const previewReturnsInvitation = async(payload) => {
+  return rp(getReturnsNotificationOptions(payload, true));
+};
+
+const sendReturnsInvitation = async(payload) => {
+  return rp(getReturnsNotificationOptions(payload, false));
+};
+
 module.exports = {
   naldImport,
   naldLicence,
@@ -156,5 +176,7 @@ module.exports = {
   task_config: taskConfigClient,
   getReturnsFormats,
   getReturnsLogs,
-  getReturnsLines
+  getReturnsLines,
+  previewReturnsInvitation,
+  sendReturnsInvitation
 };

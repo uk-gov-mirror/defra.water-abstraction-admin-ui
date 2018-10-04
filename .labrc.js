@@ -3,7 +3,7 @@
 // This is overridden if arguments are passed to lab via the command line.
 module.exports = {
   // This version global seems to be introduced by sinon.
-  globals: 'version,Atomics,SharedArrayBuffer',
+  globals: 'version,Atomics,SharedArrayBuffer,fetch,Response,Headers,Request',
 
   'coverage-exclude': [
     'data',

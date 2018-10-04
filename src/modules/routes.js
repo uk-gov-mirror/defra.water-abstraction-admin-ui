@@ -1,8 +1,10 @@
 const returnsRoutes = require('./returns/routes');
+const returnsNotificationRoutes = require('./returns-notifications/routes');
 const testMode = parseInt(process.env.test_mode);
 
 let routes = [
-  ...Object.values(returnsRoutes)
+  ...Object.values(returnsRoutes),
+  ...Object.values(returnsNotificationRoutes)
 ];
 
 if (testMode) {
