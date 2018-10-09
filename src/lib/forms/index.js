@@ -145,6 +145,7 @@ const importData = (form, payload) => {
  * @return {Array} formatted error messages
  */
 const formatErrors = (error, customErrors) => {
+  console.log(error);
   return error.details.map(err => {
     const name = err.context.key;
     const { type, message } = err;

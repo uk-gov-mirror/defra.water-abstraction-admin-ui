@@ -22,10 +22,7 @@ const booleanMapper = {
     if (value === 'true') {
       return true;
     }
-    if (value === 'false') {
-      return false;
-    }
-    return undefined;
+    return false;
   },
   export: (value) => {
     if (value === true) {

@@ -1,0 +1,71 @@
+{{> styles}}
+<main id="content">
+  {{>element-phase-tag}}
+  <nav>
+    <div class="breadcrumbs">
+      <ol>
+        <li><a href="/admin">admin</a></li>
+        <li><a href="/admin/picklists">Picklists</a></li>
+        <li>{{ picklist.name }}</li>
+      </ol>
+    </div>
+  </nav>
+
+
+  <div class="grid-row">
+
+    <div class="column-full">
+
+
+      {{# if picklist }}
+      <h1 class="heading-xlarge">
+        <span class="heading-secondary">Picklist</span>
+         {{ picklist.name }}
+      </h1>
+      {{ else }}
+      <h1 class="heading-xlarge">Create picklist</h1>
+      {{/if}}
+
+
+      {{#if items.length }}
+
+      <h2 class="heading-medium">Picklist items</h2>
+      <table>
+        <thead>
+          <tr>
+            {{#if picklist.id_required }}
+            <th>ID</th>
+            {{/if}}
+            <th>Value</th>
+            <th>Details</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each items }}
+          <tr>
+            {{#if ../picklist.id_required }}
+            <td>{{ id }}</td>
+            {{/if}}
+            <td>{{ value }}</td>
+            <td>
+              {{# if hidden }}Hidden{{/if}}
+            </td>
+            <td><a href="/admin/picklist/{{ picklist_id }}/edit-item/{{ picklist_item_id }}">Edit <span class="visually-hidden">{{ value }}</span></a></td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+
+      {{else}}
+        <p>No items found.</p>
+      {{/if}}
+
+      <br />
+      <a href="/admin/picklist/{{ picklist.picklist_id }}/create-item" class="button">Add item</a>
+
+    </div>
+  </div>
+</main>
+{{> footerjs}}
+{{> debug}}

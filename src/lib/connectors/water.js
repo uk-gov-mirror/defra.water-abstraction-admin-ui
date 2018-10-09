@@ -164,6 +164,20 @@ const sendReturnsInvitation = async(payload) => {
   return rp(getReturnsNotificationOptions(payload, false));
 };
 
+const picklistsClient = new APIClient(rp, {
+  endpoint: process.env.WATER_URI + '/picklists',
+  headers: {
+    Authorization: process.env.JWT_TOKEN
+  }
+});
+
+const picklistItemsClient = new APIClient(rp, {
+  endpoint: process.env.WATER_URI + '/picklist-items',
+  headers: {
+    Authorization: process.env.JWT_TOKEN
+  }
+});
+
 module.exports = {
   naldImport,
   naldLicence,
@@ -178,5 +192,7 @@ module.exports = {
   getReturnsLogs,
   getReturnsLines,
   previewReturnsInvitation,
-  sendReturnsInvitation
+  sendReturnsInvitation,
+  picklists: picklistsClient,
+  picklistItems: picklistItemsClient
 };
