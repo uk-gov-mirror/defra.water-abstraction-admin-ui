@@ -4,7 +4,8 @@ node_js:
 install:
   - npm install
 script:
-  - npm run test && ./node_modules/.bin/codecov
+  - npm run test:travis
+  - npm run codecov
 env:
   global:
     - JWT_SECRET=secret

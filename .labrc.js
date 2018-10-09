@@ -4,6 +4,7 @@
 module.exports = {
   // This version global seems to be introduced by sinon.
   globals: 'version,Atomics,SharedArrayBuffer,fetch,Response,Headers,Request',
+  verbose: true,
 
   'coverage-exclude': [
     'data',
