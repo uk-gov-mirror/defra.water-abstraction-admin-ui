@@ -49,7 +49,7 @@ function validateBasic (request, userName, password, callback) {
 
     const responseData = JSON.parse(body);
 
-    if (responseData.error) {
+    if (responseData.err) {
       return callback(null, false);
     }
     return callback(null, true, { id: responseData.user_id, name: data.user_name });
