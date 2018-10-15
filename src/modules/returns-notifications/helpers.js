@@ -14,10 +14,10 @@ const getReturnDates = (refDate) => {
 
   const periodStart = moment(refDate).date(1).month(refMonth).subtract(1, 'years');
   const periodEnd = moment(periodStart).add(1, 'years').subtract(1, 'days');
-  const due = moment(refDate).month(refMonth).endOf('month');
+  const due = moment(periodEnd).add(28, 'day');
 
   return {
-    from: periodStart.format('YYYY-MM-DD'),
+    from: periodEnd.format('YYYY-MM-DD'),
     to: periodEnd.format('YYYY-MM-DD'),
     due: due.format('YYYY-MM-DD')
   };
@@ -30,7 +30,7 @@ const getReturnDates = (refDate) => {
  */
 const getConfig = (issuer) => {
   return {
-    rolePriority: ['returns_contact', 'licence_holder'],
+    rolePriority: ['licence_holder'],
     prefix: 'RINV-',
     issuer,
     messageRef: {

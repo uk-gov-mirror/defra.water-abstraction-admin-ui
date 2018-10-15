@@ -12,7 +12,7 @@ experiment('getWaterServiceRequest', () => {
     const data = {
       from: '2016-04-01',
       to: '2017-03-31',
-      due: '2017-04-30',
+      due: '2017-04-28',
       issuer: 'mail@example.com'
     };
 
@@ -20,7 +20,7 @@ experiment('getWaterServiceRequest', () => {
 
     expect(payload).to.equal({
       config: {
-        rolePriority: [ 'returns_contact', 'licence_holder' ],
+        rolePriority: [ 'licence_holder' ],
         prefix: 'RINV-',
         issuer: 'mail@example.com',
         messageRef: { default: 'returns_invitation_letter' },
@@ -32,7 +32,7 @@ experiment('getWaterServiceRequest', () => {
         'metadata->>isCurrent': 'true'
       },
       personalisation: {
-        date: '30 April 2017'
+        date: '28 April 2017'
       }});
   });
 });
@@ -40,11 +40,11 @@ experiment('getWaterServiceRequest', () => {
 experiment('getReturnDates', () => {
   test('Builds financial year return dates', async () => {
     const dates = getReturnDates('2017-04-25');
-    expect(dates).to.equal({ from: '2016-04-01', to: '2017-03-31', due: '2017-04-30' });
+    expect(dates).to.equal({ from: '2017-03-31', to: '2017-03-31', due: '2017-04-28' });
   });
 
   test('Builds summer return dates after September', async () => {
     const dates = getReturnDates('2018-09-03');
-    expect(dates).to.equal({ from: '2017-11-01', to: '2018-10-31', due: '2018-11-30' });
+    expect(dates).to.equal({ from: '2018-10-31', to: '2018-10-31', due: '2018-11-28' });
   });
 });
