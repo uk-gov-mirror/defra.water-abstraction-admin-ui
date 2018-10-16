@@ -144,6 +144,40 @@ const getReturnsLines = async(regionCode, formatId, dateFrom) => {
   });
 };
 
+const getReturnsNotificationOptions = (payload, isPreview) => {
+  return {
+    uri: process.env.WATER_URI + `/returns-notifications/invite/${isPreview ? 'preview' : 'send'}`,
+    method: 'POST',
+    body: payload,
+    json: true,
+    headers: {
+      Authorization: `Bearer ${process.env.JWT_TOKEN}`
+    }
+  };
+};
+
+const previewReturnsInvitation = async(payload) => {
+  return rp(getReturnsNotificationOptions(payload, true));
+};
+
+const sendReturnsInvitation = async(payload) => {
+  return rp(getReturnsNotificationOptions(payload, false));
+};
+
+const picklistsClient = new APIClient(rp, {
+  endpoint: process.env.WATER_URI + '/picklists',
+  headers: {
+    Authorization: process.env.JWT_TOKEN
+  }
+});
+
+const picklistItemsClient = new APIClient(rp, {
+  endpoint: process.env.WATER_URI + '/picklist-items',
+  headers: {
+    Authorization: process.env.JWT_TOKEN
+  }
+});
+
 module.exports = {
   naldImport,
   naldLicence,
@@ -156,5 +190,9 @@ module.exports = {
   task_config: taskConfigClient,
   getReturnsFormats,
   getReturnsLogs,
-  getReturnsLines
+  getReturnsLines,
+  previewReturnsInvitation,
+  sendReturnsInvitation,
+  picklists: picklistsClient,
+  picklistItems: picklistItemsClient
 };

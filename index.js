@@ -47,12 +47,13 @@ function validateBasic (request, userName, password, callback) {
       return callback(null, false);
     }
 
-    const responseData = JSON.parse(body);
+    const responseData = JSON.parse(body) || {};
+    const { user_id: id, user_name: name, err: responseError } = responseData;
 
-    if (responseData.error) {
+    if (responseError || !id) {
       return callback(null, false);
     }
-    return callback(null, true, { id: responseData.user_id, name: data.user_name });
+    return callback(null, true, { id, name });
   });
 }
 
