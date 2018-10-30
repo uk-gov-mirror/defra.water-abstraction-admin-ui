@@ -93,6 +93,7 @@ const getInvitationForm = () => {
   f.fields.push(fields.date('due', { label: 'Return due by' }));
   f.fields.push(fields.date('from', { label: 'Return end dates from' }));
   f.fields.push(fields.date('to', { label: 'Return end dates to' }));
+  f.fields.push(fields.checkbox('csv', { label: 'CSV export' }));
   f.fields.push(fields.button('', { label: 'Continue' }));
 
   // Initially set values to current return cycle
@@ -102,7 +103,8 @@ const getInvitationForm = () => {
 const formSchema = {
   due: Joi.date().required(),
   from: Joi.date().required(),
-  to: Joi.date().required()
+  to: Joi.date().required(),
+  csv: Joi.boolean({truthyStrings: ['true']}).default(false)
 };
 
 const getInvitationDataForm = (data) => {
