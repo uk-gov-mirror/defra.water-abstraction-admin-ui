@@ -1,6 +1,7 @@
 const util = require('util');
 const stringify = require('csv-stringify');
 const csvStringify = util.promisify(stringify);
+const { uniq } = require('lodash');
 
 const { getInvitationForm, formSchema, getWaterServiceRequest, getInvitationDataForm } = require('./helpers');
 const { handleRequest, getValues } = require('../../lib/forms');
@@ -29,18 +30,31 @@ const getReturnInvitation = async(request, reply) => {
  */
 const buildCsv = async (data) => {
   try {
+    const maxLicenceCount = data.messages.reduce((acc, row) => {
+      const licences = uniq(row.licences);
+      return licences.length > acc ? licences.length : acc;
+    }, 0);
+
     const contacts = data.messages.map(row => {
-      const { personalisation: { address_line_1, address_line_2, address_line_3, address_line_4, address_line_5, address_line_6, postcode }, licences } = row;
-      return {
+      const { personalisation: { address_line_1, address_line_2, address_line_3, address_line_4, address_line_5, address_line_6, postcode } } = row;
+
+      const licences = uniq(row.licences);
+
+      const data = {
         address_line_1,
         address_line_2,
         address_line_3,
         address_line_4,
         address_line_5,
         address_line_6,
-        postcode,
-        licences: licences.join(', ')
+        postcode
       };
+
+      for (let i = 0; i < maxLicenceCount; i++) {
+        data[`licence_${i + 1}`] = licences[i];
+      }
+
+      return data;
     });
     return await csvStringify(contacts, { header: true });
   } catch (err) {
