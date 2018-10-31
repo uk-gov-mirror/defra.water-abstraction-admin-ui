@@ -144,9 +144,14 @@ const getReturnsLines = async(regionCode, formatId, dateFrom) => {
   });
 };
 
-const getReturnsNotificationOptions = (payload, isPreview) => {
+const getReturnsNotificationOptions = (payload, isPreview, verbose = false) => {
+  const uri = process.env.WATER_URI + `/returns-notifications/invite/${isPreview ? 'preview' : 'send'}`;
+
+  const qs = verbose ? { verbose: 1 } : {};
+
   return {
-    uri: process.env.WATER_URI + `/returns-notifications/invite/${isPreview ? 'preview' : 'send'}`,
+    uri,
+    qs,
     method: 'POST',
     body: payload,
     json: true,
@@ -156,8 +161,8 @@ const getReturnsNotificationOptions = (payload, isPreview) => {
   };
 };
 
-const previewReturnsInvitation = async(payload) => {
-  return rp(getReturnsNotificationOptions(payload, true));
+const previewReturnsInvitation = async(payload, verbose = false) => {
+  return rp(getReturnsNotificationOptions(payload, true, verbose));
 };
 
 const sendReturnsInvitation = async(payload) => {
