@@ -21,7 +21,8 @@ const viewConfig = {
     notify_templates: createConfigItem('Notify Templates', 'message_ref'),
     scheduler: createConfigItem('Scheduled Tasks', 'task_id'),
     pending_import: createConfigItem('Imported Licences', 'id'),
-    task_config: createConfigItem('Task Config', 'task_config_id')
+    task_config: createConfigItem('Task Config', 'task_config_id'),
+    events: createConfigItem('Events', 'id')
   },
   idm: {
     users: createConfigItem('Users', 'user_id')
