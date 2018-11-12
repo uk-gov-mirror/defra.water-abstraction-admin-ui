@@ -14,16 +14,12 @@
     <div class="column-two-thirds">
 
       <div class="govuk-box-highlight">
-                <h1 class="heading-xlarge">
-                  {{ event.metadata.recipients }} letters sent
-                </h1>
-                <p class="font-large">
-                  Your reference number is <br>
-                  <strong class="bold">{{ event.reference_code}}</strong>
-                </p>
-              </div>
-
-
+        <h1 class="heading-xlarge">{{ plural event.metadata.recipients 'letter' 'letters' }} sent</h1>
+        <p class="font-large">
+          Your reference number is <br>
+          <strong class="bold">{{ event.reference_code}}</strong>
+        </p>
+      </div>
     </div>
   </div>
 </main>

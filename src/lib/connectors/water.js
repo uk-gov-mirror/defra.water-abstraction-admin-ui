@@ -20,32 +20,29 @@ function naldImport () {
   });
 }
 
-function naldLicence (licence_number) {
+function naldLicence (licenceNumber) {
   console.log('requesting nald licence');
-  var uri = process.env.WATER_URI + '/nald/licence?token=' + process.env.JWT_TOKEN;
-  requestBody = { licence_number: licence_number };
+  const uri = process.env.WATER_URI + '/nald/licence?token=' + process.env.JWT_TOKEN;
+  const requestBody = { licence_number: licenceNumber };
 
   console.log(uri);
   console.log(requestBody);
   return new Promise((resolve, reject) => {
-    Helpers.makeURIRequestWithBody(
-        uri,
-        'post',
-        requestBody)
+    Helpers.makeURIRequestWithBody(uri, 'post', requestBody)
       .then((response) => {
-        var data = response.body;
+        const data = response.body;
         resolve(data);
       }).catch((response) => {
-        console.log(response);
+        console.error(response);
         resolve(response);
       });
   });
 }
 
 async function getSchedules () {
-  var uri = process.env.WATER_URI + '/scheduler';
+  const uri = process.env.WATER_URI + '/scheduler';
   try {
-    res = await Helpers.makeURIRequest(uri);
+    const res = await Helpers.makeURIRequest(uri);
     return JSON.parse(res.body).data;
   } catch (e) {
     return null;
@@ -54,10 +51,9 @@ async function getSchedules () {
 
 async function addSchedule (data) {
   console.log('requesting nald licence');
-  var uri = process.env.WATER_URI + '/scheduler';
-  console.log(uri);
+  const uri = process.env.WATER_URI + '/scheduler';
   try {
-    res = await Helpers.makeURIRequestWithBody(uri, 'post', data);
+    const res = await Helpers.makeURIRequestWithBody(uri, 'post', data);
     console.log('res.data');
     console.log(res.body);
     return JSON.parse(res.body).data;
@@ -74,14 +70,14 @@ const notificationsClient = new APIClient(rp, {
   }
 });
 
-const notify_templatesClient = new APIClient(rp, {
+const notifyTemplatesClient = new APIClient(rp, {
   endpoint: process.env.WATER_URI + '/notify_templates',
   headers: {
     Authorization: process.env.JWT_TOKEN
   }
 });
 
-const pending_importClient = new APIClient(rp, {
+const pendingImportClient = new APIClient(rp, {
   endpoint: process.env.WATER_URI + '/pending_import',
   headers: {
     Authorization: process.env.JWT_TOKEN
@@ -189,8 +185,8 @@ module.exports = {
   getSchedules,
   addSchedule,
   notifications: notificationsClient,
-  notify_templates: notify_templatesClient,
-  pending_import: pending_importClient,
+  notify_templates: notifyTemplatesClient,
+  pending_import: pendingImportClient,
   scheduler: schedulerClient,
   task_config: taskConfigClient,
   getReturnsFormats,

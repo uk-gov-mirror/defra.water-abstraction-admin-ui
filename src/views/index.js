@@ -11,6 +11,10 @@ handlebars.registerHelper('or', function (v1, v2, options) {
   return options.inverse(this);
 });
 
+handlebars.registerHelper('plural', (count, singular, plural) => {
+  return count + ' ' + (count === 1 ? singular : plural);
+});
+
 handlebars.registerHelper('concat', function () {
   var arg = Array.prototype.slice.call(arguments, 0);
   arg.pop();
