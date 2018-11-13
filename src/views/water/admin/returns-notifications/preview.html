@@ -16,10 +16,7 @@
         Send paper return invitations
       </h1>
 
-
-      <p>Sending to {{ event.metadata.recipients }} recipients regarding {{ event.licences.length }} licences.</p>
-
-
+      <p>Sending to {{ plural event.metadata.recipients 'recipient' 'recipients' }} regarding {{ plural event.licences.length 'licence' 'licences' }}.</p>
       <table>
         <thead>
           <tr>
