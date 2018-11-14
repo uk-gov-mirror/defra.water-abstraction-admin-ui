@@ -1,4 +1,7 @@
-// const Joi = require('joi');
+const util = require('util');
+const stringify = require('csv-stringify');
+const csvStringify = util.promisify(stringify);
+const { uniq } = require('lodash');
 
 const { getInvitationForm, formSchema, getWaterServiceRequest, getInvitationDataForm } = require('./helpers');
 const { handleRequest, getValues } = require('../../lib/forms');
@@ -21,6 +24,46 @@ const getReturnInvitation = async(request, reply) => {
 };
 
 /**
+ * Builds CSV response from data returned by return notification preview call
+ * @param {Object} data
+ * @return {Promise}
+ */
+const buildCsv = async (data) => {
+  try {
+    const maxLicenceCount = data.messages.reduce((acc, row) => {
+      const licences = uniq(row.licences);
+      return licences.length > acc ? licences.length : acc;
+    }, 0);
+
+    const contacts = data.messages.map(row => {
+      const { personalisation: { address_line_1, address_line_2, address_line_3, address_line_4, address_line_5, address_line_6, postcode } } = row;
+
+      const licences = uniq(row.licences);
+
+      const data = {
+        address_line_1,
+        address_line_2,
+        address_line_3,
+        address_line_4,
+        address_line_5,
+        address_line_6,
+        postcode
+      };
+
+      for (let i = 0; i < maxLicenceCount; i++) {
+        data[`licence_${i + 1}`] = licences[i];
+      }
+
+      return data;
+    });
+    return await csvStringify(contacts, { header: true });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+/**
  * Post handler for form.  If there are errors, the form is displayed again
  * otherwise, a request is sent to the preview endpoint, which returns
  * the number of recipients and licence numbers affected
@@ -30,13 +73,24 @@ const postReturnInvitation = async(request, reply) => {
 
   try {
     if (form.isValid) {
+      const { csv: isCsvExport } = getValues(form);
+
       // Format data ready for POST to water service
       const payload = getWaterServiceRequest({
         issuer: request.auth.credentials.name,
         ...getValues(form)
       });
 
-      const response = await previewReturnsInvitation(payload);
+      const response = await previewReturnsInvitation(payload, isCsvExport);
+
+      if (isCsvExport) {
+        const csv = await buildCsv(response);
+        const hapiResponse = reply(csv);
+        hapiResponse.type('text/csv');
+        hapiResponse.header('Content-Disposition', 'attachment; filename="contacts.csv"');
+        return hapiResponse;
+      }
+
       const f = getInvitationDataForm(payload);
 
       const view = {
