@@ -72,13 +72,23 @@ handlebars.registerHelper('guid', function () {
   return Helpers.createGUID();
 });
 
-handlebars.registerHelper('formatISODate', function (dateInput, options) {
+const formatISODate = (dateInput, options) => {
   if (!dateInput) {
     return null;
   }
   const date = moment(dateInput);
-  const { format = 'D MMMM YYYY' } = options.hash;
+  const { format = 'D MMMM YYYY' } = options;
   return date.isValid() ? date.format(format) : dateInput;
+};
+
+handlebars.registerHelper('formatISODate', function (dateInput, options) {
+  return formatISODate(dateInput, options.hash);
+});
+
+handlebars.registerHelper('formatMeterKey', function (value, options) {
+  const parts = value.split('_');
+  const { index = 0 } = options.hash;
+  return formatISODate(parts[index], options.hash);
 });
 
 const Path = require('path');

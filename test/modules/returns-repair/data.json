@@ -1,0 +1,166 @@
+{
+  "return": {
+    "returnId": "v1:123:456",
+    "licenceNumber": "01/234/567",
+    "receivedDate": "2018-11-16",
+    "startDate": "2017-11-01",
+    "endDate": "2018-10-31",
+    "dueDate": "2018-11-28",
+    "frequency": "week",
+    "isNil": false,
+    "status": "completed",
+    "versionNumber": 1,
+    "isCurrent": true,
+    "reading": {
+      "type": "measured",
+      "method": "oneMeter",
+      "units": "l",
+      "totalFlag": false,
+      "total": null
+    },
+    "meters": [
+      {
+        "units": "l",
+        "readings": {
+          "2017-10-30_2017-11-05": null,
+          "2017-11-06_2017-11-12": 5,
+          "2017-11-13_2017-11-19": 9,
+          "2017-11-20_2017-11-26": 10
+        },
+        "multiplier": 1,
+        "manufacturer": "SuperPump",
+        "serialNumber": "01345",
+        "startReading": 3
+      }
+    ],
+    "requiredLines": null,
+    "lines": [
+      {
+        "startDate": "2017-10-30",
+        "endDate": "2017-11-05",
+        "quantity": null,
+        "timePeriod": "week",
+        "readingType": "measured"
+      },
+      {
+        "startDate": "2017-11-06",
+        "endDate": "2017-11-12",
+        "quantity": 2,
+        "timePeriod": "week",
+        "readingType": "measured"
+      },
+      {
+        "startDate": "2017-11-13",
+        "endDate": "2017-11-19",
+        "quantity": 4,
+        "timePeriod": "week",
+        "readingType": "measured"
+      },
+      {
+        "startDate": "2017-11-20",
+        "endDate": "2017-11-26",
+        "quantity": 1,
+        "timePeriod": "week",
+        "readingType": "measured"
+      }
+    ],
+    "metadata": {
+      "nald": {
+        "areaCode": "ABCDE",
+        "formatId": 12345678,
+        "regionCode": 1,
+        "periodEndDay": "30",
+        "periodEndMonth": "9",
+        "periodStartDay": "1",
+        "periodStartMonth": "4"
+      },
+      "points": [
+        {
+          "name": "EXAMPLE POINT",
+          "ngr1": "AB 123 456",
+          "ngr2": null,
+          "ngr3": null,
+          "ngr4": null
+        }
+      ],
+      "version": 1,
+      "purposes": [
+        {
+          "alias": "Spray Irrigation - Direct",
+          "primary": {
+            "code": "A",
+            "description": "Agriculture"
+          },
+          "tertiary": {
+            "code": "400",
+            "description": "Spray Irrigation - Direct"
+          },
+          "secondary": {
+            "code": "AGR",
+            "description": "General Agriculture"
+          }
+        }
+      ],
+      "isCurrent": true,
+      "description": "BOREHOLE 1",
+      "isTwoPartTariff": true
+    },
+    "versions": [
+      {
+        "versionNumber": 1,
+        "email": "mail@example.com",
+        "createdAt": "2018-11-16T13:08:21.000Z",
+        "isCurrent": true
+      }
+    ],
+    "isUnderQuery": false
+  },
+  "correctedMeter": {
+    "units": "l",
+    "readings": {
+      "2017-10-29_2017-11-04": null,
+      "2017-11-05_2017-11-11": 5,
+      "2017-11-12_2017-11-18": 9,
+      "2017-11-19_2017-11-25": 10
+    },
+    "multiplier": 1,
+    "manufacturer": "SuperPump",
+    "serialNumber": "01345",
+    "startReading": 3
+  },
+  "correctedLines": [
+    {
+      "startDate": "2017-10-29",
+      "endDate": "2017-11-04",
+      "quantity": null,
+      "timePeriod": "week",
+      "readingType": "measured"
+    },
+    {
+      "startDate": "2017-11-05",
+      "endDate": "2017-11-11",
+      "quantity": 2,
+      "timePeriod": "week",
+      "readingType": "measured"
+    },
+    {
+      "startDate": "2017-11-12",
+      "endDate": "2017-11-18",
+      "quantity": 4,
+      "timePeriod": "week",
+      "readingType": "measured"
+    },
+    {
+      "startDate": "2017-11-19",
+      "endDate": "2017-11-25",
+      "quantity": 1,
+      "timePeriod": "week",
+      "readingType": "measured"
+    }
+  ],
+  "adminUser" : {
+    "email" : "mail@example.com",
+    "type" : "internal",
+    "entityId" : "00000000-1234-0000-0000-000000000000"
+  }
+}
