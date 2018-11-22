@@ -8,16 +8,6 @@ const server = new Hapi.Server(serverOptions);
 
 server.connection({ port: process.env.PORT || 8000 });
 
-if (process.env.DATABASE_URL) {
-  // get heroku db params from env vars
-  const workingVariable = process.env.DATABASE_URL.replace('postgres://', '');
-  process.env.PGUSER = workingVariable.split('@')[0].split(':')[0];
-  process.env.PGPASSWORD = workingVariable.split('@')[0].split(':')[1];
-  process.env.PGHOST = workingVariable.split('@')[1].split(':')[0];
-  process.env.PSPORT = workingVariable.split('@')[1].split(':')[1].split('/')[0];
-  process.env.PGDATABASE = workingVariable.split('@')[1].split(':')[1].split('/')[1];
-}
-
 // isSecure = true for live...
 const yarOptions = {
   storeBlank: false,
@@ -68,8 +58,8 @@ server.register([
   {
     register: require('node-hapi-airbrake-js'),
     options: {
-      key: process.env.errbit_key,
-      host: process.env.errbit_server
+      key: process.env.ERRBIT_KEY,
+      host: process.env.ERRBIT_SERVER
     }
   }, {
     // Plugin to display the routes table to console at startup
@@ -118,7 +108,7 @@ if (!module.parent) {
     if (err) {
       throw err;
     }
-    console.log(`Service ${process.env.servicename} running at: ${server.info.uri}`);
+    console.log(`Service ${process.env.SERVICE_NAME} running at: ${server.info.uri}`);
   });
 }
 module.exports = server;

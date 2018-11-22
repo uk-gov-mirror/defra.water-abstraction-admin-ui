@@ -10,6 +10,7 @@ const Crm = require('./connectors/crm');
 const Water = require('./connectors/water');
 const Permit = require('./connectors/permit');
 const { get } = require('lodash');
+const config = require('../../config');
 
 const rp = require('request-promise-native').defaults({
   proxy: null,
@@ -326,7 +327,7 @@ function loadLicences (request, reply) {
     .on('end', function () {
       var normalisedLicenceData = normalise(licenceRows);
       for (var i = 0; i < normalisedLicenceData.length; i++) {
-        exportLicence(normalisedLicenceData[i], process.env.licenceRegimeId, process.env.licenceTypeId);
+        exportLicence(normalisedLicenceData[i], config.licence.regimeId, config.licence.typeId);
       }
       return reply(normalisedLicenceData);
     });

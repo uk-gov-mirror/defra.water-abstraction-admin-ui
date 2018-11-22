@@ -2,7 +2,7 @@ const returnsRoutes = require('./returns/routes');
 const returnsNotificationRoutes = require('./returns-notifications/routes');
 const picklistRoutes = require('./picklists/routes');
 const returnsRepairRoutes = require('./returns-repair/routes');
-const testMode = parseInt(process.env.test_mode);
+const testMode = parseInt(process.env.TEST_MODE);
 
 let routes = [
   ...Object.values(returnsRoutes),

@@ -24,6 +24,6 @@ env:
   global:
     - JWT_SECRET=secret
     - JWT_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIzNH0.MOREC6-Kszb9bDFw0O1UKywpnkcP-c5cPjASMpjk8Po
-    - errbit_key=xyz
-    - errbit_server=http://localhost
+    - ERRBIT_KEY=xyz
+    - ERRBIT_SERVER=http://localhost
     - PORT=8005
