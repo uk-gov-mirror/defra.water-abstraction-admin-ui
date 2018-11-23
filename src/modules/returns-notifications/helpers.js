@@ -84,6 +84,71 @@ const getWaterServiceRequest = (data) => {
 };
 
 /**
+ * A function to extract an array of licence numbers from a user-supplied string
+ * @param {String} str - a string containing licence numbers
+ * @return {Array} - array of unqiue matched licence numbers
+ */
+function extractLicenceNumbers (str) {
+  // Return unique values
+  // @see {@link https://stackoverflow.com/questions/1960473/get-all-unique-values-in-an-array-remove-duplicates}
+  return str
+    .split(/[ \n\r,\t;]+/ig)
+    .filter(s => s)
+    .filter((v, i, a) => a.indexOf(v) === i);
+}
+
+/**
+ * Creates a filter to find returns for which we wish to send a paper
+ * reminder letter and form
+ * @param {String} from - from date for return cycle end date filter YYYY-MM-DD
+ * @param {String} to - to date filter return cycle end date filter YYYY-MM-DD
+ * @param {Array} excludeLicences - a list of licence numbers to exclude returns for
+ * @return {Object} filter object
+ */
+const getReminderFilter = (from, to, excludeLicences = []) => {
+  const filter = {
+    end_date: {
+      $gte: from,
+      $lte: to
+    },
+    status: 'due',
+    regime: 'water',
+    licence_type: 'abstraction'
+  };
+
+  if (excludeLicences.length) {
+    filter.licence_ref = {
+      $nin: excludeLicences
+    };
+  }
+
+  return filter;
+};
+
+/**
+ * Gets data to send to water service endpoint for sending return reminders
+ * @param {Object} data
+ * @param {String} data.to - to filter for return end date
+ * @param {String} data.from - from filter for return end date
+ * @param {String} data.issuer - email address of current user sending message
+ * @param {Array} data.excludeLicences - an array of licences to excude from the notification
+ * @return {Object} - payload to send to water service
+ */
+const getWaterServiceReminderRequest = (data) => {
+  const { from, to, issuer, excludeLicences } = data;
+  const licenceNumbers = extractLicenceNumbers(excludeLicences);
+  const filter = getReminderFilter(from, to, licenceNumbers);
+  return {
+    filter,
+    issuer,
+    name: 'send reminder letters',
+    config: {
+      rolePriority: ['returns_to', 'licence_holder']
+    }
+  };
+};
+
+/**
  * Creates form view model for sending invites
  * @return {Object}
  */
@@ -104,11 +169,11 @@ const formSchema = {
   due: Joi.date().required(),
   from: Joi.date().required(),
   to: Joi.date().required(),
-  csv: Joi.boolean({truthyStrings: ['true']}).default(false)
+  csv: Joi.boolean().truthy('true').default(false)
 };
 
-const getInvitationDataForm = (data) => {
-  const f = formFactory('/admin/returns-notifications/invitation/send');
+const getInvitationDataForm = (data, action = '/admin/returns-notifications/invitation/send') => {
+  const f = formFactory(action);
   f.fields.push(fields.hidden('data'));
   f.fields.push(fields.button('', { label: 'Send letters' }));
   return setValues(f, { data: JSON.stringify(data) });
@@ -119,5 +184,6 @@ module.exports = {
   formSchema,
   getReturnDates,
   getWaterServiceRequest,
-  getInvitationDataForm
+  getInvitationDataForm,
+  getWaterServiceReminderRequest
 };

@@ -1,0 +1,26 @@
+{{> styles}}
+<main id="content">
+  {{>element-phase-tag}}
+  <nav>
+    <div class="breadcrumbs">
+      <ol>
+        <li><a href="/admin">admin</a></li>
+        <li><a href="/admin/returns-notifications/reminders">Send return reminders</a></li>
+        <li>Logs</li>
+      </ol>
+    </div>
+  </nav>
+
+  <div class="grid-row">
+    {{>form-errors form }}
+  </div>
+
+  <div class="grid-row">
+    <div class="column-full">
+      <h1 class="heading-xlarge">Send return reminders</h1>
+      {{>form form }}
+    </div>
+  </div>
+</main>
+{{> footerjs}}
+{{> debug}}
