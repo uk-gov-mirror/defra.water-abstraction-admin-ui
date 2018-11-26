@@ -113,7 +113,8 @@ const getReminderFilter = (from, to, excludeLicences = []) => {
     },
     status: 'due',
     regime: 'water',
-    licence_type: 'abstraction'
+    licence_type: 'abstraction',
+    'metadata->>isCurrent': 'true'
   };
 
   if (excludeLicences.length) {
