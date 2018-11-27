@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { mapKeys, pick, isEqual } = require('lodash');
+const { mapKeys, pick, isEqual, isObject } = require('lodash');
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 const momentOptions = ['en', {
@@ -39,6 +39,9 @@ const repairMeterKey = (meterKey) => {
  * @return {Object} meter with readings repaired
  */
 const repairMeter = (meter) => {
+  if (!isObject(meter.readings)) {
+    return meter;
+  }
   return {
     ...meter,
     readings: mapKeys(meter.readings, (value, key) => repairMeterKey(key))

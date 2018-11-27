@@ -53,6 +53,12 @@ experiment('repairMeter', () => {
     const result = repairMeter(data.return.meters[0]);
     expect(result).to.equal(data.correctedMeter);
   });
+
+  test('It should leave meter unchanged if no readings', async() => {
+    const { readings, ...meter } = data.return.meters[0];
+    const result = repairMeter(meter);
+    expect(result).to.equal(meter);
+  });
 });
 
 experiment('repairMeterReadings', () => {
