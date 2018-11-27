@@ -4,7 +4,7 @@ function viewContextDefaults (request) {
   var viewContext = {};
 
   viewContext.session = Session.get(request);
-  viewContext.uiBaseUrl = process.env.base_url;
+  viewContext.uiBaseUrl = process.env.BASE_URL;
 
   console.log('VIEW CONTEXT SESSION');
   console.log(viewContext.session);

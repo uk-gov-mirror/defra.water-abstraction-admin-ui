@@ -1,6 +1,7 @@
 const handlebars = require('handlebars');
 const moment = require('moment');
 const Helpers = require('../lib/helpers');
+const { splitString } = require('../lib/string-formatter');
 
 handlebars.registerHelper('equal', require('handlebars-helper-equal'));
 
@@ -89,6 +90,14 @@ handlebars.registerHelper('formatMeterKey', function (value, options) {
   const parts = value.split('_');
   const { index = 0 } = options.hash;
   return formatISODate(parts[index], options.hash);
+});
+
+/**
+ * Splits a string to array, and gets the numbered segment
+ */
+handlebars.registerHelper('splitString', (value, options) => {
+  const { index = 0, separator = ',' } = options.hash;
+  return splitString(value, index, separator);
 });
 
 const Path = require('path');
