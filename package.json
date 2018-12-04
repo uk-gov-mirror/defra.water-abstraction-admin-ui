@@ -35,6 +35,7 @@
     "standard": "^10.0.2"
   },
   "dependencies": {
+    "@envage/hapi-pg-rest-api": "^4.1.1",
     "async-waterfall": "^0.1.5",
     "bcrypt": "^1.0.3",
     "blipp": "^2.3.0",
@@ -49,7 +50,6 @@
     "hapi-auth-basic": "^4.2.0",
     "hapi-auth-cookie": "^7.0.0",
     "hapi-auth-jwt2": "^7.4.1",
-    "hapi-pg-rest-api": "https://github.com/DEFRA/hapi-pg-rest-api.git",
     "hapi-sanitize-payload": "^1.5.0",
     "inert": "^4.2.1",
     "joi": "^14.1.0",

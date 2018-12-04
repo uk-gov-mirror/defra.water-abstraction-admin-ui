@@ -1,5 +1,5 @@
 const Helpers = require('../helpers');
-const { APIClient } = require('hapi-pg-rest-api');
+const { APIClient } = require('@envage/hapi-pg-rest-api');
 const entityRolesClient = require('./crm/entity-roles');
 
 const rp = require('request-promise-native').defaults({
@@ -67,16 +67,7 @@ function createEntity (entity) {
 }
 
 function findDocument (params) {
-  return new Promise((resolve, reject) => {
-    const uri = process.env.CRM_URI + '/documentHeader/filter';
-    Helpers.makeURIRequestWithBody(uri, 'post', params)
-      .then((response) => {
-        resolve(response.body);
-      }).catch(error => {
-        console.error(error);
-        reject(error);
-      });
-  });
+  return client.findMany(params);
 }
 
 function updateDocumentOwner (params) {
