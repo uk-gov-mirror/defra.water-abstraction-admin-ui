@@ -31,7 +31,6 @@ const documentVerificationsClient = createCrmApiClient('/document_verifications'
  */
 function unlinkDocument (documentId) {
   return client.updateOne(documentId, {
-    verified: null,
     company_entity_id: null,
     verification_id: null
   });
@@ -47,7 +46,6 @@ function unlinkAllDocuments () {
   };
 
   return client.updateMany(filter, {
-    verified: null,
     company_entity_id: null,
     verification_id: null
   });
