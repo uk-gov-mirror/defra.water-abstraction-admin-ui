@@ -1,43 +1,39 @@
 const csvParse = require('csv-parse/lib/sync');
-const Joi = require('joi');
 const View = require('./../lib/view');
 const { licences } = require('../lib/connectors/permit');
 const Promise = require('bluebird');
 const { find } = require('lodash');
 
+const { licence: { typeId, regimeId } } = require('../../config.js');
+
 /**
  * Allows user to import gauging stations for licences
  */
-function getImportStations(request, reply) {
-  const viewContext = View.contextDefaults(request)
+function getImportStations (request, reply) {
+  const viewContext = View.contextDefaults(request);
   reply.view('water/admin/importGaugingStations.html', viewContext);
 }
 
-
 class InvalidDataError extends Error {
-  constructor(message) {
+  constructor (message) {
     super(message);
     this.name = 'InvalidDataError';
   }
 }
 
 class LicenceNotFoundError extends Error {
-  constructor(message) {
+  constructor (message) {
     super(message);
     this.name = 'LicenceNotFoundError';
   }
 }
-
-
-
 
 /**
  * Takes row data from CSV dump and organises by licence number
  * @param {Array} data - data from CSV
  * @return {Object} data - keyed by licence number
  */
-function prepareData(data) {
-
+function prepareData (data) {
   const prepared = [];
 
   for (const row of data) {
@@ -50,23 +46,20 @@ function prepareData(data) {
         metadata: {
           gaugingStations: []
         }
-      }
+      };
       prepared.push(licence);
     }
     licence.metadata.gaugingStations.push(station);
   }
   return prepared;
-
 }
-
 
 /**
  * Checks uploaded CSV data is valid, otherwise throws error
  * @param {Array} data
  * @return {Array} data
  */
-function validateData(data) {
-  console.log('validating', data);
+function validateData (data) {
   if (data.length < 1) {
     throw new InvalidDataError('No rows found');
   }
@@ -76,38 +69,42 @@ function validateData(data) {
   return data;
 }
 
-
 /**
  * Write single licence metadata
  * @param {Object} row - prepared row data
  * @return {Promise} resolves with {error, data}
  */
-async function writeRow(row) {
-  const { licence_ref } = row;
-  const { error, data: [licence] } = await licences.findMany({ licence_ref });
+async function writeRow (row) {
+  const { licence_ref: licenceRef } = row;
+  const { error, data: [licence] } = await licences.findMany({ licence_ref: licenceRef });
 
   if (error) {
     return { data: row, error };
   }
   if (!licence) {
-    return { data: row, error: new LicenceNotFoundError(`Licence ${ licence_ref } not found`) };
+    return { data: row, error: new LicenceNotFoundError(`Licence ${licenceRef} not found`) };
   }
 
   // Parse existing metadata
   const metadata = {
     ...licence.metadata,
     ...row.metadata
-  }
+  };
 
-  return licences.updateMany({ licence_ref }, { metadata: JSON.stringify(metadata) });
+  const filter = {
+    licence_ref: licenceRef,
+    licence_regime_id: regimeId,
+    licence_type_id: typeId
+  };
+
+  return licences.updateMany(filter, { metadata: JSON.stringify(metadata) });
 }
-
 
 /**
  * Write data - sets metadata on permit repo
  * @param {Object} data
  */
-async function writeData(data) {
+async function writeData (data) {
   return Promise.map(data, writeRow);
 }
 
@@ -115,8 +112,8 @@ async function writeData(data) {
  * Post handler for importing contacts
  * @param {String} request.payload.contacts - CSV contact data pasted in textarea field
  */
-async function postImportStations(request, reply) {
-  const viewContext = View.contextDefaults(request)
+async function postImportStations (request, reply) {
+  const viewContext = View.contextDefaults(request);
 
   try {
     const data = csvParse(request.payload.stations, { columns: true, skip_lines_with_empty_values: true });
@@ -127,15 +124,12 @@ async function postImportStations(request, reply) {
     viewContext.result = await writeData(prepared);
 
     reply.view('water/admin/importGaugingStationsSuccess.html', viewContext);
-
   } catch (error) {
     console.error(error);
     viewContext.error = error;
     reply.view('water/admin/importGaugingStations.html', viewContext);
   }
-
 }
-
 
 module.exports = {
   getImportStations,
