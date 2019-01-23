@@ -27,9 +27,9 @@
         <tbody>
             {{#each result}}
             <tr>
-              <td>{{ this.data.licence_ref}}</td>
+              <td>{{ this.data.0.licence_ref}}</td>
               <td>
-                {{ stringify this.data.metadata }}
+                {{ stringify this.data.0.metadata }}
               </td>
               <td>
                 {{#if this.error }}

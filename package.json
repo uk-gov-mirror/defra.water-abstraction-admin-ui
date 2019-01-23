@@ -1,8 +1,12 @@
 {
-  "name": "water-abstraction",
-  "version": "1.15.0",
+  "name": "water-abstraction-admin-ui",
+  "version": "1.16.0",
   "description": "Web app for Water Abstraction Permit service",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DEFRA/water-abstraction-admin-ui"
+  },
   "scripts": {
     "install-assets": "gulp build",
     "test": "lab",
