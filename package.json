@@ -47,7 +47,7 @@
     "csv": "^2.0.0",
     "dotenv": "^4.0.0",
     "fast-csv": "^2.4.1",
-    "handlebars": "^4.0.10",
+    "handlebars": "^4.0.13",
     "handlebars-helper-equal": "^1.0.0",
     "hapi": "^16.5.0",
     "hapi-auth-basic": "^4.2.0",
