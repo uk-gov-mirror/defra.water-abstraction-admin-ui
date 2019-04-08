@@ -40,7 +40,7 @@
   "dependencies": {
     "@envage/hapi-pg-rest-api": "^4.1.1",
     "async-waterfall": "^0.1.5",
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^2.0.0",
     "blipp": "^2.4.1",
     "bluebird": "^3.5.3",
     "boom": "^5.2.0",
