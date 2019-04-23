@@ -186,29 +186,6 @@ const eventsClient = new APIClient(rp, {
   }
 });
 
-/**
- * Send/preview returns forms
- * @param {String} notificationType - the type of message to send, e.g. pdf.return_reminder
- * @param {Object} payload - request body sent as JSON
- * @param {Boolean} [isPreview] - whether preview, defaults to true
- * @return Promise - resolves when API call completes
- */
-const sendReturnsForms = (notificationType, payload, isPreview = true) => {
-  const uri = process.env.WATER_URI + `/returns-notifications/${isPreview ? 'preview' : 'send'}/${notificationType}`;
-
-  const options = {
-    uri,
-    method: 'POST',
-    body: payload,
-    json: true,
-    headers: {
-      Authorization: `Bearer ${process.env.JWT_TOKEN}`
-    }
-  };
-
-  return rp(options);
-};
-
 module.exports = {
   naldImport,
   naldLicence,
@@ -226,6 +203,5 @@ module.exports = {
   sendReturnsInvitation,
   picklists: picklistsClient,
   picklistItems: picklistItemsClient,
-  events: eventsClient,
-  sendReturnsForms
+  events: eventsClient
 };
