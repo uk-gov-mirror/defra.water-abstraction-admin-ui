@@ -8,7 +8,6 @@ module.exports = [
     config: {
       description: 'Service Status',
       auth: false
-
     }
   }
 ];

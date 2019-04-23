@@ -35,7 +35,6 @@ function createAccounts(){
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onreadystatechange = function() {
     if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log(xhr.responseText)
       res=JSON.parse(xhr.responseText)
       data=res.idmUsers
       var text=`<br><b>Results</b><pre>IDM:

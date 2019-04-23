@@ -51,7 +51,7 @@ function regimes (request, reply) {
 
   httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
     if (error) {
-      console.log(error);
+      console.error(error);
     }
 
     const viewContext = View.contextDefaults(request);
@@ -87,7 +87,7 @@ function regimeLicenceType (request, reply) {
 
   httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
     if (error) {
-      console.log(error);
+      console.error(error);
     }
 
     const data = JSON.parse(body);
@@ -102,7 +102,7 @@ function regimeLicenceType (request, reply) {
 
     httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
       if (error) {
-        console.log(error);
+        console.error(error);
       }
 
       viewContext.fields = JSON.parse(body);
@@ -161,7 +161,7 @@ function crmEntities (request, reply) {
   const URI = process.env.CRM_URI + '/entity?filter=' + JSON.stringify({entity_type: request.query.entity_type}) + '&token=' + process.env.JWT_TOKEN;
   httpRequest(URI, function (error, response, body) {
     if (error) {
-      console.log(error);
+      console.error(error);
     }
 
     const data = JSON.parse(body);
@@ -207,13 +207,11 @@ function crmNewIndividual (request, reply) {
 }
 
 function crmDoNewEntity (request, reply) {
-  console.log(request.payload);
   const data = {};
   data.entity_nm = request.payload.entity_nm;
   data.entity_type = request.payload.entity_type;
   data.entity_definition = request.payload.entity_definition;
   Crm.createEntity(data).then((id) => {
-    console.log(id);
     reply.redirect('/admin/crm/entities/' + id);
   });
 }
@@ -224,8 +222,6 @@ function crmAllEntitiesJSON (request, reply) {
     if (error) {
       console.error(error);
     }
-    console.log('response from ' + URI);
-    console.log(body);
     const data = JSON.parse(body);
     return reply(data.data);
   });
@@ -475,9 +471,6 @@ async function exportLicence (licence, orgId, licenceTypeId) {
   }
 
   const permitData = data;
-  console.log(permitData);
-
-  console.log(`Added ${licence.name} to Permit repo`);
   data.regime_entity_id = '0434dc31-a34e-7158-5775-4694af7a60cf';
 
   data.system_id = 'permit-repo';
@@ -506,11 +499,9 @@ async function exportLicence (licence, orgId, licenceTypeId) {
     body: data,
     json: true
   }).then((res) => {
-    console.log(`Added ${res.data.system_external_id}  to CRM`);
     return true;
   }).catch((err) => {
-    console.log('Error adding to CRM');
-    console.log(err);
+    console.error(err);
     return err;
   });
 }
@@ -519,7 +510,6 @@ function loadLicencesUI (request, reply) {
   // view the admin page
   var viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  console.log('*** adminIndex ***');
   reply.view('water/admin/import', viewContext);
 }
 
@@ -573,11 +563,10 @@ function naldImport (request, reply) {
 }
 
 function naldLicence (request, reply) {
-  console.log('requesting naldLicence');
   Water.naldLicence(request.query.licence_number).then((res) => {
     return reply(res);
   }).catch((res) => {
-    console.log(res);
+    console.error(res);
     return reply({error: res});
   });
 }

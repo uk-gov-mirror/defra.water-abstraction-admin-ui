@@ -73,11 +73,8 @@ function updateDocumentOwner (params) {
     var uri = process.env.CRM_URI + '/documentHeader/' + params.document_id + '/owner?token=' + process.env.JWT_TOKEN;
     var method = 'put';
     var data = { entity_id: params.entity_id };
-    console.log(data);
     Helpers.makeURIRequestWithBody(uri, method, data)
       .then((response) => {
-        console.log('crm entity response');
-        console.log(response.body);
         resolve(response.body);
       }).catch(error => {
         console.error(error);
@@ -90,7 +87,6 @@ function getDocument (params) {
   return new Promise((resolve, reject) => {
     const uri = process.env.CRM_URI + '/documentHeader/' + params.document_id + '?token=' + process.env.JWT_TOKEN;
     const data = { entity_id: params.entity_id };
-    console.log(data);
     Helpers.makeURIRequestWithBody(uri, 'get', data)
       .then((response) => {
         resolve(response.body);
