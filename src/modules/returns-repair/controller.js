@@ -74,9 +74,7 @@ const postSearch = async(request, reply) => {
  */
 const postSubmit = async(request, reply) => {
   const data = JSON.parse(request.payload.data);
-  console.log(JSON.stringify(data, null, 2));
-  const response = await waterReturns.postReturn(data);
-  console.log(response);
+  await waterReturns.postReturn(data);
   const view = View.contextDefaults(request);
   return reply.view('water/admin/returns-repair/success', view);
 };

@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "exclude_patterns": [
+    "coverage",
+    "govuk_modules",
+    "node_modules",
+    "public",
+    "src/public",
+    "test",
+    "views"
+  ]
+}

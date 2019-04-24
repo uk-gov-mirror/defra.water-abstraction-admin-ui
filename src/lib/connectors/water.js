@@ -6,13 +6,11 @@ const rp = require('request-promise-native').defaults({
 });
 
 function naldImport () {
-  console.log('requesting nald import');
-  var uri = process.env.WATER_URI + '/nald/import?token=' + process.env.JWT_TOKEN;
-  console.log(uri);
+  const uri = process.env.WATER_URI + '/nald/import?token=' + process.env.JWT_TOKEN;
   return new Promise((resolve, reject) => {
     Helpers.makeURIRequest(uri)
       .then((response) => {
-        var data = JSON.parse(response.body);
+        const data = JSON.parse(response.body);
         resolve(data);
       }).catch((response) => {
         reject(response);
@@ -21,12 +19,9 @@ function naldImport () {
 }
 
 function naldLicence (licenceNumber) {
-  console.log('requesting nald licence');
   const uri = process.env.WATER_URI + '/nald/licence?token=' + process.env.JWT_TOKEN;
   const requestBody = { licence_number: licenceNumber };
 
-  console.log(uri);
-  console.log(requestBody);
   return new Promise((resolve, reject) => {
     Helpers.makeURIRequestWithBody(uri, 'post', requestBody)
       .then((response) => {
@@ -50,15 +45,13 @@ async function getSchedules () {
 }
 
 async function addSchedule (data) {
-  console.log('requesting nald licence');
   const uri = process.env.WATER_URI + '/scheduler';
+
   try {
     const res = await Helpers.makeURIRequestWithBody(uri, 'post', data);
-    console.log('res.data');
-    console.log(res.body);
     return JSON.parse(res.body).data;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return null;
   }
 }
@@ -186,29 +179,6 @@ const eventsClient = new APIClient(rp, {
   }
 });
 
-/**
- * Send/preview returns forms
- * @param {String} notificationType - the type of message to send, e.g. pdf.return_reminder
- * @param {Object} payload - request body sent as JSON
- * @param {Boolean} [isPreview] - whether preview, defaults to true
- * @return Promise - resolves when API call completes
- */
-const sendReturnsForms = (notificationType, payload, isPreview = true) => {
-  const uri = process.env.WATER_URI + `/returns-notifications/${isPreview ? 'preview' : 'send'}/${notificationType}`;
-
-  const options = {
-    uri,
-    method: 'POST',
-    body: payload,
-    json: true,
-    headers: {
-      Authorization: `Bearer ${process.env.JWT_TOKEN}`
-    }
-  };
-
-  return rp(options);
-};
-
 module.exports = {
   naldImport,
   naldLicence,
@@ -226,6 +196,5 @@ module.exports = {
   sendReturnsInvitation,
   picklists: picklistsClient,
   picklistItems: picklistItemsClient,
-  events: eventsClient,
-  sendReturnsForms
+  events: eventsClient
 };
