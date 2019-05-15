@@ -7,13 +7,13 @@ const { experiment, test } = exports.lab = Lab.script();
 const { expect } = require('code');
 
 const { fixPeriod,
-repairMeterKey,
-repairMeter,
-repairMeterReadings,
-repairLines,
-applySystemUser,
-repairWeeklyReturn,
-compare
+  repairMeterKey,
+  repairMeter,
+  repairMeterReadings,
+  repairLines,
+  applySystemUser,
+  repairWeeklyReturn,
+  compare
 } = require('../../../src/modules/returns-repair/helpers');
 
 const data = require('./data.json');
@@ -49,12 +49,12 @@ experiment('repairMeterKey', () => {
 });
 
 experiment('repairMeter', () => {
-  test('It fixes single meter data', async() => {
+  test('It fixes single meter data', async () => {
     const result = repairMeter(data.return.meters[0]);
     expect(result).to.equal(data.correctedMeter);
   });
 
-  test('It should leave meter unchanged if no readings', async() => {
+  test('It should leave meter unchanged if no readings', async () => {
     const { readings, ...meter } = data.return.meters[0];
     const result = repairMeter(meter);
     expect(result).to.equal(meter);
@@ -62,7 +62,7 @@ experiment('repairMeter', () => {
 });
 
 experiment('repairMeterReadings', () => {
-  test('It fixes meter data within returns', async() => {
+  test('It fixes meter data within returns', async () => {
     const result = repairMeterReadings(data.return);
     expect(result).to.equal({
       ...data.return,
@@ -72,7 +72,7 @@ experiment('repairMeterReadings', () => {
 });
 
 experiment('repairLines', () => {
-  test('It fixes a line data', async() => {
+  test('It fixes a line data', async () => {
     const result = repairLines(data.return);
     expect(result).to.equal({
       ...data.return,
@@ -82,7 +82,7 @@ experiment('repairLines', () => {
 });
 
 experiment('applySystemUser', () => {
-  test('Adds user data to return', async() => {
+  test('Adds user data to return', async () => {
     const result = applySystemUser(data.return, data.adminUser.email, data.adminUser.entityId);
     expect(result).to.equal({
       ...data.return,
@@ -92,7 +92,7 @@ experiment('applySystemUser', () => {
 });
 
 experiment('repairWeeklyReturn', () => {
-  test('Fixes all elements of weekly return', async() => {
+  test('Fixes all elements of weekly return', async () => {
     const result = repairWeeklyReturn(data.return, data.adminUser.email, data.adminUser.entityId);
     expect(result).to.equal({
       ...data.return,

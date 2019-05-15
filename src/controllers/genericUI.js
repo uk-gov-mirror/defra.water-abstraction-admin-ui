@@ -42,17 +42,17 @@ const viewConfig = {
   }
 };
 
-async function menu (request, reply) {
+async function menu (request, h) {
   const viewContext = View.contextDefaults(request);
   viewContext.viewConfig = viewConfig;
-  reply.view('water/admin/standardMenuView', viewContext);
+  return h.view('water/admin/standardMenuView', viewContext);
 }
 
-async function submenu (request, reply) {
+async function submenu (request, h) {
   const viewContext = View.contextDefaults(request);
   viewContext.title = request.params.endpoint;
   viewContext.viewConfig = viewConfig[request.params.endpoint];
-  reply.view('water/admin/standardSubMenuView', viewContext);
+  return h.view('water/admin/standardSubMenuView', viewContext);
 }
 
 async function list (request, reply) {
@@ -70,7 +70,7 @@ async function list (request, reply) {
       var pagination = res.pagination;
     } catch (e) {
       console.error(e);
-      return reply(e);
+      throw e;
     }
 
     viewContext.pageTitle = 'GOV.UK - Admin';
@@ -105,9 +105,9 @@ async function list (request, reply) {
     viewContext.id = request.query.id;
 
     if (request.query.new) {
-      reply.view('water/admin/standardDuplicateView', viewContext);
+      return reply.view('water/admin/standardDuplicateView', viewContext);
     } else {
-      reply.view('water/admin/standardEditView', viewContext);
+      return reply.view('water/admin/standardEditView', viewContext);
     }
   } else {
     // load list view
@@ -132,7 +132,7 @@ async function list (request, reply) {
       pagination = res.pagination;
     } catch (e) {
       console.error(e);
-      return reply(e);
+      throw e;
     }
 
     viewContext.pageTitle = 'GOV.UK - Admin';
@@ -205,7 +205,7 @@ async function list (request, reply) {
     viewContext.query = request.query;
     viewContext.endpoint = request.params.endpoint;
     viewContext.obj = request.params.obj;
-    reply.view('water/admin/standardListView', viewContext);
+    return reply.view('water/admin/standardListView', viewContext);
   }
 }
 
@@ -229,7 +229,7 @@ async function createorUpdate (request, reply) {
         console.error(res.error.details);
       }
     } catch (e) {
-      return reply(e);
+      throw e;
     }
 
     return reply.redirect(request.url.path);
@@ -238,18 +238,16 @@ async function createorUpdate (request, reply) {
       const res = await Endpoints[request.params.endpoint][request.params.obj].create(request.payload);
       if (res.error) {
         console.error(res.error.details);
-        return reply(res.error);
+        throw res.error;
       }
-      return reply(res);
+      return res;
     } catch (e) {
-      return reply(e);
+      throw e;
     }
   }
 }
 
-module.exports = {
-  list,
-  createorUpdate,
-  menu,
-  submenu
-};
+exports.list = list;
+exports.createorUpdate = createorUpdate;
+exports.menu = menu;
+exports.submenu = submenu;

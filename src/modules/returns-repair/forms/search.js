@@ -8,7 +8,7 @@ const getSearchForm = () => {
   const f = formFactory('/admin/repair-returns');
 
   f.fields.push(fields.text('returnId', { label: 'Return ID' }));
-  f.fields.push(fields.button(null, {label: 'Continue'}));
+  f.fields.push(fields.button(null, { label: 'Continue' }));
 
   return f;
 };

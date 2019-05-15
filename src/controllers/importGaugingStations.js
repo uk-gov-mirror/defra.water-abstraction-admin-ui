@@ -11,7 +11,7 @@ const { licence: { typeId, regimeId } } = require('../../config.js');
  */
 function getImportStations (request, reply) {
   const viewContext = View.contextDefaults(request);
-  reply.view('water/admin/importGaugingStations.html', viewContext);
+  return reply.view('water/admin/importGaugingStations.html', viewContext);
 }
 
 class InvalidDataError extends Error {
@@ -37,12 +37,12 @@ function prepareData (data) {
   const prepared = [];
 
   for (const row of data) {
-    const { station_reference: stationReference, licence_number: licence_ref } = row;
+    const { station_reference: stationReference, licence_number: licenceRef } = row;
     const station = { stationReference };
     let licence;
-    if (!(licence = find(prepared, { licence_ref }))) {
+    if (!(licence = find(prepared, { licence_ref: licenceRef }))) {
       licence = {
-        licence_ref,
+        licence_ref: licenceRef,
         metadata: {
           gaugingStations: []
         }
@@ -123,15 +123,13 @@ async function postImportStations (request, reply) {
 
     viewContext.result = await writeData(prepared);
 
-    reply.view('water/admin/importGaugingStationsSuccess.html', viewContext);
+    return reply.view('water/admin/importGaugingStationsSuccess.html', viewContext);
   } catch (error) {
     console.error(error);
     viewContext.error = error;
-    reply.view('water/admin/importGaugingStations.html', viewContext);
+    return reply.view('water/admin/importGaugingStations.html', viewContext);
   }
 }
 
-module.exports = {
-  getImportStations,
-  postImportStations
-};
+exports.getImportStations = getImportStations;
+exports.postImportStations = postImportStations;

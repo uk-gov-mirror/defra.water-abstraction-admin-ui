@@ -1,5 +1,5 @@
 // TODO: Replace all API calls with http API calls to water service
-const httpRequest = require('request').defaults({
+const httpRequest = require('request-promise-native').defaults({
   proxy: null,
   strictSSL: false
 });
@@ -9,7 +9,6 @@ const Idm = require('./connectors/idm');
 const Crm = require('./connectors/crm');
 const Water = require('./connectors/water');
 const Permit = require('./connectors/permit');
-const { get } = require('lodash');
 const config = require('../../config');
 
 const rp = require('request-promise-native').defaults({
@@ -21,119 +20,81 @@ function index (request, reply) {
   // View the admin index page
   var viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/index', viewContext);
+  return reply.view('water/admin/index', viewContext);
 }
 
 function permitIndex (request, reply) {
   // view the permit index page
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/permitIndex', viewContext);
+  return reply.view('water/admin/permitIndex', viewContext);
 }
 
 function idmIndex (request, reply) {
   // view the idm index page
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/idmIndex', viewContext);
+  return reply.view('water/admin/idmIndex', viewContext);
 }
 
 function waterIndex (request, reply) {
   // view the water index page
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/waterIndex', viewContext);
+  return reply.view('water/admin/waterIndex', viewContext);
 }
 
-function regimes (request, reply) {
+async function regimes (request, reply) {
   // view the regimes page
   const uri = process.env.PERMIT_URI + 'regime';
 
-  httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
-    if (error) {
-      console.error(error);
-    }
-
-    const viewContext = View.contextDefaults(request);
-    viewContext.pageTitle = 'GOV.UK - Admin/Fields';
-    viewContext.data = JSON.parse(body);
-    viewContext.debug.regimes = viewContext.data;
-    reply.view('water/admin/regimes', viewContext);
-  });
-}
-
-function regimeLicenceTypes (request, reply) {
-  // view the regime licence types page
-  const uri = process.env.PERMIT_URI + 'regime/' + request.params.regime_id + '/licencetype';
-
-  httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
-    if (error) {
-      console.error(error);
-    }
-
-    const viewContext = View.contextDefaults(request);
-    viewContext.pageTitle = 'GOV.UK - Admin/Fields';
-    viewContext.data = JSON.parse(body).data;
-    viewContext.regime_id = request.params.regime_id;
-    viewContext.debug.data = get(viewContext, 'data.data');
-    reply.view('water/admin/regimeLicenceTypes', viewContext);
-  });
-}
-
-function regimeLicenceType (request, reply) {
-  // view regime licence types page
+  const response = await httpRequest(uri + '?token=' + process.env.JWT_TOKEN);
   const viewContext = View.contextDefaults(request);
-  const uri = process.env.PERMIT_URI + 'regime/' + request.params.regime_id + '/licencetype/' + request.params.type_id;
-
-  httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
-    if (error) {
-      console.error(error);
-    }
-
-    const data = JSON.parse(body);
-    if (!data.data[0].attributedata) {
-      data.data[0].attributedata = [];
-    }
-
-    viewContext.debug.data = data.data;
-    viewContext.data = data.data;
-    viewContext.regime_id = request.params.regime_id;
-    viewContext.type_id = request.params.type_id;
-
-    httpRequest(uri + '?token=' + process.env.JWT_TOKEN, (error, response, body) => {
-      if (error) {
-        console.error(error);
-      }
-
-      viewContext.fields = JSON.parse(body);
-      viewContext.debug.fields = viewContext.fields;
-      reply.view('water/admin/regimeLicenceType', viewContext);
-    });
-  });
+  viewContext.pageTitle = 'GOV.UK - Admin/Fields';
+  viewContext.data = JSON.parse(response);
+  viewContext.debug.regimes = viewContext.data;
+  return reply.view('water/admin/regimes', viewContext);
 }
 
-function findlicence (request, reply) {
+async function regimeLicenceTypes (request, reply) {
+  const uri = `${process.env.PERMIT_URI}licencetype?filter={"regime_id": ${request.params.regimeId}}`;
+
+  try {
+    const response = await helpers.makeURIRequest(uri);
+    const viewContext = View.contextDefaults(request);
+    viewContext.pageTitle = 'GOV.UK - Admin/Fields';
+    viewContext.data = JSON.parse(response.body).data;
+    viewContext.regime_id = request.params.regime_id;
+    return reply.view('water/admin/regimeLicenceTypes', viewContext);
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+async function findlicence (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/search', viewContext);
+  return reply.view('water/admin/search', viewContext);
 }
 
-function doFindlicence (request, reply) {
-  Crm.findDocument(request.params.search).then((response) => {
-    reply(response);
-  });
+async function doFindlicence (request, reply) {
+  return Crm.findDocument({ system_external_id: request.params.search })
+    .then(res => {
+      return res;
+    });
 }
 
 async function viewlicence (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - View Licence Data';
-  const {data, error} = await Permit.licences.findOne(request.params.licence_id);
+  const { data, error } = await Permit.licences.findOne(request.params.licence_id);
   if (error) {
     throw error;
   }
   viewContext.licence = data;
   viewContext.licence_id = data.licence_id;
-  reply.view('water/admin/viewlicenceData', viewContext);
+  return reply.view('water/admin/viewlicenceData', viewContext);
 }
 
 async function viewLicenceRaw (request, reply) {
@@ -141,34 +102,31 @@ async function viewLicenceRaw (request, reply) {
   viewContext.pageTitle = 'GOV.UK - View Licence Data';
 
   const Permit = require('./connectors/permit');
-  Permit.getLicence(request.params.licence_id).then((licence) => {
+  return Permit.licences.findOne(request.params.licence_id).then((licence) => {
     viewContext.licence = JSON.stringify(licence, null, 4);
     viewContext.licence_id = request.params.licence_id;
-    reply.view('water/admin/viewlicenceDataRAW', viewContext);
+    return reply.view('water/admin/viewlicenceDataRAW', viewContext);
   });
 }
 
-function crm (request, reply) {
+async function crm (request, reply) {
   // view the admin page
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/crmIndex', viewContext);
+  return reply.view('water/admin/crmIndex', viewContext);
 }
 
-function crmEntities (request, reply) {
+async function crmEntities (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  const URI = process.env.CRM_URI + '/entity?filter=' + JSON.stringify({entity_type: request.query.entity_type}) + '&token=' + process.env.JWT_TOKEN;
-  httpRequest(URI, function (error, response, body) {
-    if (error) {
-      console.error(error);
-    }
+  const URI = process.env.CRM_URI + '/entity?filter=' + JSON.stringify({ entity_type: request.query.entity_type }) + '&token=' + process.env.JWT_TOKEN;
 
-    const data = JSON.parse(body);
-    viewContext.entities = data.data;
-    viewContext.pagination = helpers.addPaginationDetail(data.pagination);
-    reply.view('water/admin/crmEntities', viewContext);
-  });
+  const result = await httpRequest(URI);
+  const data = JSON.parse(result);
+
+  viewContext.entities = data.data;
+  viewContext.pagination = helpers.addPaginationDetail(data.pagination);
+  return reply.view('water/admin/crmEntities', viewContext);
 }
 
 async function crmEntity (request, reply) {
@@ -176,90 +134,90 @@ async function crmEntity (request, reply) {
   viewContext.pageTitle = 'GOV.UK - Admin';
 
   const { entity_id: entityId } = request.params;
-
   const { data: entity } = await Crm.entities.findOne(entityId);
+  const { data: entityRoles } = await Crm.entityRoles.setParams({ entity_id: entityId }).findMany();
 
-  const { data: entityRoles } = await Crm.entityRoles.setParams({entity_id: entityId}).findMany();
-
-  reply.view('water/admin/crmEntity', {
+  return reply.view('water/admin/crmEntity', {
     ...viewContext,
     entity,
     entityRoles
   });
 }
 
-function crmNewRegime (request, reply) {
+async function crmNewRegime (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/crmNewRegime', viewContext);
+  return reply.view('water/admin/crmNewRegime', viewContext);
 }
 
-function crmNewCompany (request, reply) {
+async function crmNewCompany (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/crmNewCompany', viewContext);
+  return reply.view('water/admin/crmNewCompany', viewContext);
 }
 
-function crmNewIndividual (request, reply) {
+async function crmNewIndividual (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/crmNewIndividual', viewContext);
+  return reply.view('water/admin/crmNewIndividual', viewContext);
 }
 
-function crmDoNewEntity (request, reply) {
+async function crmDoNewEntity (request, reply) {
   const data = {};
   data.entity_nm = request.payload.entity_nm;
   data.entity_type = request.payload.entity_type;
   data.entity_definition = request.payload.entity_definition;
-  Crm.createEntity(data).then((id) => {
-    reply.redirect('/admin/crm/entities/' + id);
+  return Crm.createEntity(data).then((id) => {
+    return reply.redirect('/admin/crm/entities/' + id);
   });
 }
 
-function crmAllEntitiesJSON (request, reply) {
+async function crmAllEntitiesJSON (request, reply) {
   const URI = process.env.CRM_URI + '/entity?token=' + process.env.JWT_TOKEN;
-  httpRequest(URI, function (error, response, body) {
+  return httpRequest(URI, function (error, response, body) {
     if (error) {
       console.error(error);
     }
     const data = JSON.parse(body);
-    return reply(data.data);
+    return data.data;
   });
 }
 
-function crmDocumentHeaders (request, reply) {
+async function crmDocumentHeaders (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
   viewContext.allowUnlinkAll = helpers.showUnlinkAll(process.env);
-  Crm.findDocument(request.params.search).then((response) => {
+  return Crm.findDocument(request.params.search).then((response) => {
     viewContext.permits = response.data;
     viewContext.debug.permits = response.data;
-    reply.view('water/admin/crmDocumentHeaders', viewContext);
+    return reply.view('water/admin/crmDocumentHeaders', viewContext);
   });
 }
 
-function setDocumentOwner (request, reply) {
+async function setDocumentOwner (request, reply) {
   const params = {
     entity_id: request.payload.entity_id,
     document_id: request.params.document_id
   };
-  Crm.updateDocumentOwner(params).then((res) => {
-    reply(res);
-  }).catch((err) => {
-    console.error(err);
-    reply(err);
-  });
+  return Crm.updateDocumentOwner(params)
+    .then((res) => {
+      return res;
+    }).catch((err) => {
+      console.error(err);
+      throw err;
+    });
 }
 
-function getDocument (request, reply) {
+async function getDocument (request, reply) {
   const viewContext = View.contextDefaults(request);
   const params = { document_id: request.params.document_id };
-  Crm.getDocument(params).then((res) => {
-    viewContext.document_id = request.params.document_id;
-    viewContext.document = res;
-    viewContext.debug.document = res;
-    reply.view('water/admin/crmDocument', viewContext);
-  });
+  return Crm.getDocument(params)
+    .then((res) => {
+      viewContext.document_id = request.params.document_id;
+      viewContext.document = res;
+      viewContext.debug.document = res;
+      return reply.view('water/admin/crmDocument', viewContext);
+    });
 }
 
 /**
@@ -267,19 +225,19 @@ function getDocument (request, reply) {
  * Redirects to document list
  */
 async function getUnlinkDocument (request, reply) {
-  const {error, rowCount} = await Crm.unlinkDocument(request.params.document_id);
+  const { error, rowCount } = await Crm.unlinkDocument(request.params.document_id);
   if (error) {
     throw error;
   }
   return reply.redirect('/admin/crm/document/unlink-success?count=' + rowCount);
 }
 
- /**
+/**
   * Unlink all documents from company/verification
   * Redirects to document list
   */
 async function getUnlinkAllDocuments (request, reply) {
-  const {error, rowCount} = await Crm.unlinkAllDocuments();
+  const { error, rowCount } = await Crm.unlinkAllDocuments();
   if (error) {
     throw error;
   }
@@ -290,25 +248,25 @@ async function getUnlinkAllDocuments (request, reply) {
  * Success page when unlinking is complete
  * @param {String} request.query.rowCount - the number of rows updated by previous query
  */
-function getUnlinkSuccess (request, reply) {
+async function getUnlinkSuccess (request, reply) {
   var viewContext = View.contextDefaults(request);
   viewContext.rowCount = request.query.rowCount;
-  reply.view('water/admin/crmUnlinkDocumentSuccess', viewContext);
+  return reply.view('water/admin/crmUnlinkDocumentSuccess', viewContext);
 }
 
 async function crmGetVerifications (request, reply) {
   var viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  const {error, data} = await Crm.verifications.findMany();
+  const { error, data } = await Crm.verifications.findMany();
   if (error) {
     throw error;
   }
   viewContext.verifications = data;
   viewContext.debug.verifications = data;
-  reply.view('water/admin/crmVerifications', viewContext);
+  return reply.view('water/admin/crmVerifications', viewContext);
 }
 
-function loadLicences (request, reply) {
+async function loadLicences (request, reply) {
   var licenceRows = [];
   var csv = require('fast-csv');
   var CSV_STRING = request.payload.data;
@@ -325,7 +283,7 @@ function loadLicences (request, reply) {
       for (var i = 0; i < normalisedLicenceData.length; i++) {
         exportLicence(normalisedLicenceData[i], config.licence.regimeId, config.licence.typeId);
       }
-      return reply(normalisedLicenceData);
+      return normalisedLicenceData;
     });
 }
 
@@ -465,7 +423,7 @@ async function exportLicence (licence, orgId, licenceTypeId) {
     licence_data_value: JSON.stringify(licence)
   };
 
-  var {data, error} = await Permit.licences.create(requestBody);
+  var { data, error } = await Permit.licences.create(requestBody);
   if (error) {
     throw error;
   }
@@ -488,7 +446,8 @@ async function exportLicence (licence, orgId, licenceTypeId) {
     Town: licence.town,
     County: licence.county,
     Postcode: licence.postCode,
-    Country: licence.country});
+    Country: licence.country
+  });
 
   return rp({
     method: 'POST',
@@ -506,14 +465,14 @@ async function exportLicence (licence, orgId, licenceTypeId) {
   });
 }
 
-function loadLicencesUI (request, reply) {
+async function loadLicencesUI (request, reply) {
   // view the admin page
   var viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/import', viewContext);
+  return reply.view('water/admin/import', viewContext);
 }
 
-function addRole (request, reply) {
+async function addRole (request, reply) {
   const { role, regime, company } = request.payload;
   const data = {
     entity_id: request.params.entity_id,
@@ -522,7 +481,7 @@ function addRole (request, reply) {
     company_entity_id: company
   };
 
-  Crm.addRole(data).then(() => reply({}));
+  return Crm.addRole(data).then(() => {});
 }
 
 async function deleteRole (request, reply) {
@@ -538,8 +497,7 @@ async function stats (request, reply) {
   const users = await Idm.getUsers();
   const stats = {
     loggedin: { users: [], domains: [] },
-    notloggedin: {users: [], domains: []
-    }
+    notloggedin: { users: [], domains: [] }
   };
 
   users.forEach(user => {
@@ -551,58 +509,55 @@ async function stats (request, reply) {
     }
     stats[status].domains[domain].push(user.user_name);
   });
-  return reply(stats);
+  return stats;
 }
 
-function naldImport (request, reply) {
-  Water.naldImport().then((res) => {
-    return reply(res);
+async function naldImport (request, reply) {
+  return Water.naldImport().then((res) => {
+    return res;
   }).catch((res) => {
-    return reply({error: res});
+    return { error: res };
   });
 }
 
-function naldLicence (request, reply) {
-  Water.naldLicence(request.query.licence_number).then((res) => {
-    return reply(res);
+async function naldLicence (request, reply) {
+  return Water.naldLicence(request.query.licence_number).then((res) => {
+    return res;
   }).catch((res) => {
     console.error(res);
-    return reply({error: res});
+    return { error: res };
   });
 }
 
-module.exports = {
-  index,
-  regimes,
-  regimeLicenceTypes,
-  regimeLicenceType,
-  findlicence,
-  doFindlicence,
-  viewlicence,
-  crm,
-  crmEntities,
-  crmEntity,
-  crmNewRegime,
-  crmNewCompany,
-  crmNewIndividual,
-  crmDoNewEntity,
-  crmAllEntitiesJSON,
-  permitIndex,
-  crmDocumentHeaders,
-  setDocumentOwner,
-  crmGetVerifications,
-  idmIndex,
-  waterIndex,
-  getDocument,
-  getUnlinkDocument,
-  getUnlinkAllDocuments,
-  getUnlinkSuccess,
-  loadLicences,
-  loadLicencesUI,
-  viewLicenceRaw,
-  addRole,
-  deleteRole,
-  stats,
-  naldImport,
-  naldLicence
-};
+exports.index = index;
+exports.regimes = regimes;
+exports.regimeLicenceTypes = regimeLicenceTypes;
+exports.findlicence = findlicence;
+exports.doFindlicence = doFindlicence;
+exports.viewlicence = viewlicence;
+exports.crm = crm;
+exports.crmEntities = crmEntities;
+exports.crmEntity = crmEntity;
+exports.crmNewRegime = crmNewRegime;
+exports.crmNewCompany = crmNewCompany;
+exports.crmNewIndividual = crmNewIndividual;
+exports.crmDoNewEntity = crmDoNewEntity;
+exports.crmAllEntitiesJSON = crmAllEntitiesJSON;
+exports.permitIndex = permitIndex;
+exports.crmDocumentHeaders = crmDocumentHeaders;
+exports.setDocumentOwner = setDocumentOwner;
+exports.crmGetVerifications = crmGetVerifications;
+exports.idmIndex = idmIndex;
+exports.waterIndex = waterIndex;
+exports.getDocument = getDocument;
+exports.getUnlinkDocument = getUnlinkDocument;
+exports.getUnlinkAllDocuments = getUnlinkAllDocuments;
+exports.getUnlinkSuccess = getUnlinkSuccess;
+exports.loadLicences = loadLicences;
+exports.loadLicencesUI = loadLicencesUI;
+exports.viewLicenceRaw = viewLicenceRaw;
+exports.addRole = addRole;
+exports.deleteRole = deleteRole;
+exports.stats = stats;
+exports.naldImport = naldImport;
+exports.naldLicence = naldLicence;

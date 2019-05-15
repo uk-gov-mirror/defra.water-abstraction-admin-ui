@@ -11,7 +11,7 @@ const Promise = require('bluebird');
  */
 function getImportContacts (request, reply) {
   const viewContext = View.contextDefaults(request);
-  reply.view('water/admin/importContacts.html', viewContext);
+  return reply.view('water/admin/importContacts.html', viewContext);
 }
 
 class InvalidDataError extends Error {
@@ -113,11 +113,11 @@ async function importRow (row) {
 
   // @TODO
   // Find/create entity, find document ID by licence number, create doc entity role
-  const { email, role, licence_number } = value;
+  const { email, role, licenceNumber } = value;
 
   try {
     // Find document
-    const { error, data: [document] } = await documents.findMany({ system_external_id: licence_number });
+    const { error, data: [document] } = await documents.findMany({ system_external_id: licenceNumber });
 
     if (error) {
       throw error;
@@ -174,14 +174,12 @@ async function postImportContacts (request, reply) {
 
     viewContext.result = await Promise.map(data, importRow, { concurrency: 1 });
 
-    reply.view('water/admin/importContactsSuccess.html', viewContext);
+    return reply.view('water/admin/importContactsSuccess.html', viewContext);
   } catch (error) {
     viewContext.error = error;
-    reply.view('water/admin/importContacts.html', viewContext);
+    return reply.view('water/admin/importContacts.html', viewContext);
   }
 }
 
-module.exports = {
-  getImportContacts,
-  postImportContacts
-};
+exports.getImportContacts = getImportContacts;
+exports.postImportContacts = postImportContacts;

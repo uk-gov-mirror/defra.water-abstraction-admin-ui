@@ -87,7 +87,7 @@ function getDocument (params) {
   return new Promise((resolve, reject) => {
     const uri = process.env.CRM_URI + '/documentHeader/' + params.document_id + '?token=' + process.env.JWT_TOKEN;
     const data = { entity_id: params.entity_id };
-    Helpers.makeURIRequestWithBody(uri, 'get', data)
+    return Helpers.makeURIRequestWithBody(uri, 'get', data)
       .then((response) => {
         resolve(response.body);
       }).catch(error => {
@@ -171,11 +171,11 @@ const getEntitiesByEmail = (email = '') => {
     entity_nm: email.toLowerCase(),
     entity_type: 'individual'
   })
-  .then(response => response.data)
-  .catch(error => {
-    console.error(error);
-    throw error;
-  });
+    .then(response => response.data)
+    .catch(error => {
+      console.error(error);
+      throw error;
+    });
 };
 
 const deleteVerificationDocuments = verificationID => {
