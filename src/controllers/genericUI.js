@@ -61,18 +61,15 @@ async function list (request, reply) {
   if (request.query.id) {
     const viewContext = View.contextDefaults(request);
 
-    console.log(`making request to endpoint ${request.params.endpoint}.${request.params.obj} with filter`);
-
     try {
       const res = await Endpoints[request.params.endpoint][request.params.obj].findOne(encodeURIComponent(request.query.id));
       if (res.error) {
-        console.log(res.error);
+        console.error(res.error);
       }
       var baseData = res.data;
       var pagination = res.pagination;
     } catch (e) {
-      console.log('got error from endpoint');
-      console.log(e);
+      console.error(e);
       return reply(e);
     }
 
@@ -128,18 +125,13 @@ async function list (request, reply) {
       req.Filter = JSON.parse(request.query.filter);
     }
 
-    console.log(`woo... making request to endpoint ${request.params.endpoint}.${request.params.obj}`);
-    console.log(req.Filter);
-
     try {
       const res = await Endpoints[request.params.endpoint][request.params.obj].findMany(req.Filter, req.Sort, req.Pagination);
-      console.log('got response from endpoint');
 
       baseData = res.data;
       pagination = res.pagination;
     } catch (e) {
-      console.log('got error from endpoint');
-      console.log(e);
+      console.error(e);
       return reply(e);
     }
 
@@ -159,8 +151,6 @@ async function list (request, reply) {
     baseData.forEach((r) => {
       var row = [];
       for (const key in baseData[0]) {
-        console.log(key);
-
         if (!config.exclude.includes(key)) {
           var i = { data: r[key], name: key };
           i.typeof = typeof i.data;
@@ -177,8 +167,6 @@ async function list (request, reply) {
       }
       viewContext.data.push(row);
     });
-    console.log('DATA');
-    console.log(viewContext.data);
 
     viewContext.title = config.title;
     if (pagination && pagination.page) {
@@ -222,8 +210,6 @@ async function list (request, reply) {
 }
 
 async function createorUpdate (request, reply) {
-  const config = viewConfig[request.params.endpoint][request.params.obj];
-  console.log(config);
   for (const key in request.payload) {
     if (request.payload[key] === '') {
       delete request.payload[key];
@@ -231,45 +217,31 @@ async function createorUpdate (request, reply) {
   }
 
   if (request.query.patch) {
-    console.log('request to update');
-    const config = viewConfig[request.params.endpoint][request.params.obj];
-    console.log(config);
     for (var key in request.payload) {
       if (request.payload[key] === '' || request.payload[key] === 'null' || request.payload[key] === '{}') {
-        console.log('delete request.payload.' + key);
         delete request.payload[key];
       }
     }
-    console.log(encodeURIComponent(request.query.id));
-    console.log(`making request to UPDATE endpoint ${request.params.endpoint}.${request.params.obj} with payload`);
 
     try {
       const res = await Endpoints[request.params.endpoint][request.params.obj].updateOne(encodeURIComponent(request.query.id), request.payload);
       if (res.error) {
-        console.log(res.error.details);
+        console.error(res.error.details);
       }
     } catch (e) {
-      console.log('bbluergh');
       return reply(e);
     }
 
     return reply.redirect(request.url.path);
   } else {
-    console.log(encodeURIComponent(request.query.id));
-    console.log(request.payload);
-    console.log(`making request to CREATE  endpoint ${request.params.endpoint}.${request.params.obj} with payload`);
-    console.log(request.payload);
-
     try {
       const res = await Endpoints[request.params.endpoint][request.params.obj].create(request.payload);
       if (res.error) {
-        console.log(res.error.details);
+        console.error(res.error.details);
         return reply(res.error);
       }
       return reply(res);
     } catch (e) {
-      console.log('bbluergh');
-      console.log(e);
       return reply(e);
     }
   }

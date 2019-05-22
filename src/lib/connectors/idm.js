@@ -12,12 +12,8 @@ function getUsers () {
     var uri = process.env.IDM_URI + '/user';
     Helpers.makeURIRequest(uri)
     .then((response) => {
-      console.log('--- user response ---');
-      console.log(JSON.parse(response.body).data);
       resolve(JSON.parse(response.body).data);
     }).catch((response) => {
-      console.log(response);
-      console.log('rejecting in idm.getUsers');
       reject(response);
     });
   });
@@ -28,12 +24,8 @@ function getUser (params) {
     var uri = process.env.IDM_URI + '/user/' + params.user_id + '?token=' + process.env.JWT_TOKEN;
     Helpers.makeURIRequest(uri)
     .then((response) => {
-      console.log('user response');
-      console.log(response.body);
       resolve(JSON.parse(response.body).data);
     }).catch((response) => {
-      console.log(response);
-      console.log('rejecting in idm.getUser');
       reject(response);
     });
   });
@@ -41,20 +33,12 @@ function getUser (params) {
 
 function createUser (data) {
   return new Promise((resolve, reject) => {
-    console.log('Create user called');
-    console.log(data);
     var uri = process.env.IDM_URI + '/user';
     var method = 'POST';
-    console.log('user data');
-    console.log(data.user_data);
     Helpers.makeURIRequestWithBody(uri, method, data)
       .then((response) => {
-        console.log('user response');
-        console.log(response.body);
         resolve(response.body);
       }).catch((response) => {
-        console.log(response.error.error);
-        console.log('rejecting in idm.getUsers');
         reject(response);
       });
   });
@@ -62,10 +46,7 @@ function createUser (data) {
 
 function updateUser (userId, payload) {
   return new Promise((resolve, reject) => {
-    var data = payload;
-    console.log('updateUser');
-    console.log(data.reset_guid.length);
-    console.log('check guid');
+    const data = payload;
     if (data.reset_guid.length === 0) {
       delete data.reset_guid;
     }
@@ -78,13 +59,11 @@ function updateUser (userId, payload) {
       data.bad_logins = 0;
     }
 
-    console.log(data);
-    var uri = `${process.env.IDM_URI}/user/${userId}`;
+    const uri = `${process.env.IDM_URI}/user/${userId}`;
     Helpers.makeURIRequestWithBody(uri, 'PATCH', data)
     .then((response) => {
       resolve(response);
     }).catch((response) => {
-      console.log('rejecting in idm.updatePassword');
       reject(response);
     });
   });

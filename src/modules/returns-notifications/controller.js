@@ -1,16 +1,13 @@
-const Boom = require('boom');
 const util = require('util');
 const stringify = require('csv-stringify');
 const csvStringify = util.promisify(stringify);
 const { uniq } = require('lodash');
 
-const { getInvitationForm, formSchema, getWaterServiceRequest, getInvitationDataForm, getWaterServiceReminderRequest } = require('./helpers');
+const { getInvitationForm, formSchema, getWaterServiceRequest, getInvitationDataForm } = require('./helpers');
 const { handleRequest, getValues } = require('../../lib/forms');
 
 const View = require('../../lib/view');
-const { previewReturnsInvitation, sendReturnsInvitation, sendReturnsForms } = require('../../lib/connectors/water');
-
-const { remindersForm, remindersSchema } = require('./forms');
+const { previewReturnsInvitation, sendReturnsInvitation } = require('../../lib/connectors/water');
 
 /**
  * Displays a form to start the flow for sending invitation to complete
@@ -136,83 +133,8 @@ const postReturnInvitationSend = async(request, reply) => {
   }
 };
 
-/**
- * Renders a form to allow user to send return reminders
- */
-const getReturnReminders = async(request, reply) => {
-  const form = remindersForm();
-
-  const view = {
-    ...View.contextDefaults(request),
-    form
-  };
-  return reply.view('water/admin/returns-notifications/reminder', view);
-};
-
-/**
- * Post handler for return reminders
- */
-const postReturnReminders = async(request, reply) => {
-  const form = handleRequest(remindersForm(), request, remindersSchema);
-
-  const view = View.contextDefaults(request);
-
-  if (form.isValid) {
-    const payload = getWaterServiceReminderRequest({
-      issuer: request.auth.credentials.name,
-      ...getValues(form)
-    });
-
-    console.log(payload);
-
-    const { error, data } = await sendReturnsForms('pdf.return_reminder', payload);
-
-    if (error) {
-      throw Boom.badImplementation(`Error previewing PDF reminders`, { payload, error });
-    }
-
-    const sendForm = getInvitationDataForm(payload, '/admin/returns-notifications/reminders/send');
-    return reply.view('water/admin/returns-notifications/preview-reminder', {
-      ...view,
-      data,
-      recipients: data.length,
-      form: sendForm
-    });
-  }
-
-  view.form = form;
-  return reply.view('water/admin/returns-notifications/reminder', view);
-};
-
-/**
- * Accepts JSON payload from previous step and sends the message
- */
-const postSendReturnReminders = async(request, reply) => {
-  try {
-    const payload = JSON.parse(request.payload.data);
-
-    const response = await sendReturnsForms('pdf.return_reminder', payload, false);
-
-    const { recipients } = JSON.parse(response.event.metadata);
-
-    const view = {
-      ...View.contextDefaults(request),
-      ...response,
-      recipients
-    };
-
-    console.log(response);
-    return reply.view('water/admin/returns-notifications/success-reminder', view);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 module.exports = {
   getReturnInvitation,
   postReturnInvitation,
-  postReturnInvitationSend,
-  getReturnReminders,
-  postReturnReminders,
-  postSendReturnReminders
+  postReturnInvitationSend
 };

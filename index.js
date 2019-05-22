@@ -61,13 +61,6 @@ server.register([
       key: process.env.ERRBIT_KEY,
       host: process.env.ERRBIT_SERVER
     }
-  }, {
-    // Plugin to display the routes table to console at startup
-    // See https://www.npmjs.com/package/blipp
-    register: require('blipp'),
-    options: {
-      showAuth: true
-    }
   },
   {
     register: require('yar'),

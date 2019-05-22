@@ -104,7 +104,6 @@ function getLicenceType (request, reply) {
 
   DB.query(query, queryParams)
   .then((res) => {
-    console.log(res)
     reply(res)
   })
 }
@@ -125,35 +124,27 @@ function getlicenceTypeFields (request, reply) {
 function createlicenceTypeField (request, reply) {
   // TODO: deal with an array of fields being added...
 
-  console.log(request.payload.types)
-
   if (request.payload.types) {
-    console.log('complex add multi field type')
     var query = ''
     var queryParams = []
 
     for (type in request.payload.types) {
       var thisType = request.payload.types[type]
-      console.log(thisType)
       if (thisType.is_required && thisType.is_required == 1) {
 
       } else {
         thisType.is_required = 0
       }
       if (thisType.is_public_domain && thisType.is_public_domain == 1) {
-        console.log('pd exists')
       } else {
-        console.log('NO pd exists')
         thisType.is_public_domain = 0
       }
-      console.log(thisType)
       query += `insert into
         ${dbSchema.schemaName}.${dbSchema.tables.licenceDef}
         (type_id,field_id,is_required,is_public_domain,type_field_alias)
         values (${request.params.type_id},${thisType.field_id},${thisType.is_required}::bit(1),${thisType.is_public_domain}::bit(1),'${thisType.type_field_alias}');`
     }
   } else {
-    console.log('basic add single field type')
     if (request.payload.is_required && request.payload.is_required == 1) {
 
     } else {
@@ -173,11 +164,8 @@ function createlicenceTypeField (request, reply) {
       request.payload.type_field_alias]
   }
 
-  console.log(query)
-  console.log(queryParams)
   DB.query(query, queryParams)
   .then((res) => {
-    console.log(res)
     reply(res)
   })
 }
@@ -195,7 +183,6 @@ function listLicences (request, reply) {
 }
 
 function createLicence (request, reply) {
-  console.log('create licence!')
   var payload = request.payload
   var foundErrors = false
   var errors = []
@@ -215,8 +202,6 @@ function createLicence (request, reply) {
   } else if (typeof request.params.regime_id === 'undefined') {
     reject(['licence_regime_id must be defined'])
   } else {
-//    console.log('primary fields validated')
-    // 2. get secondary attributes by licence_type_id (and verify licence_regime_id is correct for licence_type_id)
 
     var queryParams = [request.params.regime_id, request.params.type_id]
 
@@ -282,12 +267,10 @@ function createLicence (request, reply) {
         RETURNING licence_id`
       var queryParams = [request.params.regime_id, request.params.type_id, payload.licence_ref, 1, searchKey, payload.licence_start_dt, payload.licence_end_dt]
 
-      console.log(query)
-
       DB.query(query, queryParams)
   .then((res) => {
     if (res.error) {
-      console.log(res.err)
+      console.error(res.err)
       reject(err)
     } else {
       var licence_id = res.data[0].licence_id
@@ -307,15 +290,12 @@ function createLicence (request, reply) {
 
       queryParams = []
 
-      console.log(query)
-
       DB.query(query, queryParams)
   .then((res) => {
     if (res.error) {
-      console.log(res.error)
+      console.error(res.error)
       reject(res.error)
     } else {
-      console.log('no db error')
       reply({error: null, data: {licence_id: licence_id}})
     }
   })
@@ -360,7 +340,6 @@ where l.licence_regime_id = $1 and l.licence_type_id=$2 and l.licence_id=${reque
     if(res.data[0]){
       // set initial licence data
       var licenceData = {}
-      console.log(licenceData)
       licenceData.licence_id = res.data[0].licence_id
       licenceData.licence_ref = res.data[0].licence_ref
       licenceData.licence_start_dt = res.data[0].licence_start_dt
@@ -381,13 +360,8 @@ where l.licence_regime_id = $1 and l.licence_type_id=$2 and l.licence_id=${reque
         inner join ${dbSchema.schemaName}.${dbSchema.tables.systemFields} f on tf.field_id = f.field_id
             where tf.type_id=$1 ) attributes
             `
-      console.log(query)
-      console.log(JSON.stringify(queryParams))
-
       DB.query(query, queryParams)
       .then((attributeDefinitionQuery) => {
-        console.log(attributeDefinitionQuery)
-
         for (var attribute in attributeDefinitionQuery.data[0].attributedata) {
           licenceData.attributes[attributeDefinitionQuery.data[0].attributedata[attribute].type_field_alias] = null
           licenceData.attributeDefinitions[attributeDefinitionQuery.data[0].attributedata[attribute].type_field_alias] = attributeDefinitionQuery.data[0].attributedata[attribute]
@@ -502,11 +476,10 @@ function putLicence (request, reply) {
         DB.query(query, queryParams)
     .then((res) => {
       if (res.error) {
-        console.log(res.err)
+        console.error(res.err)
         reject(err)
       } else {
         var licence_id = request.params.licence_id
-        console.log('no db error')
 
         var queryParams = []
         var query = ''
@@ -526,10 +499,9 @@ function putLicence (request, reply) {
         DB.query(query, queryParams)
     .then((res) => {
       if (res.error) {
-        console.log(res.error)
+        console.error(res.error)
         reject(res.error)
       } else {
-        console.log('no db error')
         reply({error: null, data: {licence_id: licence_id}})
       }
     })
@@ -582,22 +554,16 @@ function createShortcode (request, reply) {
   DB.query(query, queryParams)
 .then((res) => {
   if (res.error) {
-    console.log(res.error)
+    console.error(res.error)
     reject(res.error)
   } else {
-    console.log('no db error')
     reply({error: null, data: {shortcode: shortcode}})
   }
 })
 }
 
 function useShortcode (request, reply) {
-
-  console.log('sessioncookie')
-  console.log(request.payload.sessionCookie)
-
-  var userData=helpers.decryptToken(request.payload.sessionCookie)
-
+  var userData = helpers.decryptToken(request.payload.sessionCookie);
 
   query = `
     select * from  ${dbSchema.schemaName}.${dbSchema.tables.licenceShortcode}
@@ -605,17 +571,9 @@ function useShortcode (request, reply) {
     `
 
   var queryParams = [request.params.shortcode]
-  console.log(query)
-  console.log(queryParams)
   DB.query(query, queryParams)
   .then((res) => {
-    console.log(res)
     if (res.data[0]) {
-      console.log('user id')
-      console.log(userData)
-      console.log(userData.user.user_id)
-      console.log('licence id')
-      console.log(res.data[0].licence_id)
       var user_id=userData.user.user_id
       var licence_id=res.data[0].licence_id
       query = `
@@ -625,17 +583,12 @@ function useShortcode (request, reply) {
         `
 
       var queryParams = []
-      console.log(query)
-      console.log(queryParams)
       DB.query(query, queryParams)
       .then((res) => {
-        console.log(res)
         var response={licence_id:licence_id}
-        console.log(response)
         reply(response)
       })
     } else {
-      console.log('shortcode already used')
       reply({error: 'Shortcode not found or already used'}).code(500)
     }
   })
@@ -648,11 +601,8 @@ function searchLicence (searchString, cb) {
   var query = `SELECT licence_id, licence_ref, licence_search_key
   from ${dbSchema.schemaName}.${dbSchema.tables.licenceHeader}
   where lower(licence_ref) like lower($1) or lower(licence_search_key) like lower($1) or licence_id=$2`
-  console.log(query)
-  console.log(queryParams)
   DB.query(query, queryParams)
   .then((res) => {
-    console.log(res)
     cb(res)
   })
 }
@@ -664,7 +614,6 @@ function licenceShortcodes (licence_id, cb) {
   where licence_id = $1 and user_id is null`
   DB.query(query, queryParams)
   .then((res) => {
-    console.log(res)
     cb(res)
   })
 }
@@ -679,10 +628,9 @@ function licenceAddshortcode (licence_id, cb) {
   DB.query(query, queryParams)
   .then((res) => {
     if (res.error) {
-      console.log(res.error)
+      console.error(res.error)
       cb(res.error, null)
     } else {
-      console.log('no db error')
       cb(null, {})
     }
   })
@@ -695,7 +643,6 @@ function licenceUsers (licence_id, cb) {
   where licence_id = $1`
   DB.query(query, queryParams)
   .then((res) => {
-    console.log(res)
     cb(res)
   })
 }
