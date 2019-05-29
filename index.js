@@ -7,14 +7,7 @@ const rp = require('request-promise-native').defaults({
   strictSSL: false
 });
 
-const serverOptions = {
-  port: process.env.PORT,
-  router: {
-    stripTrailingSlash: true
-  }
-};
-
-const server = Hapi.server(serverOptions);
+const server = Hapi.server(config.server);
 
 // isSecure = true for live...
 const yarOptions = {
