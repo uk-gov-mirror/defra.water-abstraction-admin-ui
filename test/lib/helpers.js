@@ -1,9 +1,8 @@
 'use strict';
 
-const Lab = require('lab');
-const { experiment, test } = exports.lab = Lab.script();
+const { experiment, test } = exports.lab = require('@hapi/lab').script();
+const { expect } = require('@hapi/code');
 
-const { expect } = require('code');
 const { showUnlinkAll } = require('../../src/lib/helpers');
 
 experiment('showUnlinkAll', () => {

@@ -5,26 +5,20 @@ module.exports = {
     method: 'GET',
     path: '/admin/returns',
     handler: controller.getReturnsSearch,
-    config: {
-
-    }
+    config: {}
   },
 
   getLogsList: {
     method: 'GET',
     path: '/admin/returns/logs/{regionCode}/{formatId}',
     handler: controller.getLogsList,
-    config: {
-
-    }
+    config: {}
   },
 
   getLinesList: {
     method: 'GET',
     path: '/admin/returns/lines/{regionCode}/{formatId}/{day}/{month}/{year}',
     handler: controller.getLinesList,
-    config: {
-
-    }
+    config: {}
   }
 };
