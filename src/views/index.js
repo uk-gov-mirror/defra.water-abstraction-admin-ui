@@ -102,10 +102,12 @@ handlebars.registerHelper('splitString', (value, options) => {
 
 const Path = require('path');
 
+const assetPath = '/admin/public/';
+
 const defaultContext = {
-  assetPath: '/public/',
+  assetPath,
   topOfPage: 'Login Handler',
-  head: '<link href="public/stylesheets/overrides.css" media="screen" rel="stylesheet" /><meta name="robots" content="noindex, nofollow">',
+  head: `<link href="${assetPath}stylesheets/overrides.css" media="screen" rel="stylesheet" /><meta name="robots" content="noindex, nofollow">`,
   pageTitle: ' Generic Page',
   htmlLang: 'en',
   bodyClasses: 'some classes here',

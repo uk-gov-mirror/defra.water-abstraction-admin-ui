@@ -1,7 +1,7 @@
 module.exports = [
   {
     method: 'GET',
-    path: '/public/{param*}',
+    path: '/admin/public/{param*}',
     config: {
       auth: false
     },
