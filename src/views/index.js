@@ -1,6 +1,8 @@
 const handlebars = require('handlebars');
 const moment = require('moment');
-const Helpers = require('../lib/helpers');
+const path = require('path');
+
+const helpers = require('../lib/helpers');
 const { splitString } = require('../lib/string-formatter');
 
 handlebars.registerHelper('equal', require('handlebars-helper-equal'));
@@ -17,18 +19,16 @@ handlebars.registerHelper('plural', (count, singular, plural) => {
 });
 
 handlebars.registerHelper('concat', function () {
-  var arg = Array.prototype.slice.call(arguments, 0);
+  const arg = Array.prototype.slice.call(arguments, 0);
   arg.pop();
   return arg.join('');
 });
 
 handlebars.registerHelper('stringify', function (variable) {
-  var arg = JSON.stringify(variable);
-  return arg;
+  return JSON.stringify(variable);
 });
 handlebars.registerHelper('prettyStringify', function (variable) {
-  var arg = JSON.stringify(variable, null, 2);
-  return arg;
+  return JSON.stringify(variable, null, 2);
 });
 
 handlebars.registerHelper('returnDate', function (value) {
@@ -37,40 +37,15 @@ handlebars.registerHelper('returnDate', function (value) {
 
 handlebars.registerHelper('parse', function (variable) {
   try {
-    var arg = JSON.parse(variable);
+    const arg = JSON.parse(variable);
+    return arg;
   } catch (e) {
     return variable;
   }
-
-  return arg;
-});
-handlebars.registerHelper('showhide', function () {
-  var arg = Array.prototype.slice.call(arguments, 0);
-  arg.pop();
-  /**
-  <details>
-    <summary><span class="summary" tabindex="0">{{ licenceData.handsOffFlowHelp }}</span></summary>
-    <div class="panel panel-border-narrow">
-      <h3 class="heading-small">What is a flow condition?</h3>
-      <p>A licence condition which applies to some water abstraction licences, to protect our water levels in times of low surface water supply.</p>
-      <p>A flow condition will affect the licensed maximum amount you can abstract.</p>
-    </div>
-  </details>
-  **/
-  var htmlContent = '';
-  htmlContent += '';
-  htmlContent += '<details>';
-  htmlContent += '<summary><span class="summary" tabindex="0">' + arg[0] + '</span></summary>';
-  htmlContent += '<div class="panel panel-border-narrow">';
-  htmlContent += '<h3 class="heading-small">' + arg[1] + '</h3>';
-  htmlContent += arg[2];
-  htmlContent += '</div>';
-  htmlContent += '</details>';
-  return htmlContent;
 });
 
 handlebars.registerHelper('guid', function () {
-  return Helpers.createGUID();
+  return helpers.createGUID();
 });
 
 const formatISODate = (dateInput, options) => {
@@ -99,8 +74,6 @@ handlebars.registerHelper('splitString', (value, options) => {
   const { index = 0, separator = ',' } = options.hash;
   return splitString(value, index, separator);
 });
-
-const Path = require('path');
 
 const assetPath = '/admin/public/';
 
@@ -133,9 +106,9 @@ module.exports = {
     html: handlebars
   },
   relativeTo: __dirname,
-  path: Path.join(__dirname, ''),
-  layoutPath: Path.join(__dirname, 'govuk_template_mustache/layouts'),
+  path: path.join(__dirname, ''),
+  layoutPath: path.join(__dirname, 'govuk_template_mustache/layouts'),
   layout: 'govuk_template',
-  partialsPath: Path.join(__dirname, 'partials/'),
+  partialsPath: path.join(__dirname, 'partials/'),
   context: defaultContext
 };

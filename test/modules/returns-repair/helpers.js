@@ -1,10 +1,8 @@
 
 'use strict';
 
-const Lab = require('lab');
-const { experiment, test } = exports.lab = Lab.script();
-
-const { expect } = require('code');
+const { experiment, test } = exports.lab = require('@hapi/lab').script();
+const { expect } = require('@hapi/code');
 
 const { fixPeriod,
   repairMeterKey,

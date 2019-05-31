@@ -47,7 +47,7 @@ async function validateBasic (request, userName, password) {
   }
 }
 
-const validateJWT = async (decoded, request) => {
+const validateJWT = async decoded => {
   const isValid = !!decoded.id;
   return { isValid };
 };
@@ -58,8 +58,8 @@ async function start () {
       { plugin: require('@hapi/yar'), options: yarOptions },
       { plugin: require('@hapi/basic') },
       { plugin: require('hapi-auth-jwt2') },
-      { plugin: require('inert') },
-      { plugin: require('vision') }
+      { plugin: require('@hapi/inert') },
+      { plugin: require('@hapi/vision') }
     ]);
 
     server.auth.strategy('simple', 'basic', { validate: validateBasic });
@@ -81,7 +81,9 @@ async function start () {
     server.route(require('./src/routes/admin'));
     server.route(require('./src/routes/status'));
 
-    await server.start();
+    if (!module.parent) {
+      await server.start();
+    }
   } catch (err) {
     throw err;
   }

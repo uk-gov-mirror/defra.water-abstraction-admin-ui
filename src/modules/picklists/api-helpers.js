@@ -1,4 +1,4 @@
-const Boom = require('boom');
+const Boom = require('@hapi/boom');
 const { picklists, picklistItems } = require('../../lib/connectors/water');
 
 const apiCall = async (client, method, args) => {
