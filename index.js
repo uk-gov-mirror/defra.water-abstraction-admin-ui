@@ -52,15 +52,27 @@ const validateJWT = async decoded => {
   return { isValid };
 };
 
+const registerPlugins = server => {
+  return server.register([
+    { plugin: require('@hapi/yar'), options: yarOptions },
+    { plugin: require('@hapi/basic') },
+    { plugin: require('hapi-auth-jwt2') },
+    { plugin: require('@hapi/inert') },
+    { plugin: require('@hapi/vision') }
+  ]);
+};
+
+const registerRoutes = server => {
+  // route for public static content
+  server.route(require('./src/routes/public'));
+  // route for admin UI components
+  server.route(require('./src/routes/admin'));
+  server.route(require('./src/routes/status'));
+};
+
 async function start () {
   try {
-    await server.register([
-      { plugin: require('@hapi/yar'), options: yarOptions },
-      { plugin: require('@hapi/basic') },
-      { plugin: require('hapi-auth-jwt2') },
-      { plugin: require('@hapi/inert') },
-      { plugin: require('@hapi/vision') }
-    ]);
+    await registerPlugins(server);
 
     server.auth.strategy('simple', 'basic', { validate: validateBasic });
     server.auth.default('simple');
@@ -74,12 +86,7 @@ async function start () {
     // load views
     server.views(require('./src/views'));
 
-    // load routes
-    // route for public static content
-    server.route(require('./src/routes/public'));
-    // route for admin UI components
-    server.route(require('./src/routes/admin'));
-    server.route(require('./src/routes/status'));
+    registerRoutes(server);
 
     if (!module.parent) {
       await server.start();
@@ -87,7 +94,6 @@ async function start () {
   } catch (err) {
     throw err;
   }
-  return server;
 };
 
 module.exports = server;
