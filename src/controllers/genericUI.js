@@ -74,8 +74,8 @@ async function list (request, reply) {
     }
 
     viewContext.pageTitle = 'GOV.UK - Admin';
-    viewContext.posturl = request.url.path;
-    viewContext.patchurl = request.url.path + '&patch=true';
+    viewContext.posturl = request.path;
+    viewContext.patchurl = request.path + '&patch=true';
     viewContext.columns = [];
     viewContext.data = [];
 
@@ -137,7 +137,7 @@ async function list (request, reply) {
 
     viewContext.pageTitle = 'GOV.UK - Admin';
     viewContext.key = config.key;
-    viewContext.baseurl = request.url.path.split('?')[0];
+    viewContext.baseurl = request.path.split('?')[0];
     viewContext.columns = [];
 
     for (const key in baseData[0]) {
@@ -171,7 +171,7 @@ async function list (request, reply) {
     viewContext.title = config.title;
     if (pagination && pagination.page) {
       if (pagination.page * pagination.perPage < pagination.totalRows) {
-        const qs = [request.url.path.split('?')[0] + '?'];
+        const qs = [request.path.split('?')[0] + '?'];
 
         if (!request.query.page) {
           request.query.page = 1;
@@ -188,7 +188,7 @@ async function list (request, reply) {
       }
 
       if (pagination.page > 1) {
-        const qs = [request.url.path.split('?')[0] + '?'];
+        const qs = [request.path.split('?')[0] + '?'];
 
         for (const p in request.query) {
           if (p === 'page') {
@@ -232,7 +232,7 @@ async function createorUpdate (request, reply) {
       throw e;
     }
 
-    return reply.redirect(request.url.path);
+    return reply.redirect(request.path);
   } else {
     try {
       const res = await Endpoints[request.params.endpoint][request.params.obj].create(request.payload);
