@@ -1,7 +1,6 @@
 const gulp = require('gulp');
-const sass = require('gulp-sass');
-const sourcemaps = require('gulp-sourcemaps');
 const del = require('del');
+const replace = require('gulp-replace');
 
 const paths = {
   public: 'public/',
@@ -66,41 +65,15 @@ gulp.task('install-govuk-files', gulp.series(
 gulp.task('copy-static-assets', () => {
   // copy images and javascript to public
   return gulp
-    .src('src/public/{images/**/*.*,javascripts/**/*.*,stylesheets/**/*.*,data/**/*.*}')
+    .src('src/public/{images/**/*.*,javascripts/**/*.*,stylesheets/**/*.*}')
+    .pipe(replace('/public/images/', '/public/admin/images/'))
     .pipe(gulp.dest(paths.public));
 });
-
-// Build the sass-proto
-gulp.task('sass', function () {
-  return gulp.src('src/assets/' + 'sass/*.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass({
-      outputStyle: 'expanded',
-      includePaths: [
-        'govuk_modules/govuk_frontend_toolkit/stylesheets',
-        'govuk_modules/govuk_template_mustache/assets/stylesheets',
-        'govuk_modules/govuk-elements-sass',
-        'govuk_modules/govuk-elements-sass/public/sass',
-        'govuk_modules'
-      ]
-    }).on('error', sass.logError))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(paths.public + 'stylesheets/'));
-});
-
-// Build task
-// Not currently working, need to run:
-// gulp clean
-// gulp copy-govuk-files
-// gulp install-govuk-files
-// gulp copy-static-assets
-// gulp sass
 
 gulp.task('build', gulp.series(
   'clean',
   'copy-govuk-files',
   'install-govuk-files',
-  'sass',
   'copy-static-assets',
   done => done()
 ));
