@@ -5,7 +5,7 @@ module.exports = {
       stripTrailingSlash: true
     }
   },
-  application: 'water_admin',
+  application: 'water_dev',
   licence: {
     typeId: 8,
     regimeId: 1
