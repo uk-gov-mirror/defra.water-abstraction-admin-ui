@@ -17,7 +17,7 @@ const routes = [
     method: 'GET',
     path: '/robots.txt',
     handler: function (request, reply) {
-      return reply('User-agent: * Disallow: /').code(200);
+      return 'User-agent: * Disallow: /';
     },
     config: {
       auth: false,
@@ -28,7 +28,7 @@ const routes = [
     method: 'GET',
     path: '/status',
     handler: function (request, reply) {
-      return reply('ok').code(200);
+      return 'ok';
     },
     config: {
       auth: false,
@@ -57,7 +57,7 @@ const routes = [
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
-      reply.redirect('/admin');
+      return reply.redirect('/admin');
     },
     config: {
       auth: false,
@@ -93,7 +93,7 @@ const routes = [
   },
   {
     method: 'GET',
-    path: '/admin/findlicence/{search}',
+    path: '/admin/findlicence/{search*}',
     handler: Admin.doFindlicence,
     config: {
       auth: 'simple',
@@ -192,20 +192,11 @@ const routes = [
   },
   {
     method: 'GET',
-    path: '/admin/regime/{regime_id}/licencetypes',
+    path: '/admin/regime/{regimeId}/licencetypes',
     handler: Admin.regimeLicenceTypes,
     config: {
       auth: 'simple',
       description: 'View licence types for regime '
-    }
-  },
-  {
-    method: 'GET',
-    path: '/admin/regime/{regime_id}/licencetypes/{type_id}',
-    handler: Admin.regimeLicenceType,
-    config: {
-      auth: 'simple',
-      description: 'View specific licence type for regime '
     }
   },
   {

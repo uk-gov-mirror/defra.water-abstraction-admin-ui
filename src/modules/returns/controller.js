@@ -6,7 +6,7 @@ const View = require('../../lib/view');
  * Renders a form to search for a licence's returns formats
  * @param {String} request.query.q - the licence number
  */
-const getReturnsSearch = async(request, reply) => {
+const getReturnsSearch = async (request, reply) => {
   const view = View.contextDefaults(request);
   const { q } = request.query;
 
@@ -22,7 +22,7 @@ const getReturnsSearch = async(request, reply) => {
   return reply.view('water/admin/returns/search', view);
 };
 
-const getLogsList = async(request, reply) => {
+const getLogsList = async (request, reply) => {
   const view = View.contextDefaults(request);
   const { regionCode, formatId } = request.params;
   try {
@@ -33,7 +33,7 @@ const getLogsList = async(request, reply) => {
   }
 };
 
-const getLinesList = async(request, reply) => {
+const getLinesList = async (request, reply) => {
   const { regionCode, formatId, day, month, year } = request.params;
   try {
     const date = `${day}/${month}/${year}`;

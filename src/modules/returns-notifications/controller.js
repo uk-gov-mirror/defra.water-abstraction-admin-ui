@@ -1,7 +1,7 @@
 const util = require('util');
 const stringify = require('csv-stringify');
 const csvStringify = util.promisify(stringify);
-const { uniq } = require('lodash');
+const { uniq, pick } = require('lodash');
 
 const { getInvitationForm, formSchema, getWaterServiceRequest, getInvitationDataForm } = require('./helpers');
 const { handleRequest, getValues } = require('../../lib/forms');
@@ -13,7 +13,7 @@ const { previewReturnsInvitation, sendReturnsInvitation } = require('../../lib/c
  * Displays a form to start the flow for sending invitation to complete
  * return
  */
-const getReturnInvitation = async(request, reply) => {
+const getReturnInvitation = async (request, reply) => {
   const form = getInvitationForm();
 
   const view = {
@@ -36,19 +36,16 @@ const buildCsv = async (data) => {
     }, 0);
 
     const contacts = data.messages.map(row => {
-      const { personalisation: { address_line_1, address_line_2, address_line_3, address_line_4, address_line_5, address_line_6, postcode } } = row;
-
       const licences = uniq(row.licences);
-
-      const data = {
-        address_line_1,
-        address_line_2,
-        address_line_3,
-        address_line_4,
-        address_line_5,
-        address_line_6,
-        postcode
-      };
+      const data = pick(row.personalisation, [
+        'address_line_1',
+        'address_line_2',
+        'address_line_3',
+        'address_line_4',
+        'address_line_5',
+        'address_line_6',
+        'postcode'
+      ]);
 
       for (let i = 0; i < maxLicenceCount; i++) {
         data[`licence_${i + 1}`] = licences[i];
@@ -68,7 +65,7 @@ const buildCsv = async (data) => {
  * otherwise, a request is sent to the preview endpoint, which returns
  * the number of recipients and licence numbers affected
  */
-const postReturnInvitation = async(request, reply) => {
+const postReturnInvitation = async (request, reply) => {
   const form = handleRequest(getInvitationForm(), request, formSchema);
 
   try {
@@ -109,6 +106,7 @@ const postReturnInvitation = async(request, reply) => {
     }
   } catch (err) {
     console.error(err);
+    throw err;
   }
 };
 
@@ -116,7 +114,7 @@ const postReturnInvitation = async(request, reply) => {
  * Submit return invitation.  Accepts the JSON payload calculated in the
  * the previous step and POST's to water service
  */
-const postReturnInvitationSend = async(request, reply) => {
+const postReturnInvitationSend = async (request, reply) => {
   try {
     const payload = JSON.parse(request.payload.data);
 

@@ -9,21 +9,7 @@ const pool = new Pool({
 });
 
 function promiseQuery (queryString, params) {
-  return new Promise((resolve, reject) => {
-    query(queryString, params, (res) => {
-      resolve(res);
-    });
-  });
-}
-
-function query (queryString, params, cb) {
-  pool.query(queryString, params)
-    .then((res) => {
-      cb({data: res.rows, error: null});
-    })
-    .catch(err => {
-      cb({error: err.stack, data: null});
-    });
+  pool.query(queryString, params);
 }
 
 module.exports = {

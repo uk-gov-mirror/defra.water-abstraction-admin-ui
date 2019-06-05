@@ -65,14 +65,14 @@ const getOrCreateIdmUser = async (userName, externalId) => {
   return { created: 0, existing: 1, user: idmUser.data[0] };
 };
 
-function createAdminUsersUI (request, reply) {
+function createAdminUsersUI (request, h) {
   // View the water index page
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin';
-  reply.view('water/admin/createAdminUsers', viewContext);
+  return h.view('water/admin/createAdminUsers', viewContext);
 }
 
-async function create (request, reply) {
+async function create (request, h) {
   const result = {
     idmUsers: [],
     idm: { created: 0, existing: 0 },
@@ -104,13 +104,11 @@ async function create (request, reply) {
       }
     });
 
-  Promise.all(allRequests)
+  return Promise.all(allRequests)
     .then(() => {
-      return reply(result);
+      return result;
     });
 }
 
-module.exports = {
-  create,
-  createAdminUsersUI
-};
+exports.create = create;
+exports.createAdminUsersUI = createAdminUsersUI;

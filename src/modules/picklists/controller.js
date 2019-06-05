@@ -7,7 +7,7 @@ const api = require('./api-helpers');
 /**
  * View list of picklists with option to create
  */
-const getPicklists = async(request, reply) => {
+const getPicklists = async (request, reply) => {
   const picklists = await api.getAllPicklists();
 
   const view = {
@@ -21,7 +21,7 @@ const getPicklists = async(request, reply) => {
 /**
  * View existing picklist
  */
-const getPicklist = async(request, reply) => {
+const getPicklist = async (request, reply) => {
   const { id } = request.params;
 
   const picklist = await api.getPicklist(id);
@@ -40,7 +40,7 @@ const getPicklist = async(request, reply) => {
  * Create picklist item
   * @param {String} request.params.id - picklist ID
   */
-const getCreateItem = async(request, reply) => {
+const getCreateItem = async (request, reply) => {
   const { id } = request.params;
 
   const picklist = await api.getPicklist(id);
@@ -62,7 +62,7 @@ const getCreateItem = async(request, reply) => {
  * @param {String} [request.payload.id] - user-defined item ID
  * @param {String} request.payload.value - user-defined item text
  */
-const postCreateItem = async(request, reply) => {
+const postCreateItem = async (request, reply) => {
   const { id } = request.params;
 
   // Load API data
@@ -99,7 +99,7 @@ const postCreateItem = async(request, reply) => {
  * @param {String} request.params.id - picklist ID
  * @param {String} request.params.itemId - picklist item ID
  */
-const getEditItem = async(request, reply) => {
+const getEditItem = async (request, reply) => {
   const { id, itemId } = request.params;
 
   const picklist = await api.getPicklist(id);
@@ -124,7 +124,7 @@ const getEditItem = async(request, reply) => {
  * @param {String} request.payload.value - user-defined item text
  * @param {String} request.payload.delete - if 'true', item is deleted
  */
-const postEditItem = async(request, reply) => {
+const postEditItem = async (request, reply) => {
   const { id, itemId } = request.params;
 
   // Load API data

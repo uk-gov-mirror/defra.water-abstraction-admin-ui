@@ -8,7 +8,7 @@ const { repairWeeklyReturn, compare } = require('./helpers');
 /**
  * Displays a search form to find a return by return ID
  */
-const getSearch = async(request, reply) => {
+const getSearch = async (request, reply) => {
   const form = getSearchForm();
 
   const view = {
@@ -37,7 +37,7 @@ const findEntityId = async (email) => {
  * Post handler for search form.
  * Does not process result
  */
-const postSearch = async(request, reply) => {
+const postSearch = async (request, reply) => {
   const form = handleRequest(getSearchForm(), request);
   if (form.isValid) {
     const { returnId } = getValues(form);
@@ -72,7 +72,7 @@ const postSearch = async(request, reply) => {
 /**
  * Posts updated return to water service
  */
-const postSubmit = async(request, reply) => {
+const postSubmit = async (request, reply) => {
   const data = JSON.parse(request.payload.data);
   await waterReturns.postReturn(data);
   const view = View.contextDefaults(request);

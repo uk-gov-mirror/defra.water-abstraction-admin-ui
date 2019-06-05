@@ -1,7 +1,6 @@
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const sourcemaps = require('gulp-sourcemaps');
-const standard = require('gulp-standard');
 const del = require('del');
 
 const paths = {
@@ -87,16 +86,6 @@ gulp.task('sass', function () {
     }).on('error', sass.logError))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(paths.public + 'stylesheets/'));
-});
-
-// Run StardardJS checks
-gulp.task('standard', function () {
-  return gulp.src(['src/**/*.js'])
-    .pipe(standard())
-    .pipe(standard.reporter('default', {
-      breakOnError: true,
-      quiet: true
-    }));
 });
 
 // Build task

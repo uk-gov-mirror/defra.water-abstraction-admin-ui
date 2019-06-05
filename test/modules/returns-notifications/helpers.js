@@ -33,7 +33,7 @@ experiment('getWaterServiceRequest', () => {
       },
       personalisation: {
         date: '28 April 2017'
-      }});
+      } });
   });
 });
 

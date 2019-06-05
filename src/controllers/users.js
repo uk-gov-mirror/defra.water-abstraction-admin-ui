@@ -4,38 +4,38 @@ const View = require('../lib/view');
 const Idm = require('../lib/connectors/idm');
 const Crm = require('../lib/connectors/crm');
 
-function users (request, reply) {
-  Idm.getUsers().then((users) => {
-    const viewContext = View.contextDefaults(request);
-    viewContext.pageTitle = 'GOV.UK - Admin/Fields';
-    viewContext.users = users;
-    viewContext.debug.users = viewContext.users;
-    reply.view('water/admin/viewusers', viewContext);
-  });
-}
-
-function createUser (request, reply) {
-  Idm.createUser(request.payload).then(() => {
-    const data = {};
-    data.entity_nm = request.payload.user_name;
-    data.entity_type = 'individual';
-    data.entity_definition = '{}';
-    Crm.createEntity(data).then(() => {
-      users(request, reply);
+async function users (request, reply) {
+  return Idm.getUsers()
+    .then((users) => {
+      const viewContext = View.contextDefaults(request);
+      viewContext.pageTitle = 'GOV.UK - Admin/Fields';
+      viewContext.users = users;
+      viewContext.debug.users = viewContext.users;
+      return reply.view('water/admin/viewusers', viewContext);
     });
-  });
 }
 
-function updateUser (request, reply) {
-  Idm.updateUser(request.params.user_id, request.payload).then((res) => {
-    return reply.redirect(`/admin/idm/users/${request.params.user_id}`);
-  }).catch((e) => {
-    return reply(e);
-  });
+async function createUser (request, reply) {
+  return Idm.createUser(request.payload)
+    .then(() => {
+      const data = {};
+      data.entity_nm = request.payload.user_name;
+      data.entity_type = 'individual';
+      data.entity_definition = '{}';
+      return Crm.createEntity(data);
+    })
+    .then(() => {
+      return users(request, reply);
+    });
 }
 
-function user (request, reply) {
-  Idm.getUser({
+async function updateUser (request, reply) {
+  await Idm.updateUser(request.params.user_id, request.payload);
+  return reply.redirect(`/admin/idm/users/${request.params.user_id}`);
+}
+
+async function user (request, reply) {
+  return Idm.getUser({
     user_id: request.params.user_id
   }).then((user) => {
     const viewContext = View.contextDefaults(request);
@@ -46,7 +46,7 @@ function user (request, reply) {
     viewContext.user = viewUser;
     viewContext.user_id = request.params.user_id;
     viewContext.debug.users = viewContext.user;
-    reply.view('water/admin/viewuser', viewContext);
+    return reply.view('water/admin/viewuser', viewContext);
   });
 }
 
@@ -58,10 +58,10 @@ const filterEntitiesWithExternalId = (entities = [], externalId) => {
  * Handler which prepares the view model with data about the
  * user who is potentially going to be deleted.
  */
-const getDeleteUser = (request, reply) => {
+const getDeleteUser = async (request, reply) => {
   const viewContext = View.contextDefaults(request);
 
-  Idm.getUser({ user_id: request.params.user_id })
+  return Idm.getUser({ user_id: request.params.user_id })
     .then(user => {
       viewContext.user = user;
       viewContext.userHasExternalId = !!user.external_id;
@@ -125,7 +125,7 @@ const deleteUserByUserID = userID => Idm.users.delete(userID);
  * the idm.user records is deleted using the user_id.
  *
  */
-const postDeleteUser = (request, reply) => {
+const postDeleteUser = async (request, reply) => {
   const entityID = request.payload.entity_id;
   const userID = request.payload.user_id;
   const url = '/admin/idm/users/deleted';
@@ -133,26 +133,24 @@ const postDeleteUser = (request, reply) => {
     ? deleteUserByEntityID(entityID)
     : deleteUserByUserID(userID);
 
-  deletePromise
+  return deletePromise
     .then(() => reply.redirect(url))
     .catch(error => {
       console.error(error);
-      reply.redirect(url + '?error=true');
+      return reply.redirect(url + '?error=true');
     });
 };
 
-const getUserDeleted = (request, reply) => {
+const getUserDeleted = async (request, reply) => {
   const viewContext = View.contextDefaults(request);
   viewContext.deleteFailure = request.query.error;
-  reply.view('water/admin/deleteUserResult', viewContext);
+  return reply.view('water/admin/deleteUserResult', viewContext);
 };
 
-module.exports = {
-  user,
-  users,
-  updateUser,
-  createUser,
-  getDeleteUser,
-  postDeleteUser,
-  getUserDeleted
-};
+exports.user = user;
+exports.users = users;
+exports.updateUser = updateUser;
+exports.createUser = createUser;
+exports.getDeleteUser = getDeleteUser;
+exports.postDeleteUser = postDeleteUser;
+exports.getUserDeleted = getUserDeleted;

@@ -91,12 +91,12 @@ const taskConfigClient = new APIClient(rp, {
   }
 });
 
-const getReturnsFormats = async(licenceNumber) => {
+const getReturnsFormats = async (licenceNumber) => {
   return rp({
     uri: process.env.WATER_URI + '/nald/returns/formats',
     method: 'GET',
     qs: {
-      filter: JSON.stringify({licenceNumber})
+      filter: JSON.stringify({ licenceNumber })
     },
     json: true,
     headers: {
@@ -105,12 +105,12 @@ const getReturnsFormats = async(licenceNumber) => {
   });
 };
 
-const getReturnsLogs = async(regionCode, formatId) => {
+const getReturnsLogs = async (regionCode, formatId) => {
   return rp({
     uri: process.env.WATER_URI + '/nald/returns/logs',
     method: 'GET',
     qs: {
-      filter: JSON.stringify({regionCode, formatId})
+      filter: JSON.stringify({ regionCode, formatId })
     },
     json: true,
     headers: {
@@ -119,12 +119,12 @@ const getReturnsLogs = async(regionCode, formatId) => {
   });
 };
 
-const getReturnsLines = async(regionCode, formatId, dateFrom) => {
+const getReturnsLines = async (regionCode, formatId, dateFrom) => {
   return rp({
     uri: process.env.WATER_URI + '/nald/returns/lines',
     method: 'GET',
     qs: {
-      filter: JSON.stringify({regionCode, formatId, dateFrom})
+      filter: JSON.stringify({ regionCode, formatId, dateFrom })
     },
     json: true,
     headers: {
@@ -150,11 +150,11 @@ const getReturnsNotificationOptions = (payload, isPreview, verbose = false) => {
   };
 };
 
-const previewReturnsInvitation = async(payload, verbose = false) => {
+const previewReturnsInvitation = async (payload, verbose = false) => {
   return rp(getReturnsNotificationOptions(payload, true, verbose));
 };
 
-const sendReturnsInvitation = async(payload) => {
+const sendReturnsInvitation = async (payload) => {
   return rp(getReturnsNotificationOptions(payload, false));
 };
 
