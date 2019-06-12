@@ -49,7 +49,7 @@ const getOrCreateIdmUser = async (userName, externalId) => {
     const createIdmUser = {
       user_name: userName,
       user_data: { 'usertype': 'internal', 'firstname': '' },
-      application: 'water_vml',
+      application: 'water_admin',
       password: uuid(),
       role: {
         scopes: ['internal']
