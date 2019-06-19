@@ -1,10 +1,10 @@
-const ServiceStatusController = require('../controllers/serviceStatus');
+const serviceStatusController = require('../controllers/serviceStatus');
 
 module.exports = [
   {
     method: 'GET',
-    path: '/service-status',
-    handler: ServiceStatusController.serviceStatus,
+    path: '/admin/service-status',
+    handler: serviceStatusController.serviceStatus,
     config: {
       description: 'Service Status',
       auth: false

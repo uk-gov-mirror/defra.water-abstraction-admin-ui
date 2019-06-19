@@ -1,15 +1,14 @@
 'use strict';
 
-const Lab = require('lab');
-const lab = exports.lab = Lab.script();
+const { experiment, test } = exports.lab = require('@hapi/lab').script();
+const { expect } = require('@hapi/code');
 
-const Code = require('code');
 const server = require('../index');
 
-lab.experiment('Check status', () => {
-  lab.test('The status page should render', async () => {
-    const request = { method: 'GET', url: `/status` };
+experiment('Check status', () => {
+  test('The status page should render', async () => {
+    const request = { method: 'GET', url: `/admin/status` };
     const res = await server.inject(request);
-    Code.expect(res.statusCode).to.equal(200);
+    expect(res.statusCode).to.equal(200);
   });
 });

@@ -1,4 +1,4 @@
-const { badImplementation } = require('boom');
+const { badImplementation } = require('@hapi/boom');
 const { getReturnsFormats, getReturnsLogs, getReturnsLines } = require('../../lib/connectors/water');
 const View = require('../../lib/view');
 

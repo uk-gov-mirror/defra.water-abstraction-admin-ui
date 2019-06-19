@@ -15,21 +15,8 @@ const routes = [
   ...moduleRoutes,
   {
     method: 'GET',
-    path: '/robots.txt',
-    handler: function (request, reply) {
-      return 'User-agent: * Disallow: /';
-    },
-    config: {
-      auth: false,
-      description: 'Ooh. Robots'
-    }
-  },
-  {
-    method: 'GET',
-    path: '/status',
-    handler: function (request, reply) {
-      return 'ok';
-    },
+    path: '/admin/status',
+    handler: () => 'ok',
     config: {
       auth: false,
       description: 'Get service status'
@@ -53,12 +40,13 @@ const routes = [
       description: 'Get Admin UI index'
     }
   },
+  // this route is only useful in development because when deployed
+  // this will not be accessible because it will be routed to the internal
+  // VML application due to path to port mapping.
   {
     method: 'GET',
     path: '/',
-    handler: function (request, reply) {
-      return reply.redirect('/admin');
-    },
+    handler: (request, h) => h.redirect('/admin'),
     config: {
       auth: false,
       description: 'Get Admin UI index'

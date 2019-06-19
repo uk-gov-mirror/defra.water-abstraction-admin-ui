@@ -1,5 +1,5 @@
 const csvParse = require('csv-parse/lib/sync');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const View = require('./../lib/view');
 const { entities, documents, documentEntities } = require('../lib/connectors/crm');
 const Promise = require('bluebird');

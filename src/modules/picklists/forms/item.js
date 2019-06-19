@@ -1,5 +1,5 @@
 const { cloneDeep } = require('lodash');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const { formFactory, fields, setValues } = require('../../../lib/forms');
 const { mapError } = require('./map-error');
 

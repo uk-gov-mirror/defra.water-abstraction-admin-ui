@@ -1,5 +1,6 @@
+const querystring = require('querystring');
 const View = require('./../lib/view');
-const Endpoints = {
+const endpoints = {
   crm: require('./../lib/connectors/crm'),
   idm: require('./../lib/connectors/idm'),
   permit: require('./../lib/connectors/permit'),
@@ -42,6 +43,15 @@ const viewConfig = {
   }
 };
 
+const getPostUrl = request => {
+  return request.path + `?${querystring.stringify(request.query)}`;
+};
+
+const getPatchUrl = request => {
+  const query = Object.assign({}, request.query, { patch: true });
+  return request.path + `?${querystring.stringify(query)}`;
+};
+
 async function menu (request, h) {
   const viewContext = View.contextDefaults(request);
   viewContext.viewConfig = viewConfig;
@@ -62,7 +72,7 @@ async function list (request, reply) {
     const viewContext = View.contextDefaults(request);
 
     try {
-      const res = await Endpoints[request.params.endpoint][request.params.obj].findOne(encodeURIComponent(request.query.id));
+      const res = await endpoints[request.params.endpoint][request.params.obj].findOne(encodeURIComponent(request.query.id));
       if (res.error) {
         console.error(res.error);
       }
@@ -74,18 +84,17 @@ async function list (request, reply) {
     }
 
     viewContext.pageTitle = 'GOV.UK - Admin';
-    viewContext.posturl = request.url.path;
-    viewContext.patchurl = request.url.path + '&patch=true';
+    viewContext.posturl = getPostUrl(request);
+    viewContext.patchurl = getPatchUrl(request);
     viewContext.columns = [];
     viewContext.data = [];
 
-    for (var key in baseData) {
-      var data = { name: key, value: baseData[key] };
+    for (const key in baseData) {
+      const data = { name: key, value: baseData[key] };
       if (key === config.key) {
         data.isKey = true;
       }
       data.typeof = typeof data.value;
-      data.orginalValue = data.value;
 
       if (data.typeof === 'object') {
         data.value = JSON.stringify(data.value);
@@ -104,11 +113,11 @@ async function list (request, reply) {
     viewContext.obj = request.params.obj;
     viewContext.id = request.query.id;
 
-    if (request.query.new) {
-      return reply.view('water/admin/standardDuplicateView', viewContext);
-    } else {
-      return reply.view('water/admin/standardEditView', viewContext);
-    }
+    const template = request.query.new
+      ? 'water/admin/standardDuplicateView'
+      : 'water/admin/standardEditView';
+
+    return reply.view(template, viewContext);
   } else {
     // load list view
     var viewContext = View.contextDefaults(request);
@@ -126,7 +135,7 @@ async function list (request, reply) {
     }
 
     try {
-      const res = await Endpoints[request.params.endpoint][request.params.obj].findMany(req.Filter, req.Sort, req.Pagination);
+      const res = await endpoints[request.params.endpoint][request.params.obj].findMany(req.Filter, req.Sort, req.Pagination);
 
       baseData = res.data;
       pagination = res.pagination;
@@ -137,7 +146,7 @@ async function list (request, reply) {
 
     viewContext.pageTitle = 'GOV.UK - Admin';
     viewContext.key = config.key;
-    viewContext.baseurl = request.url.path.split('?')[0];
+    viewContext.baseurl = request.path;
     viewContext.columns = [];
 
     for (const key in baseData[0]) {
@@ -171,7 +180,7 @@ async function list (request, reply) {
     viewContext.title = config.title;
     if (pagination && pagination.page) {
       if (pagination.page * pagination.perPage < pagination.totalRows) {
-        const qs = [request.url.path.split('?')[0] + '?'];
+        const qs = [request.path.split('?')[0] + '?'];
 
         if (!request.query.page) {
           request.query.page = 1;
@@ -188,7 +197,7 @@ async function list (request, reply) {
       }
 
       if (pagination.page > 1) {
-        const qs = [request.url.path.split('?')[0] + '?'];
+        const qs = [request.path.split('?')[0] + '?'];
 
         for (const p in request.query) {
           if (p === 'page') {
@@ -210,6 +219,8 @@ async function list (request, reply) {
 }
 
 async function createorUpdate (request, reply) {
+  const connector = endpoints[request.params.endpoint][request.params.obj];
+
   for (const key in request.payload) {
     if (request.payload[key] === '') {
       delete request.payload[key];
@@ -218,33 +229,25 @@ async function createorUpdate (request, reply) {
 
   if (request.query.patch) {
     for (var key in request.payload) {
-      if (request.payload[key] === '' || request.payload[key] === 'null' || request.payload[key] === '{}') {
+      if (request.payload[key] === 'null' || request.payload[key] === '{}') {
         delete request.payload[key];
       }
     }
 
-    try {
-      const res = await Endpoints[request.params.endpoint][request.params.obj].updateOne(encodeURIComponent(request.query.id), request.payload);
-      if (res.error) {
-        console.error(res.error.details);
-      }
-    } catch (e) {
-      throw e;
+    const res = await connector.updateOne(encodeURIComponent(request.query.id), request.payload);
+    if (res.error) {
+      console.error(res.error.details);
     }
 
-    return reply.redirect(request.url.path);
-  } else {
-    try {
-      const res = await Endpoints[request.params.endpoint][request.params.obj].create(request.payload);
-      if (res.error) {
-        console.error(res.error.details);
-        throw res.error;
-      }
-      return res;
-    } catch (e) {
-      throw e;
-    }
+    return reply.redirect(request.path);
   }
+
+  const res = await connector.create(request.payload);
+  if (res.error) {
+    console.error(res.error.details);
+    throw res.error;
+  }
+  return res;
 }
 
 exports.list = list;
