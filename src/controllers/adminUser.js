@@ -42,7 +42,7 @@ const getRegimeId = async () => {
 const getOrCreateIdmUser = async (userName, externalId) => {
   const idmUser = await IDM.usersClient.findMany({
     user_name: userName,
-    application: 'water_vml'
+    application: 'water_admin'
   }, {}, {});
 
   if (idmUser.data.length === 0) {
