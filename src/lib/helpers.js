@@ -67,15 +67,6 @@ function makeURIRequestWithBody (uri, method, data, headers) {
   });
 }
 
-function decryptToken (token) {
-  var key = process.env.JWT_SECRET;
-  var JWT = require('jsonwebtoken');
-  var data = JWT.decode(token, key);
-  console.log('token decoded');
-  console.log(data);
-  return data;
-}
-
 function addPaginationDetail (pagination) {
   pagination.nextPage = pagination.page;
   if (pagination.nextPage > pagination.pageCount) {
@@ -94,7 +85,6 @@ const showUnlinkAll = env => {
 };
 
 module.exports = {
-  decryptToken,
   makeURIRequestWithBody,
   makeURIRequest,
   addPaginationDetail,

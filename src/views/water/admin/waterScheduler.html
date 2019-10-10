@@ -4,7 +4,6 @@
   <nav>
     <div class="breadcrumbs">
       <ol>
-        
         <li><a href="/admin">admin</a></li>
         <li><a href="/admin/water">water</a></li>
         <li>scheduler</li>
@@ -13,46 +12,55 @@
   </nav>
   <div class="grid-row">
     <div class="column-full">
-      <h1 class="heading-xlarge">
-        Permit Repository Admin / Water / Scheduler
-      </h1>
-<table>
-<tr><th>id</th><th>Type</th><td>licence_ref</th>
-  <th>config</th><th>next_run</th><th>last_run</th><th>log</th><th>date_updated</th><th>status</th><th>running</th><th>date_created</th><th>date_updated</th>
-{{#each scheduler}}
+      <h1 class="heading-xlarge">Permit Repository Admin / Water / Scheduler</h1>
+      <table>
+        <tr>
+          <th>id</th>
+          <th>Type</th>
+          <th>licence_ref</th>
+          <th>config</th>
+          <th>next_run</th>
+          <th>last_run</th>
+          <th>log</th>
+          <th>date_updated</th>
+          <th>status</th>
+          <th>running</th>
+          <th>date_created</th>
+          <th>date_updated</th>
+        </tr>
 
-
-<tr><td><a href='/admin/water/scheduler/{{task_id}}'>{{task_id}}</a></td>
-<td>{{task_type}}</td>
-<td>{{licence_ref}}</td>
-<td>{{task_config}}</td>
-<td>{{next_run}}</td>
-<td>{{last_run}}</td>
-<td>{{log}}</td>
-<td>{{status}}</td>
-<td>{{running}}</td>
-<td>{{date_created}}</td>
-<td>{{date_updated}}</td>
-</tr>
-{{/each}}
-<form method="post" action="/admin/water/scheduler">
-<tr><td>NEW</td>
-<td><input type="text" name="task_type" value="import"/></td>
-<td><input type="text" name="licence_ref" value="licence_ref"/></td>
-<td>-</td>
-<td><input type="text" name="next_run" value="2018-01-01"/></td>
-<td><input type="submit"></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</form>
-</table>
-
+        {{#each scheduler}}
+        <tr>
+          <td><a href='/admin/water/scheduler/{{task_id}}'>{{task_id}}</a></td>
+          <td>{{task_type}}</td>
+          <td>{{licence_ref}}</td>
+          <td>{{task_config}}</td>
+          <td>{{next_run}}</td>
+          <td>{{last_run}}</td>
+          <td>{{log}}</td>
+          <td>{{status}}</td>
+          <td>{{running}}</td>
+          <td>{{date_created}}</td>
+          <td>{{date_updated}}</td>
+        </tr>
+        {{/each}}
+        <form method="post" action="/admin/water/scheduler">
+          <tr>
+            <td>NEW</td>
+            <td><input type="text" name="task_type" value="import"/></td>
+            <td><input type="text" name="licence_ref" value="licence_ref"/></td>
+            <td>-</td>
+            <td><input type="text" name="next_run" value="2018-01-01"/></td>
+            <td><input type="submit"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </form>
+      </table>
     </div>
   </div>
 </main>
 {{> footerjs}}
-{{> debug}}

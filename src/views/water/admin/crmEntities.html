@@ -4,7 +4,6 @@
   <nav>
     <div class="breadcrumbs">
       <ol>
-
         <li><a href="/admin">admin</a></li>
         <li><a href="/admin/crm">crm</a></li>
         <li>entities</li>
@@ -13,28 +12,20 @@
   </nav>
   <div class="grid-row">
     <div class="column-full">
-      <h1 class="heading-xlarge">
-        Permit Repository Admin / CRM / Entities
-      </h1>
+      <h1 class="heading-xlarge">Permit Repository Admin / CRM / Entities</h1>
+      {{> pagination}}
 
-{{> pagination}}
-
-<table>
-<tr><th>Name</th><th>Type</th><th>Metadata</th>
-{{#each entities}}
-<tr><td>
-<a href='/admin/crm/entities/{{entity_id}}'>{{entity_nm}}</a>
-</td><td>
-{{entity_type}}
-</td><td>
-
-{{stringify entity_definition}}
-</td></tr>
-{{/each}}
-</table>
-
+      <table>
+        <tr><th>Name</th><th>Type</th><th>Metadata</th>
+        {{#each entities}}
+        <tr>
+          <td><a href='/admin/crm/entities/{{entity_id}}'>{{entity_nm}}</a></td>
+          <td>{{entity_type}}</td>
+          <td>{{stringify entity_definition}}</td>
+        </tr>
+        {{/each}}
+      </table>
     </div>
   </div>
 </main>
 {{> footerjs}}
-{{> debug}}
