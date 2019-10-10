@@ -4,7 +4,6 @@
   <nav>
     <div class="breadcrumbs">
       <ol>
-        
         <li><a href="/admin">admin</a></li>
         <li><a href="/admin/crm">crm</a></li>
         <li><a href="/admin/crm/verifications">verifications</a></li>
@@ -13,37 +12,29 @@
   </nav>
   <div class="grid-row">
     <div class="column-full">
-      <h1 class="heading-xlarge">
-        Permit Repository Admin / CRM / Verifications
-      </h1>
-<table>
-<tr>
-  <th>Verification ID</th>
-  <th>Entity ID</th>
-  <th>Company ID</th>
-  <th>Code</th>
-  <th>Date Verified</th>
-  <th>Method</th>
-</tr>
-{{#each verifications }}
-<tr>
-<td>{{ verification_id }}</td>
-<td><a href="/admin/crm/entities/{{ entity_id }}">{{ entity_id }}</a></td>
-<td><a href="/admin/crm/entities/{{ company_entity_id }}">{{ company_entity_id }}</a></td>
-<td>{{ verification_code }}</td>
-<td>{{ date_verified }}</td>
-<td>{{ method }}</td>
-</td>
-</tr>
-{{/each}}
-</table>
-
-
-
-
-
+      <h1 class="heading-xlarge">Permit Repository Admin / CRM / Verifications</h1>
+      <table>
+        <tr>
+          <th>Verification ID</th>
+          <th>Entity ID</th>
+          <th>Company ID</th>
+          <th>Code</th>
+          <th>Date Verified</th>
+          <th>Method</th>
+        </tr>
+        {{#each verifications }}
+        <tr>
+          <td>{{ verification_id }}</td>
+          <td><a href="/admin/crm/entities/{{ entity_id }}">{{ entity_id }}</a></td>
+          <td><a href="/admin/crm/entities/{{ company_entity_id }}">{{ company_entity_id }}</a></td>
+          <td>{{ verification_code }}</td>
+          <td>{{ date_verified }}</td>
+          <td>{{ method }}</td>
+          </td>
+        </tr>
+        {{/each}}
+      </table>
     </div>
   </div>
 </main>
 {{> footerjs}}
-{{> debug}}

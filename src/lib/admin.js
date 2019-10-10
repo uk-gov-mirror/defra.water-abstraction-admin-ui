@@ -52,7 +52,6 @@ async function regimes (request, reply) {
   const viewContext = View.contextDefaults(request);
   viewContext.pageTitle = 'GOV.UK - Admin/Fields';
   viewContext.data = JSON.parse(response);
-  viewContext.debug.regimes = viewContext.data;
   return reply.view('water/admin/regimes', viewContext);
 }
 
@@ -189,7 +188,6 @@ async function crmDocumentHeaders (request, reply) {
   viewContext.allowUnlinkAll = helpers.showUnlinkAll(process.env);
   return Crm.findDocument(request.params.search).then((response) => {
     viewContext.permits = response.data;
-    viewContext.debug.permits = response.data;
     return reply.view('water/admin/crmDocumentHeaders', viewContext);
   });
 }
@@ -215,7 +213,6 @@ async function getDocument (request, reply) {
     .then((res) => {
       viewContext.document_id = request.params.document_id;
       viewContext.document = res;
-      viewContext.debug.document = res;
       return reply.view('water/admin/crmDocument', viewContext);
     });
 }
@@ -262,7 +259,6 @@ async function crmGetVerifications (request, reply) {
     throw error;
   }
   viewContext.verifications = data;
-  viewContext.debug.verifications = data;
   return reply.view('water/admin/crmVerifications', viewContext);
 }
 
