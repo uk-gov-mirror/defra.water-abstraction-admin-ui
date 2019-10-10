@@ -1,11 +1,7 @@
 require('dotenv').config();
 const config = require('./config');
 const Hapi = require('@hapi/hapi');
-
-const rp = require('request-promise-native').defaults({
-  proxy: null,
-  strictSSL: false
-});
+const idmConnector = require('./src/lib/connectors/idm');
 
 const server = Hapi.server(config.server);
 
@@ -19,31 +15,15 @@ const yarOptions = {
 };
 
 async function validateBasic (request, userName, password) {
-  const data = {
-    user_name: userName,
-    password,
-    application: config.application
-  };
-
   try {
-    const options = {
-      url: `${process.env.IDM_URI}/user/login`,
-      method: 'POST',
-      json: true,
-      headers: { Authorization: process.env.JWT_TOKEN },
-      body: data
-    };
-
-    const { user_id: id, user_name: name, err: responseError } = await rp(options);
-
-    if (responseError || !id) {
-      return { isValid: false, credentials: null };
-    }
-
+    const response = await idmConnector.attemptLogin(userName, password);
+    const { user_id: id, user_name: name } = response.body;
     return { isValid: true, credentials: { id, name } };
   } catch (err) {
-    console.error(err);
-    throw err;
+    if (err.statusCode >= 500) {
+      console.log(err);
+    }
+    return { isValid: false, credentials: null };
   }
 }
 
