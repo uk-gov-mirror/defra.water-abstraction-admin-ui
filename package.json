@@ -40,7 +40,7 @@
     "gulp": "^4.0.2",
     "gulp-replace": "^1.0.0",
     "sinon": "^7.5.0",
-    "snyk": "^1.234.0"
+    "snyk": "^1.234.1"
   },
   "dependencies": {
     "@envage/hapi-pg-rest-api": "^4.1.2",
