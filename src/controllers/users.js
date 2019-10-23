@@ -10,7 +10,6 @@ async function users (request, reply) {
       const viewContext = View.contextDefaults(request);
       viewContext.pageTitle = 'GOV.UK - Admin/Fields';
       viewContext.users = users;
-      viewContext.debug.users = viewContext.users;
       return reply.view('water/admin/viewusers', viewContext);
     });
 }
@@ -45,7 +44,6 @@ async function user (request, reply) {
     viewContext.pageTitle = 'GOV.UK - Admin/Fields';
     viewContext.user = viewUser;
     viewContext.user_id = request.params.user_id;
-    viewContext.debug.users = viewContext.user;
     return reply.view('water/admin/viewuser', viewContext);
   });
 }

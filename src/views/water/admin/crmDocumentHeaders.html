@@ -55,7 +55,7 @@
             <a target="_blank" href="{{ ../uiBaseUrl }}/licences/{{ document_id }}">View</a>
 
             {{#or company_entity_id verification_id }}
-            | 
+            |
             <a class="danger" href="/admin/crm/document/{{document_id}}/unlink">Unlink</a>
             {{/or}}
 
@@ -80,4 +80,3 @@
   </div>
 </main>
 {{> footerjs}}
-{{> debug}}

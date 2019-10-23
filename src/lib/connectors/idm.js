@@ -1,4 +1,5 @@
 const Helpers = require('../helpers');
+const config = require('../../../config');
 
 const { APIClient } = require('@envage/hapi-pg-rest-api');
 const rp = require('request-promise-native').defaults({
@@ -76,12 +77,22 @@ const usersClient = new APIClient(rp, {
   }
 });
 
-module.exports = {
-  getUsers,
-  getUser,
-  createUser,
-  updateUser,
-  users: usersClient,
-  usersClient,
-  kpi: idmKPI
+const attemptLogin = (username, password) => {
+  const url = `${process.env.IDM_URI}/user/login`;
+  const data = {
+    user_name: username,
+    password,
+    application: config.application
+  };
+
+  return Helpers.makeURIRequestWithBody(url, 'POST', data);
 };
+
+exports.getUsers = getUsers;
+exports.getUser = getUser;
+exports.createUser = createUser;
+exports.updateUser = updateUser;
+exports.users = usersClient;
+exports.usersClient = usersClient;
+exports.kpi = idmKPI;
+exports.attemptLogin = attemptLogin;
