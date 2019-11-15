@@ -4,7 +4,8 @@
 const { experiment, test } = exports.lab = require('@hapi/lab').script();
 const { expect } = require('@hapi/code');
 
-const { fixPeriod,
+const {
+  fixPeriod,
   repairMeterKey,
   repairMeter,
   repairMeterReadings,

@@ -18,7 +18,7 @@ experiment('getWaterServiceRequest', () => {
 
     expect(payload).to.equal({
       config: {
-        rolePriority: [ 'licence_holder' ],
+        rolePriority: ['licence_holder'],
         prefix: 'RINV-',
         issuer: 'mail@example.com',
         messageRef: { default: 'returns_invitation_letter' },
@@ -26,12 +26,13 @@ experiment('getWaterServiceRequest', () => {
       },
       filter: {
         status: 'due',
-        end_date: { '$gte': '2016-04-01', '$lte': '2017-03-31' },
+        end_date: { $gte: '2016-04-01', $lte: '2017-03-31' },
         'metadata->>isCurrent': 'true'
       },
       personalisation: {
         date: '28 April 2017'
-      } });
+      }
+    });
   });
 });
 

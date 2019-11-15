@@ -45,22 +45,18 @@ const registerRoutes = server => {
 };
 
 async function start () {
-  try {
-    await registerPlugins(server);
+  await registerPlugins(server);
 
-    server.auth.strategy('simple', 'basic', { validate: validateBasic });
-    server.auth.default('simple');
+  server.auth.strategy('simple', 'basic', { validate: validateBasic });
+  server.auth.default('simple');
 
-    // load views
-    server.views(require('./src/views'));
+  // load views
+  server.views(require('./src/views'));
 
-    registerRoutes(server);
+  registerRoutes(server);
 
-    if (!module.parent) {
-      await server.start();
-    }
-  } catch (err) {
-    throw err;
+  if (!module.parent) {
+    await server.start();
   }
 };
 
