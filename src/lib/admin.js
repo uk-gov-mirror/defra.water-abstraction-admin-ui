@@ -289,18 +289,18 @@ function createLicence (licenceRow) {
     wa_licence_type: licenceRow['Water Act Licence Type'],
     wa_desc: licenceRow['WA Lic. Type Description'],
     version_start: licenceRow['Version Start Date'],
-    salutation: licenceRow['Salutation'],
-    initials: licenceRow['Initials'],
-    forename: licenceRow['Forename'],
-    name: licenceRow['Name'],
+    salutation: licenceRow.Salutation,
+    initials: licenceRow.Initials,
+    forename: licenceRow.Forename,
+    name: licenceRow.Name,
     addressLine1: licenceRow['Line 1'],
     addressLine2: licenceRow['Line 2'],
     addressLine3: licenceRow['Line 3'],
     addressLine4: licenceRow['Line 4'],
-    town: licenceRow['Town'],
-    county: licenceRow['County'],
-    country: licenceRow['Country'],
-    postCode: licenceRow['Postcode'],
+    town: licenceRow.Town,
+    county: licenceRow.County,
+    country: licenceRow.Country,
+    postCode: licenceRow.Postcode,
     maxAnnualQuantity: licenceRow['Max Annual Quantity'],
     maxDailyQuantity: licenceRow['Max Daily Quantity'],
     sourceOfSupply: licenceRow['Point Name'],
@@ -343,11 +343,11 @@ function createPoint (licenceRow) {
 
 function createCondition (licenceRow) {
   return {
-    code: licenceRow['Code'],
+    code: licenceRow.Code,
     subCode: licenceRow['Sub Code'],
     parameter1: licenceRow['1st Parameter'],
     parameter2: licenceRow['2nd Parameter'],
-    text: licenceRow['Text']
+    text: licenceRow.Text
   };
 }
 

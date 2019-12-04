@@ -7,7 +7,7 @@ const server = require('../index');
 
 experiment('Check status', () => {
   test('The status page should render', async () => {
-    const request = { method: 'GET', url: `/admin/status` };
+    const request = { method: 'GET', url: '/admin/status' };
     const res = await server.inject(request);
     expect(res.statusCode).to.equal(200);
   });

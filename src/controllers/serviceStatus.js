@@ -16,7 +16,7 @@ async function serviceStatus (request, reply) {
   };
   try {
     const userData = await IDM.usersClient.findMany({}, {}, {
-      'perPage': 1
+      perPage: 1
     });
     data.idm.users = userData.pagination.totalRows;
     html += `<tr><td>IDM Users</td><td>${data.idm.users}</td></tr>`;
@@ -26,13 +26,13 @@ async function serviceStatus (request, reply) {
       data.idm[d.datapoint] = d.value;
     });
   } catch (e) {
-    html += `<tr><td>IDM Users</td><td>ERROR</td></tr>`;
+    html += '<tr><td>IDM Users</td><td>ERROR</td></tr>';
     errors++;
   }
 
   try {
     const documentData = await CRM.documents.findMany({}, {}, {
-      'perPage': 1
+      perPage: 1
     });
     data.crm.documents = documentData.pagination.totalRows;
     html += `<tr><td>CRM Documents</td><td>${data.crm.documents}</td></tr>`;
@@ -43,55 +43,55 @@ async function serviceStatus (request, reply) {
     });
   } catch (e) {
     console.error(e);
-    html += `<tr><td>CRM Documents</td><td>ERROR</td></tr>`;
+    html += '<tr><td>CRM Documents</td><td>ERROR</td></tr>';
     errors++;
   }
 
   try {
     const verificationData = await CRM.verification.findMany({}, {}, {
-      'perPage': 1
+      perPage: 1
     });
     data.crm.verifications = verificationData.pagination.totalRows;
     html += `<tr><td>CRM Verifications</td><td>${data.crm.verifications}</td></tr>`;
   } catch (e) {
-    html += `<tr><td>CRM Verifications</td><td>ERROR</td></tr>`;
+    html += '<tr><td>CRM Verifications</td><td>ERROR</td></tr>';
     errors++;
   }
 
   try {
     const permitData = await permits.licences.findMany({}, {}, {
-      'perPage': 1
+      perPage: 1
     });
     data.permitrepo.permits = permitData.pagination.totalRows;
     html += `<tr><td>Permit Repo Permits</td><td>${data.permitrepo.permits}</td></tr>`;
   } catch (e) {
-    html += `<tr><td>Permit Repo Permits</td><td>ERROR</td></tr>`;
+    html += '<tr><td>Permit Repo Permits</td><td>ERROR</td></tr>';
     errors++;
   }
 
   data.waterservice.import = {};
   try {
     const importDataComplate = await water.pendingImport.findMany({
-      'status': 1
+      status: 1
     }, {}, {
-      'perPage': 1
+      perPage: 1
     });
     data.waterservice.import.complete = importDataComplate.pagination.totalRows;
     html += `<tr><td>Imported Permits</td><td>${data.waterservice.import.complete}</td></tr>`;
   } catch (e) {
-    html += `<tr><td>Imported Permits</td><td>ERROR</td></tr>`;
+    html += '<tr><td>Imported Permits</td><td>ERROR</td></tr>';
     errors++;
   }
   try {
     const importDataPending = await water.pendingImport.findMany({
-      'status': 0
+      status: 0
     }, {}, {
-      'perPage': 1
+      perPage: 1
     });
     data.waterservice.import.pending = importDataPending.pagination.totalRows;
     html += `<tr><td>Pending Permits</td><td>${data.waterservice.import.pending}</td></tr>`;
   } catch (e) {
-    html += `<tr><td>Pending Permits</td><td>ERROR</td></tr>`;
+    html += '<tr><td>Pending Permits</td><td>ERROR</td></tr>';
     errors++;
   }
 

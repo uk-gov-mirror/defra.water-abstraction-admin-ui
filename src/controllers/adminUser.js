@@ -48,7 +48,7 @@ const getOrCreateIdmUser = async (userName, externalId) => {
   if (idmUser.data.length === 0) {
     const createIdmUser = {
       user_name: userName,
-      user_data: { 'usertype': 'internal', 'firstname': '' },
+      user_data: { usertype: 'internal', firstname: '' },
       application: 'water_admin',
       password: uuid(),
       role: {
