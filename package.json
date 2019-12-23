@@ -24,13 +24,12 @@
   "devDependencies": {
     "@hapi/code": "^5.3.1",
     "@hapi/lab": "^19.1.0",
-    "acorn": "^6.3.0",
-    "auto-changelog": "^1.16.1",
+    "auto-changelog": "^1.16.2",
     "codecov": "^3.6.1",
     "del": "^4.1.1",
-    "eslint": "^6.6.0",
+    "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
@@ -40,7 +39,7 @@
     "gulp": "^4.0.2",
     "gulp-replace": "^1.0.0",
     "sinon": "^7.5.0",
-    "snyk": "^1.247.1"
+    "snyk": "^1.265.0"
   },
   "dependencies": {
     "@envage/hapi-pg-rest-api": "^4.1.2",
@@ -51,16 +50,16 @@
     "@hapi/joi": "^15.1.1",
     "@hapi/vision": "^5.5.4",
     "@hapi/yar": "^9.2.1",
-    "bluebird": "^3.7.1",
+    "bluebird": "^3.7.2",
     "csv": "^2.0.0",
     "dotenv": "^8.2.0",
     "fast-csv": "^2.5.0",
-    "handlebars": "^4.5.2",
+    "handlebars": "^4.5.3",
     "handlebars-helper-equal": "^1.0.0",
     "moment": "^2.24.0",
-    "pg": "^7.12.1",
+    "pg": "^7.15.1",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.7",
+    "request-promise-native": "^1.0.8",
     "uuid": "^3.3.3"
   }
 }
