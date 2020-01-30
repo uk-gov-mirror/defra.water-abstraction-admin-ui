@@ -60,5 +60,10 @@ async function start () {
   }
 };
 
+process.on('SIGINT', async () => {
+  await server.stop();
+  return process.exit(0);
+});
+
 module.exports = server;
 start();
