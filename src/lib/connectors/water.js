@@ -1,3 +1,5 @@
+'use strict';
+
 const Helpers = require('../helpers');
 const { APIClient } = require('@envage/hapi-pg-rest-api');
 const rp = require('request-promise-native').defaults({
@@ -158,20 +160,6 @@ const sendReturnsInvitation = async (payload) => {
   return rp(getReturnsNotificationOptions(payload, false));
 };
 
-const picklistsClient = new APIClient(rp, {
-  endpoint: process.env.WATER_URI + '/picklists',
-  headers: {
-    Authorization: process.env.JWT_TOKEN
-  }
-});
-
-const picklistItemsClient = new APIClient(rp, {
-  endpoint: process.env.WATER_URI + '/picklist-items',
-  headers: {
-    Authorization: process.env.JWT_TOKEN
-  }
-});
-
 const eventsClient = new APIClient(rp, {
   endpoint: process.env.WATER_URI + '/event',
   headers: {
@@ -179,22 +167,19 @@ const eventsClient = new APIClient(rp, {
   }
 });
 
-module.exports = {
-  naldImport,
-  naldLicence,
-  getSchedules,
-  addSchedule,
-  notifications: notificationsClient,
-  notify_templates: notifyTemplatesClient,
-  pending_import: pendingImportClient,
-  scheduler: schedulerClient,
-  task_config: taskConfigClient,
-  getReturnsFormats,
-  getReturnsLogs,
-  getReturnsLines,
-  previewReturnsInvitation,
-  sendReturnsInvitation,
-  picklists: picklistsClient,
-  picklistItems: picklistItemsClient,
-  events: eventsClient
-};
+exports.naldImport = naldImport;
+exports.naldLicence = naldLicence;
+exports.getSchedules = getSchedules;
+exports.addSchedule = addSchedule;
+
+exports.notifications = notificationsClient;
+exports.notify_templates = notifyTemplatesClient;
+exports.pending_import = pendingImportClient;
+exports.scheduler = schedulerClient;
+exports.task_config = taskConfigClient;
+exports.getReturnsFormats = getReturnsFormats;
+exports.getReturnsLogs = getReturnsLogs;
+exports.getReturnsLines = getReturnsLines;
+exports.previewReturnsInvitation = previewReturnsInvitation;
+exports.sendReturnsInvitation = sendReturnsInvitation;
+exports.events = eventsClient;
