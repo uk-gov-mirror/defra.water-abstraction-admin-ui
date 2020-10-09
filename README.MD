@@ -1,7 +1,7 @@
 # water-abstraction-admin-ui
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/89e6df60ba55d775a600/maintainability)](https://codeclimate.com/github/DEFRA/water-abstraction-admin-ui/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/89e6df60ba55d775a600/test_coverage)](https://codeclimate.com/github/DEFRA/water-abstraction-admin-ui/test_coverage)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DEFRA_water-abstraction-admin-ui&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DEFRA_water-abstraction-admin-ui)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=DEFRA_water-abstraction-admin-ui&metric=coverage)](https://sonarcloud.io/dashboard?id=DEFRA_water-abstraction-admin-ui)
 
 water-abstraction-admin-ui project for the GOV.UK Water Abstraction service, using the HAPI engine for Node.js + the Handlebars view engine, with a Postgres datastore.
 
