@@ -53,7 +53,7 @@
     "bluebird": "^3.7.2",
     "csv": "^2.0.0",
     "dotenv": "^8.2.0",
-    "fast-csv": "^2.5.0",
+    "fast-csv": "^4.3.6",
     "handlebars": "^4.7.6",
     "handlebars-helper-equal": "^1.0.0",
     "moment": "^2.29.1",
